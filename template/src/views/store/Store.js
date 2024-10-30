@@ -89,117 +89,7 @@ function ProjectOne(){
           }}>
             <div style={{marginLeft : '10%' , marginRight : '10%'}}>
               <Row className="row-grid align-items-center">
-                <Col md="3">
-                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px'}}>
-                    
-                    <blockquote className="card-blockquote">
-                    <CardImg style={{borderRadius: '10px'}}
-                      alt="..."
-                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
-                      top
-                    />
-                      <h4 className="display-3 font-weight-bold text-black">
-                        Design System
-                      </h4>
-                      <p className="lead text-italic text-black">
-                        세부설명
-                      </p>
-                    </blockquote>
-                  </Card>
-                </Col>
-                <Col md="3">
-                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px'}}>
-                    
-                    <blockquote className="card-blockquote">
-                    <CardImg style={{borderRadius: '10px'}}
-                      alt="..."
-                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
-                      top
-                    />
-                      <h4 className="display-4 font-weight-light text-black" 
-                      style={{ 
-                        whiteSpace: 'nowrap', // 줄 바꿈 방지
-                        overflow: 'hidden',   // 넘치는 텍스트 숨기기
-                        textOverflow: 'ellipsis', // 넘치는 텍스트를 ...으로 표시
-                        width: '100%'         // 부모 폭에 맞게 설정
-                        }}>
-                        Design Systembasdfafdasdf
-                      </h4>
-                      
-                        <Badge color="secondary" pill className="mr-1">
-                         creative
-                        </Badge>
-                    </blockquote>
-                  </Card>
-                </Col>
-                <Col md="3">
-                        {/*maxWidth 300px */}
-                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px'}}>
-                    <CardImg style={{borderRadius: '20px'}}
-                      alt="..."
-                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
-                      top
-                    />
-                    <blockquote className="card-blockquote">
-                      
-                      <h4 className="display-4 font-weight-bold text-black">
-                        Design System
-                      </h4>
-                      <p className="lead text-italic text-black"
-                      style={{
-                        display: '-webkit-box',          // Flexbox 사용
-                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                        WebkitLineClamp: 2,              // 두 줄까지만 표시
-                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                        width: '100%',                    // 부모 폭에 맞게 설정
-                        margin: 0                         // 기본 마진 제거
-                    }}>
-                            
-                        국회는 의장 1인과 부의장 2인을 선출한다. 누구든지 체포 또는 구속의 이유와 변호인의 조력을 받을 권리가 있음을 고지받지 아니하고는 체포 또는 구속을 당하지 아니한다. 체포 또는 구속을 당한 자의 가족등 법률이 정하는 자에게는 그 이유와 일시·장소가 지체없이 통지되어야 한다. 대한민국은 통일을 지향하며, 자유민주적 기본질서에 입각한 평화적 통일 정책을 수립하고 이를 추진한다.
-                      </p>
-                    </blockquote>
-                  </Card>
-                </Col>
-                <Col md="3">
-                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '10px',maxWidth : '300px', minHeight : '400px'}}>
-                    <CardImg style={{borderRadius: '10px'}}
-                      alt="..."
-                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
-                      top
-                    />
-                    <blockquote className="card-blockquote">
-                      
-                      <h4 className="display-6 font-weight-bold text-black"
-                        style={{
-                        display: '-webkit-box',          // Flexbox 사용
-                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                        WebkitLineClamp: 2,              // 두 줄까지만 표시
-                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                        width: '100%',                    // 부모 폭에 맞게 설정
-                        margin: 0                         // 기본 마진 제거
-                        }}
-                      >
-                        Design System 예시 프로젝트 이름입니다 줄바꿈은 1번만 허용됩니다. 확인용 메세지
-                      </h4>
-                      <p className="lead text-italic text-black"
-                      style={{
-                        fontSize : '17px',
-                        display: '-webkit-box',          // Flexbox 사용
-                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                        WebkitLineClamp: 3,              // 두 줄까지만 표시
-                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                        width: '100%',                    // 부모 폭에 맞게 설정
-                        margin: 0                         // 기본 마진 제거
-                        }}
-                    >
-                        sadfasdf국회는 의장 1인과 부의장 2인을 선출한다. 누구든지 체포 또는 구속의 이유와 변호인의 조력을 받을 권리가 있음을 고지받지 아니하고는 체포 또는 구속을 당하지 아니한다. 체포 또는 구속을 당한 자의 가족등 법률이 정하는 자에게는 그 이유와 일시·장소가 지체없이 통지되어야 한다. 대한민국은 통일을 지향하며, 자유민주적 기본질서에 입각한 평화적 통일 정책을 수립하고 이를 추진한다.
-                      </p>
-                    </blockquote>
-                  </Card>
-                </Col>
+                
                 
                 <Col md="3">
                   <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px'}}>
@@ -230,6 +120,100 @@ function ProjectOne(){
                     </blockquote>
                   </Card>
                 </Col>
+                <Col md="3">
+                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px'}}>
+                    
+                    <blockquote className="card-blockquote">
+                    <CardImg style={{borderRadius: '10px'}}
+                      alt="..."
+                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                      top
+                    />
+                      <h4 className="display-4 font-weight-bold text-black" 
+                      style={{
+                        display: '-webkit-box',          // Flexbox 사용
+                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
+                        WebkitLineClamp: 2,              // 두 줄까지만 표시
+                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
+                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
+                        width: '100%',                    // 부모 폭에 맞게 설정
+                        margin: 0                         // 기본 마진 제거
+                        }}
+                        >
+                        Design System basdfafdasdfasdfasdf
+                      </h4>
+                      
+                        <Badge color="secondary" pill className="mr-1">
+                         creative
+                        </Badge>
+                    </blockquote>
+                  </Card>
+                </Col>
+                <Col md="3">
+                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{borderRadius: '20px',maxWidth : '300px' }}>
+                    
+                    <blockquote className="card-blockquote">
+                    <CardImg style={{borderRadius: '10px'}}
+                      alt="..."
+                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                      top
+                    />
+                      <h4 className="display-4 font-weight-bold text-black" 
+                      style={{
+                        display: '-webkit-box',          // Flexbox 사용
+                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
+                        WebkitLineClamp: 2,              // 두 줄까지만 표시
+                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
+                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
+                        width: '100%',                    // 부모 폭에 맞게 설정
+                        margin: 0                         // 기본 마진 제거
+                        }}
+                        >
+                        Design System basdfafdasdfasdfasdf
+                      </h4>
+                      
+                        <Badge color="secondary" pill className="mr-1">
+                         creative
+                        </Badge>
+                    </blockquote>
+                  </Card>
+                </Col>
+                <Col md="3">
+                  <Card className="bg-white shadow border-0 card-lift--hover"  style={{ position:'relative', borderRadius: '20px',maxWidth : '300px', minHeight : '380px'}}>
+                    
+                    <blockquote className="card-blockquote">
+                    <CardImg style={{borderRadius: '10px'}}
+                      alt="..."
+                      src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                      top
+                    />
+                      <h4 className="display-4 font-weight-bold text-black" 
+                      style={{
+                        display: '-webkit-box',          // Flexbox 사용
+                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
+                        WebkitLineClamp: 2,              // 두 줄까지만 표시
+                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
+                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
+                        width: '100%',                    // 부모 폭에 맞게 설정
+                        margin: 0                         // 기본 마진 제거
+                        }}
+                        >
+                        Design SysDesign SysDesign SysDesign SysDesign Sys
+                      </h4>
+                      
+                        
+                        </blockquote>
+                        <Badge color="secondary" pill className="mr-1" 
+                        style={{
+                        position: 'absolute', // 절대 위치 설정
+                        bottom: '30px',      // 하단에서 10px
+                        left: '30px'        // w좌측에서 10px
+                        }}>
+                         creative
+                        </Badge>
+                  </Card>
+                </Col>
+
 
                     
               </Row>
