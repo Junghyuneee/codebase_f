@@ -1,7 +1,6 @@
 
 .card {
   position: relative;
-
   &.card-plain {
     background: transparent;
     box-shadow: none;
@@ -96,7 +95,7 @@
 
 .card-lift--hover {
     &:hover {
-        transform: translateY(-20px);
+        transform: translateY(-3px); //20px에서 3px로 변경함
         @include transition($transition-base);
     }
 }
