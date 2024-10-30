@@ -23,21 +23,9 @@ import {
     Row,
     Col,
 
-    UncontrolledCollapse,
-    DropdownMenu,
-    DropdownItem,
-    DropdownToggle,
-    UncontrolledDropdown,
-    NavbarBrand,
-    Navbar,
-    NavItem,
-    NavLink,
-    Nav,
+
+    
 } from "reactstrap";
-
-
-//nav 테스트
-import { Link } from "react-router-dom";
 
 // core components
 import DemoNavbar from "components/Navbars/DemoNavbar.js";
@@ -99,18 +87,15 @@ function ProjectOne() {
             style={{
                 display: 'flex',
                 justifyContent: 'center', // 가로 가운데 정렬
-                padding: '0px',
+                padding: '40px',
                 maxWidth: '100vw'
             }}>
-
-                
             <div style={{ marginLeft: '10%', marginRight: '10%' }}>
-            
                 <Row className="row-grid align-items-center">
 
 
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                    <Col md="3">
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '300px', minHeight: '380px' }}>
 
                             <blockquote className="card-blockquote">
                                 <CardImg style={{ borderRadius: '10px' }}
@@ -144,9 +129,8 @@ function ProjectOne() {
                                 13500원
                             </Badge>
                         </Card>
-                    </Col>
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                    </Col><Col md="3">
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '300px', minHeight: '380px' }}>
 
                             <blockquote className="card-blockquote">
                                 <CardImg style={{ borderRadius: '10px' }}
@@ -165,7 +149,7 @@ function ProjectOne() {
                                         margin: 0                         // 기본 마진 제거
                                     }}
                                 >
-                                    New Project DUCK'S TRIP
+                                    연습용 프로젝트 사가실 분
                                 </h4>
 
 
@@ -177,12 +161,11 @@ function ProjectOne() {
                                     bottom: '30px',      // 하단에서 10px
                                     left: '30px'        // w좌측에서 10px
                                 }}>
-                                13500원
+                                16500원
                             </Badge>
                         </Card>
-                    </Col>
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                    </Col><Col md="3">
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '300px', minHeight: '380px' }}>
 
                             <blockquote className="card-blockquote">
                                 <CardImg style={{ borderRadius: '10px' }}
@@ -201,7 +184,7 @@ function ProjectOne() {
                                         margin: 0                         // 기본 마진 제거
                                     }}
                                 >
-                                    New Project DUCK'S TRIP
+                                    KKDUNG-For automatic message sending
                                 </h4>
 
 
@@ -213,12 +196,12 @@ function ProjectOne() {
                                     bottom: '30px',      // 하단에서 10px
                                     left: '30px'        // w좌측에서 10px
                                 }}>
-                                13500원
+                                45000원
                             </Badge>
                         </Card>
                     </Col>
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                    <Col md="3">
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '300px', minHeight: '380px' }}>
 
                             <blockquote className="card-blockquote">
                                 <CardImg style={{ borderRadius: '10px' }}
@@ -237,7 +220,7 @@ function ProjectOne() {
                                         margin: 0                         // 기본 마진 제거
                                     }}
                                 >
-                                    New Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIP
+                                    인덱싱 자동화 프로그램 입니다.
                                 </h4>
 
 
@@ -249,46 +232,11 @@ function ProjectOne() {
                                     bottom: '30px',      // 하단에서 10px
                                     left: '30px'        // w좌측에서 10px
                                 }}>
-                                13500원
+                                무료
                             </Badge>
                         </Card>
                     </Col>
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
-                                <CardImg style={{ borderRadius: '10px' }}
-                                    alt="..."
-                                    src={require("assets/img/theme/img-1-1200x1000.jpg")}
-                                    top
-                                />
-                                <h4 className="display-4 font-weight-bold text-black"
-                                    style={{
-                                        display: '-webkit-box',          // Flexbox 사용
-                                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                                        WebkitLineClamp: 2,              // 두 줄까지만 표시
-                                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                                        width: '100%',                    // 부모 폭에 맞게 설정
-                                        margin: 0                         // 기본 마진 제거
-                                    }}
-                                >
-                                    New Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIP
-                                </h4>
-
-
-                            </blockquote>
-                            <Badge color="secondary" pill className="mr-1"
-                                style={{
-                                    fontSize : '14px',
-                                    position: 'absolute', // 절대 위치 설정
-                                    bottom: '30px',      // 하단에서 10px
-                                    left: '30px'        // w좌측에서 10px
-                                }}>
-                                13500원
-                            </Badge>
-                        </Card>
-                    </Col>
 
 
                 </Row>
@@ -320,13 +268,9 @@ function ProjectList() {
 
 
             <main ref={myInputRef} >
-                
-
-                
 
 
-
-            <Container>
+                <Container>
                     <section className="mt-4">
                         <Row>
                             <Col lg="5">
@@ -348,93 +292,149 @@ function ProjectList() {
                     </section>
                 </Container>
 
+                {/*mt--300을 이용해서 배너에 데이터 올리기 <section className="section section-lg pt-lg-0 mt--300">*/}
+                <section className="section section-lg pt-lg-0 mt-2">
+
+                    <Container>
+
+                        <Row className="justify-content-center">
+                            <Col lg="12">
+                                <Row className="row-grid">
+                                    <Col lg="4">
+                                        {/*card-lift--hover 옵션 제거시 반응x */}
+                                        <Card className="shadow border-0">
+                                            <CardImg
+                                                alt="..."
+                                                src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                                                top
+                                            />
+                                            <CardBody className="py-5">
+                                                <div className="icon icon-shape icon-shape-primary rounded-circle mb-4">
+                                                    <i className="ni ni-check-bold" />
+                                                </div>
+                                                <h6 className="text-primary text-uppercase">
+                                                    Download Argon
+                                                </h6>
+                                                <p className="description mt-3">
+                                                    Argon is a great free UI package based on Bootstrap
+                                                    4 that includes the most important components and
+                                                    features.
+                                                </p>
+                                                <div>
+                                                    <Badge color="primary" pill className="mr-1">
+                                                        design
+                                                    </Badge>
+                                                    <Badge color="primary" pill className="mr-1">
+                                                        system
+                                                    </Badge>
+                                                    <Badge color="primary" pill className="mr-1">
+                                                        creative
+                                                    </Badge>
+                                                </div>
+                                                <Button
+                                                    className="mt-4"
+                                                    color="primary"
+                                                    href="#pablo"
+                                                    onClick={(e) => e.preventDefault()}
+                                                >
+                                                    Learn more
+                                                </Button>
+                                            </CardBody>
+                                        </Card>
+                                    </Col>
+                                    <Col lg="4">
+                                        <Card className="card-lift--hover shadow border-0">
+                                            <CardBody className="py-5">
+                                                <div className="icon icon-shape icon-shape-success rounded-circle mb-4">
+                                                    <i className="ni ni-istanbul" />
+                                                </div>
+                                                <h6 className="text-success text-uppercase">
+                                                    Build Something
+                                                </h6>
+                                                <p className="description mt-3">
+                                                    Argon is a great free UI package based on Bootstrap
+                                                    4 that includes the most important components and
+                                                    features.
+                                                </p>
+                                                <div>
+                                                    <Badge color="success" pill className="mr-1">
+                                                        business
+                                                    </Badge>
+                                                    <Badge color="success" pill className="mr-1">
+                                                        vision
+                                                    </Badge>
+                                                    <Badge color="success" pill className="mr-1">
+                                                        success
+                                                    </Badge>
+                                                </div>
+                                                <Button
+                                                    className="mt-4"
+                                                    color="success"
+                                                    href="#pablo"
+                                                    onClick={(e) => e.preventDefault()}
+                                                >
+                                                    Learn more
+                                                </Button>
+                                            </CardBody>
+                                        </Card>
+                                    </Col>
+                                    <Col lg="4">
+                                        <Card className="card-lift--hover shadow border-0">
+                                            <CardBody className="py-5">
+                                                <div className="icon icon-shape icon-shape-warning rounded-circle mb-4">
+                                                    <i className="ni ni-planet" />
+                                                </div>
+                                                <h6 className="text-warning text-uppercase">
+                                                    Prepare Launch
+                                                </h6>
+                                                <p className="description mt-3">
+                                                    Argon is a great free UI package based on Bootstrap
+                                                    4 that includes the most important components and
+                                                    features.
+                                                </p>
+                                                <div>
+                                                    <Badge color="warning" pill className="mr-1">
+                                                        marketing
+                                                    </Badge>
+                                                    <Badge color="warning" pill className="mr-1">
+                                                        product
+                                                    </Badge>
+                                                    <Badge color="warning" pill className="mr-1">
+                                                        launch
+                                                    </Badge>
+                                                </div>
+                                                <Button
+                                                    className="mt-4"
+                                                    color="warning"
+                                                    href="#pablo"
+                                                    onClick={(e) => e.preventDefault()}
+                                                >
+                                                    Learn more
+                                                </Button>
+                                            </CardBody>
+                                        </Card>
+                                    </Col>
+                                </Row>
+                            </Col>
 
 
-                <Navbar className="navbar-dark bg-danger mt-4" expand="lg">
-            <Container>
-              <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
-                Danger Color
-              </NavbarBrand>
-              <button className="navbar-toggler" id="navbar-danger">
-                <span className="navbar-toggler-icon" />
-              </button>
-              <UncontrolledCollapse navbar toggler="#navbar-danger">
-                <div className="navbar-collapse-header">
-                  <Row>
-                    <Col className="collapse-brand" xs="6">
-                      <Link to="/">
-                        <img
-                          alt="..."
-                          src={require("assets/img/brand/argon-react.png")}
-                        />
-                      </Link>
-                    </Col>
-                    <Col className="collapse-close" xs="6">
-                      <button className="navbar-toggler" id="navbar-danger">
-                        <span />
-                        <span />
-                      </button>
-                    </Col>
-                  </Row>
-                </div>
-                <Nav className="ml-auto" navbar>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-facebook-square" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Facebook
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-twitter" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Twitter
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-google-plus" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Google +
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-instagram" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Instagram
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-              </UncontrolledCollapse>
-            </Container>
-          </Navbar>
+                            {GetStuff()}
+
+                        </Row>
+                    </Container>
+                </section>
 
 
 
 
-                
+
+
+
+
+
+
+
+
                 {ProjectOne()}
                 {ProjectOne()}
                 {ProjectOne()}

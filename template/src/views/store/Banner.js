@@ -40,54 +40,52 @@ function Banner() {
     return (
         <>
         
-        
-                {/*shape-style- 1 2 3 변경가능*/ }
-                <section className="section-profile-cover section-shaped my-0">
-                    {/* Circles background */}
-                    <div className="shape shape-style-3 shape-default">
-                        <span />
-                        <span />
-                        <span />
-                        {/*<span />
-                        <span />*/}
-                        
-                        
-                        
-                    </div>
-                    {/* SVG separator 사선 처리*/}
-                    
-                </section>
-
-                <section className="section section-shaped" style={{ marginTop: '-520px', marginBottom: '100px' }}>         
-    
-          <Container className="py-md">
-            <Row className="justify-content-between align-items-center">
-              <Col className="mb-5 mb-lg-0" lg="5">
-                <h1 className="display-2 text-white font-weight-light">
-                  CODEBASE 상점
-                </h1>
-                <p className="lead text-white mt-4">
-                  Argon Design System comes with four pre-built pages to help
-                  you get started faster. You can change the text and images and
-                  you're good to go.
-                </p>
-                <Button
+        <div className="position-relative">
+            {/* shape Hero */}
+            <section className="section section-lg section-shaped pb-250">
+              <div className="shape shape-style-3 shape-default">
+                <span />
+                <span />
+                <span />
+             
+              </div>
+              <Container className="py-lg-md d-flex">
+                <div className="col px-0">
+                  <Row>
+                    <Col lg="6">
+                    <h1 className="display-2 text-white font-weight-bold">
+                       CODEBASE 상점
+                    </h1>
+                      <p className="lead text-white">
+                      코드베이스에서 다양한 프로젝트를 <br/> 
+                  판매, 공유할 수 있습니다.<br/> 
+                  내게 맞는 프로젝트가 있다면<br/> 
+                  참여하거나 구매해 보세요.
+                      </p>
+                      <Button
                   className="btn-white mt-4"
                   color="default"
                   href="/store"
                 >
-                  See all components
+                  내 프로젝트 등록하기
                 </Button>
-              </Col>
-              <Col className="mb-lg-auto" lg="6">
-                <div className="rounded shadow-lg overflow-hidden transform-perspective-right">
+                    </Col>
+                    <Col lg="6">
+                    <div className="rounded shadow-lg overflow-hidden transform-perspective-right">
                   <UncontrolledCarousel items={items} />
                 </div>
-              </Col>
-            </Row>
-          </Container>
-          
-        </section>
+                    
+                    </Col>
+                  </Row>
+                </div>
+              </Container>
+              
+            </section>
+            {/* 1st Hero Variation */}
+          </div>
+
+        
+                
         </>
     );
 
