@@ -104,15 +104,15 @@ function ProjectOne() {
             }}>
 
                 
-            <div style={{ marginLeft: '10%', marginRight: '10%' }}>
+            <div style={{ marginLeft: '10%', marginRight: '10%'}}>
             
                 <Row className="row-grid align-items-center">
 
 
-                    <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                <Col md="3" style={{padding : '0'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
+                            <blockquote className="card-blockquote p-4">
                                 <CardImg style={{ borderRadius: '10px' }}
                                     alt="..."
                                     src={require("assets/img/theme/img-1-1200x1000.jpg")}
@@ -131,6 +131,7 @@ function ProjectOne() {
                                 >
                                     New Project DUCK'S TRIP
                                 </h4>
+                                <br/><br/>
 
 
                             </blockquote>
@@ -146,9 +147,9 @@ function ProjectOne() {
                         </Card>
                     </Col>
                     <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
+                            <blockquote className="card-blockquote p-4">
                                 <CardImg style={{ borderRadius: '10px' }}
                                     alt="..."
                                     src={require("assets/img/theme/img-1-1200x1000.jpg")}
@@ -167,6 +168,7 @@ function ProjectOne() {
                                 >
                                     New Project DUCK'S TRIP
                                 </h4>
+                                <br/><br/>
 
 
                             </blockquote>
@@ -182,9 +184,9 @@ function ProjectOne() {
                         </Card>
                     </Col>
                     <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
+                            <blockquote className="card-blockquote p-4">
                                 <CardImg style={{ borderRadius: '10px' }}
                                     alt="..."
                                     src={require("assets/img/theme/img-1-1200x1000.jpg")}
@@ -203,6 +205,7 @@ function ProjectOne() {
                                 >
                                     New Project DUCK'S TRIP
                                 </h4>
+                                <br/><br/>
 
 
                             </blockquote>
@@ -218,9 +221,9 @@ function ProjectOne() {
                         </Card>
                     </Col>
                     <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
+                            <blockquote className="card-blockquote p-4">
                                 <CardImg style={{ borderRadius: '10px' }}
                                     alt="..."
                                     src={require("assets/img/theme/img-1-1200x1000.jpg")}
@@ -237,8 +240,9 @@ function ProjectOne() {
                                         margin: 0                         // 기본 마진 제거
                                     }}
                                 >
-                                    New Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIP
+                                    New Project DUCK'S TRIP
                                 </h4>
+                                <br/><br/>
 
 
                             </blockquote>
@@ -254,9 +258,9 @@ function ProjectOne() {
                         </Card>
                     </Col>
                     <Col md="3" style={{padding : '0'}}>
-                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', minHeight: '500px', maxHeight: '500px', margin : '10px'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
 
-                            <blockquote className="card-blockquote">
+                            <blockquote className="card-blockquote p-4">
                                 <CardImg style={{ borderRadius: '10px' }}
                                     alt="..."
                                     src={require("assets/img/theme/img-1-1200x1000.jpg")}
@@ -273,8 +277,46 @@ function ProjectOne() {
                                         margin: 0                         // 기본 마진 제거
                                     }}
                                 >
-                                    New Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIPNew Project DUCK'S TRIP
+                                    New Project DUCK'S TRIP
                                 </h4>
+                                <br/><br/>
+
+
+                            </blockquote>
+                            <Badge color="secondary" pill className="mr-1"
+                                style={{
+                                    fontSize : '14px',
+                                    position: 'absolute', // 절대 위치 설정
+                                    bottom: '30px',      // 하단에서 10px
+                                    left: '30px'        // w좌측에서 10px
+                                }}>
+                                13500원
+                            </Badge>
+                        </Card>
+                    </Col>
+                    <Col md="3" style={{padding : '0'}}>
+                        <Card className="bg-white shadow border-0 card-lift--hover" style={{ position: 'relative', borderRadius: '20px', maxWidth: '400px', maxHeight: '500px', margin : '10px'}}>
+
+                            <blockquote className="card-blockquote p-4">
+                                <CardImg style={{ borderRadius: '10px' }}
+                                    alt="..."
+                                    src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                                    top
+                                />
+                                <h4 className="display-4 font-weight-bold text-black"
+                                    style={{
+                                        display: '-webkit-box',          // Flexbox 사용
+                                        WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
+                                        WebkitLineClamp: 2,              // 두 줄까지만 표시
+                                        overflow: 'hidden',               // 넘치는 텍스트 숨기기
+                                        textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
+                                        width: '100%',                    // 부모 폭에 맞게 설정
+                                        margin: 0                         // 기본 마진 제거
+                                    }}
+                                >
+                                    New Project DUCK'S TRIP
+                                </h4>
+                                <br/><br/>
 
 
                             </blockquote>
@@ -322,35 +364,10 @@ function ProjectList() {
             <main ref={myInputRef} >
                 
 
-                
+
+                <Navbar className="navbar-light bg-info " expand="lg">
 
 
-
-            <Container>
-                    <section className="mt-4">
-                        <Row>
-                            <Col lg="5">
-                                <InputGroup className="mb-4">
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                            <i className="ni ni-zoom-split-in" />
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                    <Input
-                                        placeholder="Search"
-                                        type="text"
-                                        onFocus={(e) => this.setState({ searchFocused: true })}
-                                        onBlur={(e) => this.setState({ searchFocused: false })}
-                                    />
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                    </section>
-                </Container>
-
-
-
-                <Navbar className="navbar-dark bg-danger mt-4" expand="lg">
             <Container>
               <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
                 Danger Color
@@ -435,7 +452,6 @@ function ProjectList() {
 
 
                 
-                {ProjectOne()}
                 {ProjectOne()}
                 {ProjectOne()}
 
