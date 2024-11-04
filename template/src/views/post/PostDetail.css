@@ -1,0 +1,16 @@
+/* src/views/post/PostDetail.css */
+.post-detail-container {
+    border: 1px solid #007bff; /* 카드 외곽선 색 */
+    border-radius: 10px;       /* 모서리 둥글게 */
+    padding: 20px;             /* 내부 여백 */
+    background-color: #f8f9fa; /* 배경색 */
+  }
+  
+  h5 {
+    margin-top: 20px;
+  }
+  
+  button {
+    margin-top: 10px; /* 버튼 간격 */
+  }
+  

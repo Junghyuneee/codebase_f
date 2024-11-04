@@ -1,0 +1,29 @@
+/* src/views/post/PostList.css */
+.text-center {
+    font-weight: bold;
+  }
+  
+  .search-bar {
+    border-radius: 20px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+  }
+  
+  .post-card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .post-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .badge {
+    font-size: 0.9rem;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+  }
+  
