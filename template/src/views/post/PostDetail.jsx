@@ -1,4 +1,4 @@
-// src/views/post/PostDetail.js
+// src/views/post/PostDetail.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
@@ -125,7 +125,7 @@ const PostDetail = () => {
             required
           />
         </Form.Group>
-        <Button variant="primary" type="submit" className="btn-sm">댓글 작성</Button>
+        <Button className="custom-button btn-sm" type="submit">댓글 작성</Button>
       </Form>
 
       <h5>댓글 목록</h5>

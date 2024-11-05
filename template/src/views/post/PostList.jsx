@@ -1,8 +1,9 @@
-// src/views/post/PostList.js
+// src/views/post/PostList.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown } from 'react-bootstrap';
 import './PostList.css'; // CSS 파일 import
+
 
 const PostList = () => {
   const initialPosts = [

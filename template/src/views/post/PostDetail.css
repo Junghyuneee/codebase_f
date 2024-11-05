@@ -27,3 +27,11 @@
 .button-group .btn {
   margin-right: 10px; /* 버튼 간의 간격 조정 */
 }
+.custom-button {
+  background-color: #1d7ad1; /* 원하는 색상 코드 */
+  color: white; /* 텍스트 색상 */
+}
+
+.custom-button:hover {
+  background-color: #6d00c7; /* 호버 시 색상 변경 */
+}
