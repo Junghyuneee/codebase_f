@@ -134,7 +134,6 @@ University of Computer Science
 </Col>
 </Row>
 </div>
-
 </Card>
 </div>
     
