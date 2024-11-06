@@ -30,7 +30,9 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 
 
-import Store from "views/store/Store.js";
+import Store from "views/store/Store";
+import Test from "views/store/Test"
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -44,7 +46,12 @@ root.render(
       <Route path="/register-page" exact element={<Register />} />
       <Route path="*" element={<Navigate to="/" replace />} />
 
-      <Route path="/Store" exact element={<Store />} />
+
+      <Route path="/store" element={<Store />}>
+        
+      </Route>
+      <Route path="/store/test" element={<Test/>}/>   
+
     </Routes>
   </BrowserRouter>
 );

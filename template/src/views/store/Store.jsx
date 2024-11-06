@@ -2,7 +2,7 @@
 2024 10 30
 */
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Outlet } from 'react';
 import axios from 'axios';
 // nodejs library that concatenates classes
 import classnames from "classnames";
@@ -45,6 +45,7 @@ import SimpleFooter from "components/Footers/SimpleFooter.js";
 
 
 import Banner from "views/store/Banner.js";
+
 
 //함수명 첫글자 대문자
 function GetStuff() {
@@ -357,108 +358,25 @@ function ProjectList() {
     return (
         <>
             <DemoNavbar />
+         
 
             <Banner />
+
+         
+            
 
 
             <main ref={myInputRef} >
                 
 
 
-                <Navbar className="navbar-light bg-info " expand="lg">
+                
 
-
-            <Container>
-              <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
-                Danger Color
-              </NavbarBrand>
-              <button className="navbar-toggler" id="navbar-danger">
-                <span className="navbar-toggler-icon" />
-              </button>
-              <UncontrolledCollapse navbar toggler="#navbar-danger">
-                <div className="navbar-collapse-header">
-                  <Row>
-                    <Col className="collapse-brand" xs="6">
-                      <Link to="/">
-                        <img
-                          alt="..."
-                          src={require("assets/img/brand/argon-react.png")}
-                        />
-                      </Link>
-                    </Col>
-                    <Col className="collapse-close" xs="6">
-                      <button className="navbar-toggler" id="navbar-danger">
-                        <span />
-                        <span />
-                      </button>
-                    </Col>
-                  </Row>
-                </div>
-                <Nav className="ml-auto" navbar>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-facebook-square" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Facebook
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-twitter" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Twitter
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-google-plus" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Google +
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className="nav-link-icon"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-instagram" />
-                      <span className="nav-link-inner--text d-lg-none">
-                        Instagram
-                      </span>
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-              </UncontrolledCollapse>
-            </Container>
-          </Navbar>
-
-
+            
 
 
                 
                 {ProjectOne()}
-                {ProjectOne()}
-
-
-
-
-
 
 
 
