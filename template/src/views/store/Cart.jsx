@@ -116,9 +116,7 @@ function Invoice() {
                             <i className="ni education_hat mr-2" />
                             University of Computer Science
                         </div>
-                        <h1 className='font-weight-bold'>
-                            123456원
-                        </h1>
+                        
 
                     </div>
                     <Button>찜</Button>
