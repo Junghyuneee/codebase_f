@@ -17,6 +17,8 @@ import {
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import { useState } from "react";
+import Postcode from "./DaumAddress";
+import { postSignUp } from "../../api/auth";
 
 const RegisterModal = () => {
 
@@ -24,16 +26,21 @@ const RegisterModal = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [addressDetail, setAddressDetail] = useState("");
   const [postcode, setPostcode] = useState("");
   const [tel, setTel] = useState("");
+
+  const handleSignUp = async () => {
+    if (window.confirm('회원가입 하시겠습니까?')) {
+      const response = await postSignUp(username, password, email, address + " " + addressDetail, postcode, tel);
+      console.log(response);
+    }
+  }
 
   return (
     <main>
       <section className="section section-shaped section-lg">
         <div className="shape shape-style-1 bg-gradient-default">
-          <span />
-          <span />
-          <span />
           <span />
           <span />
           <span />
@@ -110,7 +117,7 @@ const RegisterModal = () => {
                       </InputGroup>
                     </FormGroup>
                     <FormGroup>
-                      <InputGroup className="input-group-alternative">
+                      <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="ni ni-lock-circle-open" />
@@ -124,7 +131,7 @@ const RegisterModal = () => {
                           onChange={(e) => setPassword(e.target.value)}
                         />
                       </InputGroup>
-
+                      {/* 
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
@@ -132,11 +139,62 @@ const RegisterModal = () => {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder="Password"
+                          placeholder="Password Confirm"
                           type="password"
                           autoComplete="off"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
+                        />
+                      </InputGroup> */}
+                    </FormGroup>
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        {/* <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-email-83" />
+                          </InputGroupText>
+                        </InputGroupAddon> */}
+                        <Input placeholder="Phone Number" type="text"
+                          value={tel}
+                          onChange={(e) => setTel(e.target.value)}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+
+                    <FormGroup>
+                      <div className="d-flex mb-2" style={{ gap: '1rem' }}>
+                        <Input type="text" disabled value={postcode}
+                          placeholder="Postcode"
+                        />
+                        <Postcode setAddress={setAddress} setPostCode={setPostcode} />
+                      </div>
+
+                      <InputGroup className="input-group-alternative">
+                        {/* <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-lock-circle-open" />
+                          </InputGroupText>
+                        </InputGroupAddon> */}
+                        <Input
+                          placeholder="주소"
+                          type="text"
+                          autoComplete="off"
+                          disabled
+                          value={address}
+                        />
+                      </InputGroup>
+                      <InputGroup className="input-group-alternative mt-2">
+                        {/* <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-lock-circle-open" />
+                          </InputGroupText>
+                        </InputGroupAddon> */}
+                        <Input
+                          placeholder="상세 주소"
+                          type="text"
+                          autoComplete="off"
+                          value={addressDetail}
+                          onChange={(e) => setAddressDetail(e.target.value)}
                         />
                       </InputGroup>
 
@@ -180,6 +238,7 @@ const RegisterModal = () => {
                         className="mt-4"
                         color="primary"
                         type="button"
+                        onClick={handleSignUp}
                       >
                         Create account
                       </Button>
