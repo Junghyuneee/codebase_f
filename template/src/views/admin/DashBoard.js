@@ -4,7 +4,7 @@
 */
 import React, {useEffect, useRef, useState} from "react";
 import { Row, Col } from "reactstrap";
-import Chart from "chart.js";
+import Chart from "chart.js/auto";
 import axios from "axios"
 
 function DashBoardContent() {
