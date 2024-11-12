@@ -16,11 +16,18 @@ import {
 
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Postcode from "./DaumAddress";
-import { postSignUp } from "../../api/auth";
+import { postOAuthSignUp, postSignUp } from "../../api/auth";
+import { useLocation, useParams } from "react-router-dom";
 
 const RegisterModal = () => {
+
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+
+  const encodedUsername = queryParams.get("username");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -29,12 +36,24 @@ const RegisterModal = () => {
   const [addressDetail, setAddressDetail] = useState("");
   const [postcode, setPostcode] = useState("");
   const [tel, setTel] = useState("");
+  const [social, setSocial] = useState(false);
+
+  useEffect(() => {
+    setEmail(encodedUsername ? decodeURIComponent(encodedUsername) : "");
+    setSocial(encodedUsername ? true : false);
+  }, [])
 
   const handleSignUp = async () => {
     if (window.confirm('회원가입 하시겠습니까?')) {
-      const response = await postSignUp(username, password, email, address + " " + addressDetail, postcode, tel);
+      const response = social
+        ? await postOAuthSignUp(email, username, address + " " + addressDetail, postcode, tel)
+        : await postSignUp(username, password, email, address + " " + addressDetail, postcode, tel);
       console.log(response);
     }
+  }
+
+  const kakaoLoginHandler = () => {
+    window.location.replace('http://localhost:8080/oauth2/authorization/kakao');
   }
 
   return (
@@ -73,8 +92,7 @@ const RegisterModal = () => {
                     <Button
                       className="btn-neutral btn-icon ml-1"
                       color="default"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                      onClick={kakaoLoginHandler}
                     >
                       <span className="btn-inner--icon mr-1">
                         <img
@@ -111,12 +129,13 @@ const RegisterModal = () => {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Email" type="email"
+                          disabled={social}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </InputGroup>
                     </FormGroup>
-                    <FormGroup>
+                    <FormGroup style={{ display: social && "none" }}>
                       <InputGroup className="input-group-alternative mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
