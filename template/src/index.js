@@ -48,8 +48,8 @@ root.render(
       <Route path="*" element={<Navigate to="/" replace />} />
 
       <Route path="/Store" exact element={<Store />} />
-
       <Route path="/post/*" element={<Post />} />
+      <Route path="/Admin/*" exact element={<Admin />} />
     
     </Routes>
   </BrowserRouter>
