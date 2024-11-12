@@ -2,9 +2,10 @@
 김은지
 2024 11 08
 */
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Row, Col } from "reactstrap";
 import Chart from "chart.js";
+import axios from "axios"
 
 function DashBoardContent() {
     return (
@@ -35,47 +36,59 @@ function DashBoardContent() {
 }
 
 const VisitorChart = () => {
-    const chartRef = useRef(null); // Canvas DOM을 참조하기 위한 ref
+    const chartRef = useRef(null);
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        const ctx = chartRef.current.getContext('2d');  // Canvas 컨텍스트 가져오기
-
-        // 차트 데이터
-        const data = {
-            labels: ['일', '월', '화', '수', '목', '금', '토'],
-            datasets: [{
-                label: '방문자 수',
-                data: [120, 200, 150, 180, 250, 300, 280],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: true,
-                tension: 0.4
-            }]
-        };
-
-        // 차트 옵션
-        const options = {
-            responsive: true,
-            scales: {
-                x: { title: { display: true, text: '월' }},
-                y: { title: { display: true, text: '방문자 수' }}
-            }
-        };
-
-        // Chart.js 차트 생성
-        new Chart(ctx, {
-            type: 'line',
-            data: data,
-            options: options
-        });
-
-        // 컴포넌트가 언마운트될 때 차트 리소스를 정리
-        return () => {
-            if (ctx) {
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);  // 차트 초기화
-            }
-        };
+        axios.get('http://localhost:8080/api/weekly-visitors')
+            .then(response => {
+                setData(response.data);
+            })
+            .catch(error => {
+                console.error('방문자수 에러', error);
+            });
     }, []);
+
+    useEffect(() => {
+        if (data.length > 0 && chartRef.current) {
+            const ctx = chartRef.current.getContext('2d');
+
+            // 기존 차트 정리
+            if (chartRef.current.chartInstance) {
+                chartRef.current.chartInstance.destroy();
+            }
+
+            // 차트 생성
+            chartRef.current.chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(item => item.visit_date),
+                    datasets: [{
+                        label: '방문자 수',
+                        data: data.map(item => item.visitor_count),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { title: { display: true, text: '날짜' } },
+                        y: { title: { display: true, text: '방문자 수' } }
+                    }
+                }
+            });
+        }
+
+        // 컴포넌트 언마운트 시 차트 정리
+        return () => {
+            if (chartRef.current && chartRef.current.chartInstance) {
+                chartRef.current.chartInstance.destroy();
+            }
+        };
+    }, [data]);
 
     return (
         <div className="container mb-3">
@@ -83,7 +96,7 @@ const VisitorChart = () => {
             <canvas ref={chartRef} width="400" height="200"></canvas>
         </div>
     );
-}
+};
 
 const PopularPostsChart = () => {
     const chartRef = useRef(null);  // Canvas 요소를 참조할 ref
