@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // reactstrap components
 import {
@@ -25,27 +26,54 @@ import {
 } from 'reactstrap';
 
 // core components
-import Navbar from 'views/review/Navbar.js';
-import Footer from 'views/review/Footer.js';
-import ReviewHeader from 'views/review/Header.js';
+import DemoNavbar from 'components/Navbars/DemoNavbar.js';
+import SimpleFooter from 'components/Footers/SimpleFooter.js';
+
+import ReviewHeader from 'views/review/ReviewHeader.js';
+// import ReviewDeleteModal from 'views/review/ReviewDeleteModal.js';
 
 function ReviewCreate() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
+	const navigate = useNavigate();
 
-	const handleSubmit = (e) => {
+	//리뷰 등록
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log('새로운 리뷰 작성:', { title, content });
-		// 서버로 데이터 전송 로직 추가 기능
+
+		// 입력값 확인
+		if (!title.trim() || !content.trim()) {
+			alert('제목과 내용을 모두 입력해주세요.');
+			return;
+		}
+
+		try {
+			// 서버에 데이터 전송
+			const response = await axios.post('/api/reviews', { title, content });
+
+			if (response.status === 201) {
+				// 성공적으로 등록되었을 경우
+				alert('리뷰가 성공적으로 등록되었습니다.');
+				setTitle('');
+				setContent('');
+				navigate('/reviews'); // 목록 페이지로 이동
+			} else {
+				throw new Error('리뷰 등록에 실패했습니다.');
+			}
+		} catch (error) {
+			console.error('리뷰 등록 오류:', error);
+			alert('리뷰 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
+		}
 	};
 
+	//리뷰 목록 돌아가기
 	const handleNavigateToList = () => {
 		window.location.href = '/review'; // '/review' 페이지로 이동
 	};
 
 	return (
 		<>
-			<Navbar />
+			<DemoNavbar />
 			<main>
 				<ReviewHeader />
 				<section className="section">
@@ -58,12 +86,6 @@ function ReviewCreate() {
 								onClick={handleNavigateToList}
 							>
 								<span className="btn-inner--text">목록</span>
-							</Button>
-							<Button className="btn-icon mb-3 mb-sm-0 ml-auto" color="info">
-								<span className="btn-inner--text">수정하기</span>
-							</Button>
-							<Button className="btn-icon mb-3 mb-sm-0 ml-auto" color="info">
-								<span className="btn-inner--text">삭제하기</span>
 							</Button>
 						</div>
 						{/* 폼 태그 */}
@@ -116,7 +138,7 @@ function ReviewCreate() {
 					</Container>
 				</section>
 			</main>
-			<Footer />
+			<SimpleFooter />
 		</>
 	);
 }

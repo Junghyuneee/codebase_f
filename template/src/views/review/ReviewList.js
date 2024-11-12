@@ -25,34 +25,43 @@ import {
 } from 'reactstrap';
 
 // core components
-import Navbar from 'views/review/Navbar.js';
-import Footer from 'views/review/Footer.js';
-// import Tabs from 'views/review/Tabs.js';
-import ReviewHeader from 'views/review/Header.js';
+import DemoNavbar from 'components/Navbars/DemoNavbar.js';
+import SimpleFooter from 'components/Footers/SimpleFooter.js';
 
-function Review() {
+// import Tabs from 'views/review/Tabs.js';
+import ReviewHeader from 'views/review/ReviewHeader.js';
+
+function ReviewList() {
 	const [reviews, setReviews] = useState([]);
 
+	// 페이지가 로드되었을 때 리뷰 목록을 가져옴
 	useEffect(() => {
-		axios
-			.get('http://localhost:8080/api/reviews')
-			.then((response) => setReviews(response.data))
-			.catch((error) => console.error('Error fetching reviews:', error));
+		const fetchReviews = async () => {
+			try {
+				const response = await axios.get('/api/reviews');
+				setReviews(response.data);
+			} catch (error) {
+				console.error('리뷰 목록 가져오기 오류:', error);
+				alert('리뷰 목록을 가져오는 중 오류가 발생했습니다.');
+			}
+		};
+
+		fetchReviews();
 	}, []);
 
 	return (
 		<>
-			<Navbar />
+			<DemoNavbar />
 			<main>
 				<ReviewHeader />
 				<section className="section">
 					<Container>
 						<div className="btn-wrapper ml-auto text-right">
-							<Button className="btn-icon mb-3 mb-sm-0 ml-auto" color="info">
-								<Link to="/review/create" className="">
+							<Link to="/review/create" className="">
+								<Button className="btn-icon mb-3 mb-sm-0 ml-auto" color="info">
 									<span className="btn-inner--text">등록하기</span>
-								</Link>
-							</Button>
+								</Button>
+							</Link>
 						</div>
 						<div className="mt-5">
 							<table className="col-lg-12">
@@ -68,7 +77,10 @@ function Review() {
 									{/* list.map을 사용해서 반복문 구현 */}
 									{reviews.map((review) => (
 										<tr key={review.id}>
-											<td>{review.title}</td>
+											<Link to={`/reviews/${review.id}`}>{review.title}</Link>
+											{/* <td>{review.content}</td> */}
+											<td>{new Date(review.createdDate).toLocaleString()}</td>
+											<td>{review.views}</td>
 										</tr>
 									))}
 								</tbody>
@@ -77,9 +89,9 @@ function Review() {
 					</Container>
 				</section>
 			</main>
-			<Footer />
+			<SimpleFooter />
 		</>
 	);
 }
 
-export default Review;
+export default ReviewList;
