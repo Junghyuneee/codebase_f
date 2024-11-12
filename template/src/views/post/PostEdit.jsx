@@ -1,4 +1,4 @@
-// src/views/post/PostEdit.js
+// src/views/post/PostEdit.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Form, Container } from 'react-bootstrap';

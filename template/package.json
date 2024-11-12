@@ -28,8 +28,9 @@
     "url": "https://github.com/creativetimofficial/argon-design-system-react/issues"
   },
   "homepage": "https://demos.creative-tim.com/argon-design-system-react/",
+  "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "react-scripts start",
+    "start": " react-scripts start\" ",
     "build": "cross-env PUBLIC_URL=/ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -51,6 +52,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^4.6.2",
     "classnames": "2.3.2",
+    "concurrently": "^9.1.0",
     "headroom.js": "0.12.0",
     "moment": "2.29.4",
     "nouislider": "15.4.0",

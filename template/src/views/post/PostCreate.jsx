@@ -1,4 +1,4 @@
-// src/views/post/PostCreate.js
+// src/views/post/PostCreate.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container } from 'react-bootstrap';
