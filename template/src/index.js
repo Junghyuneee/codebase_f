@@ -31,6 +31,8 @@ import Register from "views/examples/Register.js";
 
 
 import Store from "views/store/Store.js";
+import Admin from "./views/admin/Admin";
+import VisitorIp from "./views/admin/VisitorIp";
 
 import Post from "views/post/Post.js";
 
@@ -48,9 +50,16 @@ root.render(
       <Route path="*" element={<Navigate to="/" replace />} />
 
       <Route path="/Store" exact element={<Store />} />
+ origin/post
       <Route path="/post/*" element={<Post />} />
       <Route path="/Admin/*" exact element={<Admin />} />
     
+
+      
+
+ main
     </Routes>
+    <VisitorIp />
   </BrowserRouter>
+
 );
