@@ -56,6 +56,10 @@ const RegisterModal = () => {
     window.location.replace('http://localhost:8080/oauth2/authorization/kakao');
   }
 
+  const googleLoginHandler = () => {
+    window.location.replace('http://localhost:8080/oauth2/authorization/google');
+  }
+
   return (
     <main>
       <section className="section section-shaped section-lg">
