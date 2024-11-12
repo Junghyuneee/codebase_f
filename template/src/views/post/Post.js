@@ -33,6 +33,7 @@ const Post = () => {
           </section>
         </div>
       </main>
+      
     </div>
   );
 };
