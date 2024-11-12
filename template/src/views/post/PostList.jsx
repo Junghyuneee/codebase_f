@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown } from 'react-bootstrap';
 import './PostList.css'; // CSS 파일 import
 
-
 const PostList = () => {
   const initialPosts = [
     { id: 1, title: '첫 번째 게시물', author: '작성자 A', tags: ['해시태그1'], likes: 73, views: 100 },
@@ -20,6 +19,7 @@ const PostList = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState('최신순');
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태 추가
   const postsPerPage = 3; // 페이지당 게시물 수
   const totalPages = Math.ceil(initialPosts.length / postsPerPage); // 총 페이지 수
 
@@ -39,10 +39,15 @@ const PostList = () => {
     }
   });
 
+  // 검색 기능 구현: 제목 또는 작성자에 검색어가 포함된 게시물 필터링
+  const filteredPosts = sortedPosts.filter(post =>
+    post.title.includes(searchTerm) || post.author.includes(searchTerm)
+  );
+
   // 현재 페이지에 해당하는 게시물 가져오기
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
   // 페이지 변경 처리
   const handlePageChange = (pageNumber) => {
@@ -57,7 +62,16 @@ const PostList = () => {
       </Link>
 
       <Form className="mb-4">
-        <Form.Control type="text" placeholder="커뮤니티 내에서 검색" className="search-bar" />
+        <Form.Control 
+          type="text" 
+          placeholder="커뮤니티 내에서 검색" 
+          className="search-bar" 
+          value={searchTerm} // 검색어 상태를 Form.Control의 value에 바인딩
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // 검색 시 페이지를 1로 리셋
+          }}
+        />
       </Form>
       <Dropdown className="mb-3">
         <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -102,7 +116,7 @@ const PostList = () => {
       </Row>
       <Pagination className="justify-content-center">
         <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-        {[...Array(totalPages)].map((_, index) => (
+        {[...Array(Math.ceil(filteredPosts.length / postsPerPage))].map((_, index) => (
           <Pagination.Item
             key={index + 1}
             active={index + 1 === currentPage}
@@ -111,7 +125,7 @@ const PostList = () => {
             {index + 1} {/* 현재 페이지 숫자만 표시 */}
           </Pagination.Item>
         ))}
-        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === Math.ceil(filteredPosts.length / postsPerPage)} />
       </Pagination>
     </Container>
   );

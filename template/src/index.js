@@ -30,7 +30,7 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 
 
-import Store from "views/store/Store.js";
+import Store from "views/store/Store.jsx";
 import Admin from "./views/admin/Admin";
 import VisitorIp from "./views/admin/VisitorIp";
 
