@@ -47,7 +47,7 @@ root.render(
       <Route path="*" element={<Navigate to="/" replace />} />
 
       <Route path="/Store" exact element={<Store />} />
-        <Route path="/Admin/*" exact element={<Admin />} />
+        <Route path="/Admin/*" exact element={<Admin />} />  
 
     </Routes>
     <VisitorIp />
