@@ -34,6 +34,9 @@ import Store from "views/store/Store.js";
 import Admin from "./views/admin/Admin";
 import VisitorIp from "./views/admin/VisitorIp";
 
+import Post from "views/post/Post.js";
+
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -47,8 +50,14 @@ root.render(
       <Route path="*" element={<Navigate to="/" replace />} />
 
       <Route path="/Store" exact element={<Store />} />
-        <Route path="/Admin/*" exact element={<Admin />} />  
+ origin/post
+      <Route path="/post/*" element={<Post />} />
+      <Route path="/Admin/*" exact element={<Admin />} />
+    
 
+      
+
+ main
     </Routes>
     <VisitorIp />
   </BrowserRouter>
