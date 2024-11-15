@@ -19,7 +19,6 @@ import {
     ButtonGroup,
     CardBody,
     FormGroup,
-
     Input,
     InputGroupAddon,
     InputGroupText,
@@ -28,171 +27,11 @@ import {
     Row,
     Col,
     Badge,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown
+
 } from "reactstrap";
 
 
-function OneProjectCard({ name, price }) {
 
-    return (
-        <>
-            <Card className="bg-white shadow border-0 card-lift--hover">
-
-                <blockquote className="card-blockquote p-4">
-                    <CardImg style={{ borderRadius: '10px' }}
-                        alt="..."
-                        src={img}
-                        top
-                    />
-                    <h4 className="display-4 font-weight-bold text-black"
-                        style={{
-                            display: '-webkit-box',          // Flexbox 사용
-                            WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                            WebkitLineClamp: 2,              // 두 줄까지만 표시
-                            overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                            textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                            width: '100%',                    // 부모 폭에 맞게 설정
-                            margin: 0                         // 기본 마진 제거
-                        }}
-                    >
-                        {name}
-                    </h4>
-                    <br /><br />
-
-
-                </blockquote>
-
-                <Badge color="secondary" pill className="mr-1"
-                    style={{
-                        fontSize: '14px',
-                        position: 'absolute', // 절대 위치 설정
-                        bottom: '30px',      // 하단에서 10px
-                        left: '30px'        // w좌측에서 10px
-                    }}>
-                    {price}원
-                </Badge>
-            </Card>
-
-
-        </>
-    );
-
-}
-
-function GetProject() {
-
-    const [projects, setProjects] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch('http://localhost:8080/api/store')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                setProjects(data);
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return projects;
-}
-
-
-function ProjectCards() {
-    const initprojects = GetProject();
- 
-    const [sortOption, setSortOption] = useState(1);
-
-    const sortedProjects = [...initprojects].sort((a, b) => {
-        console.log("sortOption : ", sortOption);
-        switch (sortOption) {
-            case '최신순':
-                return b.id - a.id; // ID로 최신순 정렬
-            case '가격inc':
-                return a.price - b.price; // 가격
-            case '가격dec':
-                return b.price - a.price; // 가격
-            case '조회순':
-                return b.hit - a.hit; // 조회수로 정렬
-            default:
-                return 0;
-        }
-
-    });
-
-    const projects = sortedProjects;
-    return (
-        <>
-
-            
-            <section className="section bg-secondary pt-4"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center', // 가로 가운데 정렬
-                    padding: '0px',
-                    maxWidth: '100vw'
-                }}>
-                <div style={{ marginLeft: '10%', marginRight: '10%' }}>
-                
-      <ButtonGroup>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('최신순')}
-          active={sortOption === 1}
-        >
-          최신순
-        </Button>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('조회순')}
-          active={sortOption === 2}
-        >
-          조회순
-        </Button>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('가격inc')}
-          active={sortOption === 3}
-        >
-          가격↓
-        </Button>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('가격dec')}
-          active={sortOption === 4}
-        >
-          가격↑
-        </Button>
-      </ButtonGroup>
-
-                    <Row className="row-grid align-items-center">
-
-                        {projects.map((project) => (
-                            <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
-                                <OneProjectCard name={project.name} price={project.price} />
-                            </Col>
-                        ))}
-
-                    </Row>
-                </div>
-            </section>
-        </>
-    );
-}
 
 function Page() {
 
@@ -200,10 +39,7 @@ function Page() {
         <>
             <Banner />
             <Banner_mini />
-            <main>
-
-                <ProjectCards />
-            </main>
+            
         </>
     );
 
