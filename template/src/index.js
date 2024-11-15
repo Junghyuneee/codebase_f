@@ -30,7 +30,7 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 
 
-import Store from "views/store/Store.jsx";
+import Store from "views/store/StoreRoutes";
 import Admin from "./views/admin/Admin";
 import VisitorIp from "./views/admin/VisitorIp";
 
@@ -49,15 +49,12 @@ root.render(
       <Route path="/register-page" exact element={<Register />} />
       <Route path="*" element={<Navigate to="/" replace />} />
 
-      <Route path="/Store" exact element={<Store />} />
- origin/post
+      <Route path="/store/*" element={<Store />}/>
+
       <Route path="/post/*" element={<Post />} />
       <Route path="/Admin/*" exact element={<Admin />} />
     
 
-      
-
- main
     </Routes>
     <VisitorIp />
   </BrowserRouter>
