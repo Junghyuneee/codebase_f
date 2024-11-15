@@ -1,102 +1,92 @@
+/*banner mini
+2024 11 15
+배다원*/ 
 import React from 'react';
+import { Link } from "react-router-dom";
 import {
-    Badge,
-    Button,
-    Card,
-    CardBody,
-    CardImg,
-    FormGroup,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
+    UncontrolledCollapse,
+    DropdownMenu,
+    DropdownItem,
+    DropdownToggle,
+    UncontrolledDropdown,
+    NavbarBrand,
+    Navbar,
+    NavItem,
+    NavLink,
+    Nav,
     Container,
     Row,
     Col,
-    UncontrolledCarousel
-} from "reactstrap";
+  } from "reactstrap";
 
+import img from "../../assets/img/brand/argon-react.png";
 
 function Banner_mini() {
-
-    const items = [
-        {
-          src: "../../assets/img/theme/img-1-1200x1000.jpg",
-          altText: "",
-          caption: "",
-          header: "",
-        },
-        {
-          src: "../../assets/img/theme/img-2-1200x1000.jpg",
-          altText: "",
-          caption: "",
-          header: "",
-        },
-      ];
-
     return (
         <>
-            <div className="position-relative bg-red pb-100">
-            
-                <Container className="py-lg-md d-flex">
 
-                    <div className="col px-0">
-                        <div className="col px-0">
-                            <Row className='mt-5'>
-                                <Col lg="6">
-                                    <h1 className="display-2 text-black font-weight-bold">
-                                        CODEBASE 상점
-                                    </h1>
-                                    <p className="lead text-white">
-                                        코드베이스에서 다양한 프로젝트를 <br />
-                                        판매, 공유할 수 있습니다.<br />
-                                        내게 맞는 프로젝트가 있다면<br />
-                                        참여하거나 구매해 보세요.
-                                    </p>
-
-                                    <Container>
-                                        <section className="mt-4">
-                                            <Row>
-                                                <Col lg="12" className='p-0'>
-                                                    <InputGroup className="mb-4">
-                                                        <InputGroupAddon addonType="prepend">
-                                                            <InputGroupText>
-                                                                <i className="ni ni-zoom-split-in" />
-                                                            </InputGroupText>
-                                                        </InputGroupAddon>
-                                                        <Input
-                                                            placeholder="Search"
-                                                            type="text"
-                                                            onFocus={(e) => this.setState({ searchFocused: true })}
-                                                            onBlur={(e) => this.setState({ searchFocused: false })}
-                                                        />
-                                                    </InputGroup>
-                                                </Col>
-                                            </Row>
-                                        </section>
-                                    </Container>
-
-                                    <Button
-                                        className="btn-white mt-4"
-                                        color="default"
-                                        href="/store"
-                                    >
-                                        내 프로젝트 등록하기
-                                    </Button>
-
-
-                                </Col>
-                                <Col lg="6">
-                                    <div className="rounded shadow-lg overflow-hidden transform-perspective-right">
-                                        <UncontrolledCarousel items={items} />
-                                    </div>
-
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
-                </Container>
-            </div>
+<Navbar className="navbar-dark bg-info" expand="lg">
+            <Container>
+              <NavbarBrand>
+               <a href='/store' className='text-white'>CODEBASE STORE</a>
+              </NavbarBrand>
+              <button className="navbar-toggler" id="navbar-primary">
+                <span className="navbar-toggler-icon" />
+              </button>
+              <UncontrolledCollapse navbar toggler="#navbar-primary">
+                <div className="navbar-collapse-header">
+                  <Row>
+                    <Col className="collapse-brand" xs="6">
+                      <Link to="/">
+                        <img
+                          alt="..."
+                          src={img}
+                        />
+                      </Link>
+                    </Col>
+                    <Col className="collapse-close" xs="6">
+                      <button className="navbar-toggler" id="navbar-primary">
+                        <span />
+                        <span />
+                      </button>
+                    </Col>
+                  </Row>
+                </div>
+                <Nav className="ml-lg-auto" navbar>
+                  <NavItem>
+                    <NavLink>
+                        <a href='/store' className='text-white'>상점 홈</a>
+                    </NavLink>
+                   
+                  </NavItem>
+                  <NavItem>
+                    <NavLink>
+                        <a href='/store/cart' className='text-white'>장바구니</a>
+                    </NavLink>
+                  </NavItem>
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav>마이페이지 <i className="ni ni-tag" /></DropdownToggle>
+                    <DropdownMenu
+                      aria-labelledby="navbar-primary_dropdown_1"
+                      right
+                    >
+                      <DropdownItem>
+                        <a href='/store/test' className='text-black'>테스트 페이지</a>
+                      </DropdownItem>
+                      <DropdownItem>
+                        <a href='/store' className='text-black'>메인화면으로</a>
+                      </DropdownItem>
+                      <DropdownItem divider />
+                      <DropdownItem>
+                        <a href='/store' className='text-black'>로그아웃</a>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </Nav>
+              </UncontrolledCollapse>
+            </Container>
+          </Navbar>
+           
 
         </>
     );

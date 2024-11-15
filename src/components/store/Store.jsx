@@ -1,12 +1,15 @@
-/*배다원 
+/* store
+배다원 
 2024 10 30
 */
 
 import React, { useEffect, useState, useRef, Outlet } from 'react';
+import { Link } from "react-router-dom";
 // nodejs library that concatenates classes
 
 //nav 테스트
-import Banner_mini from "./Banner_mini.jsx";
+import Banner from "./Banner";
+import Banner_mini from "./Banner_mini";
 import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
 import {
@@ -127,6 +130,7 @@ function Page() {
 
   return (
     <>
+      <Banner/>
       <Banner_mini/>
       <main>
         

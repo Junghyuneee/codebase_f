@@ -8,6 +8,8 @@ import MainPage from "./pages/main/MainPage"
 import LoginModal from './components/auth/LoginModal';
 import RegisterModal from "./components/auth/RegisterModal";
 import Store from "./components/store/Store";
+import StoreCart from "./components/store/Cart"
+import StoreTest from "./components/store/Test"
 
 function App() {
 
@@ -17,6 +19,8 @@ function App() {
       <Route path="/login" element={<LoginModal />} />
       <Route path="/register" element={<RegisterModal />} />
       <Route path="/store" exact element={<Store />} /> 
+      <Route path="/store/cart" exact element={<StoreCart />} /> 
+      <Route path="/store/test" exact element={<StoreTest />} /> 
 
     </Routes>
   )

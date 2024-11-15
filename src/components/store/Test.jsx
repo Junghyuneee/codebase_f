@@ -1,175 +1,161 @@
-
-
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
-
+/*cart*/
+import React, { useEffect, useState, useRef, Outlet } from 'react';
+// nodejs library that concatenates classes
+import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
+// reactstrap components
 import {
-  Button,
-  Card,
-  CardImg,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Container,
-  Row,
-  Col,
-  Badge
+    Badge,
+    Button,
+    Card,
+    CardBody,
+    CardImg,
+    FormGroup,
+    Input,
+    InputGroupAddon,
+    InputGroupText,
+    InputGroup,
+    Container,
+    Row,
+    Col,
+
+    UncontrolledCollapse,
+    DropdownMenu,
+    DropdownItem,
+    DropdownToggle,
+    UncontrolledDropdown,
+    NavbarBrand,
+    Navbar,
+    NavItem,
+    NavLink,
+    Nav,
 } from "reactstrap";
-import React, { useEffect, useState } from 'react';
 
-// function Page() {
-//   return (
-//     <>
-//       <div>
-//         testsa
-//       </div>
-//       <OneProjectCard />
-//     </>
-//   );
-// }
+import Banner from "./Banner_mini";
+function Page() {
+  return(
+  <>
+  <Banner></Banner>
+<main>
 
-// export default Page;
-
-// function OneProjectCard() {
-//   const title = "dfasdfasdf"; // const로 선언
-//   const price = 100011212; // const로 선언
-//   return (
-//     <>
-//       <div>
-//         test
-//       </div>
-//     </>
-//   );
-// }
-
-function OneProjectCard({ name, price }) {
-
-  return (
-    <>
-      <Card className="bg-white shadow border-0 card-lift--hover">
-
-        <blockquote className="card-blockquote p-4">
-          <CardImg style={{ borderRadius: '10px' }}
-            alt="..."
-            src={img}
-            top
-          />
-          <h4 className="display-4 font-weight-bold text-black"
-            style={{
-              display: '-webkit-box',          // Flexbox 사용
-              WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-              WebkitLineClamp: 2,              // 두 줄까지만 표시
-              overflow: 'hidden',               // 넘치는 텍스트 숨기기
-              textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-              width: '100%',                    // 부모 폭에 맞게 설정
-              margin: 0                         // 기본 마진 제거
-            }}
-          >
-            {name}
-          </h4>
-          <br /><br />
+<Container>
 
 
-        </blockquote>
+    
 
-        <Badge color="secondary" pill className="mr-1"
-          style={{
-            fontSize: '14px',
-            position: 'absolute', // 절대 위치 설정
-            bottom: '30px',      // 하단에서 10px
-            left: '30px'        // w좌측에서 10px
-          }}>
-          {price}원
-        </Badge>
-      </Card>
+    <Row>
+        <Col lg="8">
 
 
-    </>
+            <CartItem/>
+
+        </Col>
+        <Col lg="4">
+
+
+            <Invoice/>
+
+
+        </Col>
+    </Row>
+</Container>
+
+
+
+</main>
+  </>
+
   );
+}
+
+export default Page;
+
+
+function CartItem() {
+  return (<>
+
+      <div className='section'>
+          <Button>전체삭제</Button>
+          <Card className='card shadow'>
+              <blockquote className="card-blockquote">
+              </blockquote>
+          </Card>
+          <Card className='card shadow'>
+
+              <div className='p-2'>
+              
+                  <Row>
+                      <Col xs="3" sm="3" lg="2" xl="2" >
+                          <img
+                              alt="..."
+                              className="img-fluid rounded"
+                              src={Thumbnail}
+                              style={{ width: "150px" }}
+                          />
+                      </Col>
+                      <Col  xs="5" sm="5" lg="6" xl="6">
+                          <small className="d-block text-uppercase font-weight-bold">
+                              Raised
+                          </small>
+                      </Col>
+                      <Col  xs="3" sm="3" lg="3" xl="3">
+                          <small className="d-block text-uppercase font-weight-bold mt-5">
+                              값
+                          </small>
+                      </Col>
+                      <Col  xs="1" sm="1" lg="1" xl="1" className='p-0'>
+                          <Badge className='text-red'>X</Badge>
+                      </Col>
+                  </Row>
+               </div>
+              
+          </Card>
+
+          <Card className='card shadow'>
+              <blockquote className="card-blockquote">
+
+              </blockquote>
+          </Card>
+      </div>
+
+
+  </>);
 
 }
 
 
-function ProjectCards() {
+function Invoice() {
+  return (<>
 
-  const [projects, setProjects] = useState([]);
+      <div className='section'>
+          <Card className='card shadow'>
+              <blockquote className="card-blockquote">
+                  <div className=" mt-5">
+                      <h3>
+                          Jessica Jones{" "}
+                          <span className="font-weight-light">, 27</span>
+                      </h3>
+                      <div className="h6 font-weight-300">
+                          <i className="ni location_pin mr-2" />
+                          Bucharest, Romania
+                      </div>
+                      <div className="h6 mt-4">
+                          <i className="ni business_briefcase-24 mr-2" />
+                          Solution Manager - Creative Tim Officer
+                      </div>
+                      <div>
+                          <i className="ni education_hat mr-2" />
+                          University of Computer Science
+                      </div>
+                      
 
-  useEffect(() => {
-    // 데이터 가져오기
-    fetch('http://localhost:8080/api/store')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('데이터를 가져오는데 실패했습니다.');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setProjects(data);
-      })
-      .catch((error) => {
-        console.error('API 호출 에러:', error);
-      });
-  }, []);
+                  </div>
+                  <Button>찜</Button>
+                  <Button>구매</Button>
+                  <Button>신고</Button>
+              </blockquote>
+          </Card>
+      </div>
 
-  return (
-    <>
-      <section className="section bg-secondary "
-        style={{
-          display: 'flex',
-          justifyContent: 'center', // 가로 가운데 정렬
-          padding: '0px',
-          maxWidth: '100vw'
-        }}>
-        <div style={{ marginLeft: '10%', marginRight: '10%' }}>
-
-          <Row className="row-grid align-items-center">
-
-            {projects.map((project) => (
-              <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
-                <OneProjectCard name={project.name} price={project.price} />
-              </Col>
-            ))}
-
-          </Row>
-        </div>
-      </section>
-
-
-
-
-    </>
-  );
-
+  </>);
 
 }
-
-function ProjectList() {
-
-  return (
-    <>
-
-
-
-
-      <main>
-        test
-        <ProjectCards />
-
-
-
-      </main>
-
-
-
-    </>
-  );
-
-}
-
-export default ProjectList;
-
-
