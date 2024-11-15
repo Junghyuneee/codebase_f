@@ -45,11 +45,7 @@ root.render(
       <Route path="/register-page" exact element={<Register />} />
       <Route path="*" element={<Navigate to="/" replace />} />
 
-
       <Route path="/store/*" element={<Store />}/>
-        
-
-  
 
     </Routes>
   </BrowserRouter>
