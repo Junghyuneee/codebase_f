@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router-dom"
 import MainPage from "./pages/main/MainPage"
 import LoginModal from './components/auth/LoginModal';
 import RegisterModal from "./components/auth/RegisterModal";
-import Store from "./components/store/Test";
+import Store from "./components/store/Store";
 
 function App() {
 

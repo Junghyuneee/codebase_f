@@ -11,9 +11,9 @@ function StoreRoutes() {
         <Routes>
             <Route path="/store" element={<Store />} />
             <Route path="/store/test" element={<Test />} />
-            <Route path="/store/cart" element={<Cart />} />
+            {/* <Route path="/store/cart" element={<Cart />} />
             <Route path="/store/:id" element={<Detail />} />
-            <Route path="/store/:id/download" element={<Download />} />
+            <Route path="/store/:id/download" element={<Download />} /> */}
         </Routes>
 
     </>);
