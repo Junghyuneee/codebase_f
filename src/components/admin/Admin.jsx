@@ -5,8 +5,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import AdminNavBar from "./AdminNavBar";
-import DashboardContent from "./DashBoard";
+import AdminNavBar from "./AdminNavBar.jsx";
+import DashboardContent from "./DashBoard.jsx";
 
 function Admin() {
     return (

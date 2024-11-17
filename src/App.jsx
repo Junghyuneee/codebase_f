@@ -11,18 +11,25 @@ import Store from "./components/store/Store";
 import StoreCart from "./components/store/Cart"
 import StoreTest from "./components/store/Test"
 
+import Admin from "./components/admin/Admin.jsx";
+
+
 function App() {
 
   return (
+
     <Routes>
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LoginModal />} />
       <Route path="/register" element={<RegisterModal />} />
       <Route path="/store" exact element={<Store />} /> 
       <Route path="/store/cart" exact element={<StoreCart />} /> 
-      <Route path="/store/test" exact element={<StoreTest />} /> 
+      <Route path="/store/test" exact element={<StoreTest />} />
+        <Route path="/admin/*" exact element={<Admin />} />
+
 
     </Routes>
+
   )
 }
 
