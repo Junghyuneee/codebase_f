@@ -1,6 +1,12 @@
+import React from "react";
+import VisitorIp from "../../components/admin/VisitorIp.jsx";
+
 const MainPage = () => {
   return (
-    <div>MainPage</div>
+    <div>
+      MainPage
+      <VisitorIp />
+    </div>
   )
 }
 
