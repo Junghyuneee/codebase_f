@@ -10,7 +10,7 @@ import RegisterModal from "./components/auth/RegisterModal";
 import Store from "./components/store/Store";
 import StoreCart from "./components/store/Cart"
 import StoreTest from "./components/store/Test"
-
+import StoreAdd from "./components/store/CreateProject"
 function App() {
 
   return (
@@ -21,6 +21,8 @@ function App() {
       <Route path="/store" exact element={<Store />} /> 
       <Route path="/store/cart" exact element={<StoreCart />} /> 
       <Route path="/store/test" exact element={<StoreTest />} /> 
+      <Route path="/store/add" exact element={<StoreAdd />} /> 
+
 
     </Routes>
   )

@@ -29,7 +29,7 @@ import {
     Nav,
 } from "reactstrap";
 import classnames from "classnames";
-
+import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
 //import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
 
@@ -46,14 +46,14 @@ export function ProjectCard() {
                     <div className="px-4">
                         <CardImg className="py-5" style={{ borderRadius: '10px' }}
                             alt="..."
-                            src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                            src={img}
                             top
                         />
 
 
                         <div className="text-center mt-5">
                             <h3>
-                                Jessica Jones{" "}
+                                Jessica Jones
                                 <span className="font-weight-light">, 27</span>
                             </h3>
                             <div className="h6 font-weight-300">
@@ -200,12 +200,11 @@ function Page() {
     //render() {
     return (
         <>
-            <DemoNavbar />
 
             <Banner />
 
 
-            <main ref={myInputRef} >
+            <main >
                 <Container>
 
 
@@ -230,7 +229,7 @@ function Page() {
 
             </main>
 
-            <SimpleFooter />
+
         </>
     );
     //}
