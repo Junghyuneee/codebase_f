@@ -429,7 +429,7 @@ function ProjectCards() {
 
                     <Row className="row-grid align-items-center">
                         {projects.map(project => (
-                        <Col lg='3' className='p-2'>
+                        <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
                                 
                                     {OneProjectCard(project.name, project.price)}
                         </Col>

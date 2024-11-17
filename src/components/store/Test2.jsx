@@ -31,11 +31,11 @@ import {
 import classnames from "classnames";
 
 // core components
-import DemoNavbar from "components/Navbars/DemoNavbar.js";
-import SimpleFooter from "components/Footers/SimpleFooter.js";
-import Typography from "views/IndexSections/Typography"
+//import DemoNavbar from "components/Navbars/DemoNavbar.js";
+//import SimpleFooter from "components/Footers/SimpleFooter.js";
+//import Typography from "views/IndexSections/Typography"
 
-import Banner from "views/store/Banner.js";
+import Banner from "./Banner.jsx";
 
 
 /*function ProjectForm(){
@@ -143,7 +143,7 @@ function Page() {
   //render() {
   return (
     <>
-      <DemoNavbar />
+     
 
       <Banner />
 
@@ -160,7 +160,7 @@ function Page() {
 
       </main>
 
-      <SimpleFooter />
+      
     </>
   );
   //}
