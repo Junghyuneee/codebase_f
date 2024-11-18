@@ -56,7 +56,7 @@ function ReviewCreate() {
 				alert('리뷰가 성공적으로 등록되었습니다.');
 				setTitle('');
 				setContent('');
-				navigate('/reviews'); // 목록 페이지로 이동
+				navigate('/api/reviews'); // 목록 페이지로 이동
 			} else {
 				throw new Error('리뷰 등록에 실패했습니다.');
 			}
@@ -68,7 +68,7 @@ function ReviewCreate() {
 
 	//리뷰 목록 돌아가기
 	const handleNavigateToList = () => {
-		window.location.href = '/review'; // '/review' 페이지로 이동
+		window.location.href = '/api/reviews'; // 'ReviewList' 페이지로 이동
 	};
 
 	return (

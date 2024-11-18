@@ -2,7 +2,7 @@
 한정현
 2024--11-06
 */
-
+// api/reviews/selectReview/{id}
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -57,7 +57,7 @@ function ReviewList() {
 				<section className="section">
 					<Container>
 						<div className="btn-wrapper ml-auto text-right">
-							<Link to="/review/create" className="">
+							<Link to="/api/reviews/createReview" className="">
 								<Button className="btn-icon mb-3 mb-sm-0 ml-auto" color="info">
 									<span className="btn-inner--text">등록하기</span>
 								</Button>
@@ -77,7 +77,9 @@ function ReviewList() {
 									{/* list.map을 사용해서 반복문 구현 */}
 									{reviews.map((review) => (
 										<tr key={review.id}>
-											<Link to={`/reviews/${review.id}`}>{review.title}</Link>
+											<Link to={`/api/reviews/selectReview/${review.id}`}>
+												{review.title}
+											</Link>
 											{/* <td>{review.content}</td> */}
 											<td>{new Date(review.createdDate).toLocaleString()}</td>
 											<td>{review.views}</td>

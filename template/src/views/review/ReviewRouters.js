@@ -9,13 +9,13 @@ import ReviewCreate from './ReviewCreate';
 import ReviewDetail from './ReviewDetail';
 import ReviewEdit from './ReviewEdit';
 
+// api/reviews/...
 function Review() {
 	return (
 		<Routes>
 			<Route path="/" exact element={<ReviewList />} />
-			<Route path="/create" element={<ReviewCreate />} />
-			<Route path="/reviews/:id" element={<ReviewDetail />} />
-			<Route path="/reviews/:id/edit" element={<ReviewEdit />} />
+			<Route path="/createReview" element={<ReviewCreate />} />
+			<Route path="/selectReview/:id" element={<ReviewDetail />} />
 		</Routes>
 	);
 }
