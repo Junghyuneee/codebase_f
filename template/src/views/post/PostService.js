@@ -1,33 +1,23 @@
 // src/views/post/PostService.js
 import axios from 'axios';
 
-const API_URL = '/api/posts';
+const API_URL = 'http://localhost:8080/api/posts'; // 백엔드 API URL
 
-class PostService {
-    // 모든 게시물 가져오기
-    getAllPosts() {
-        return axios.get(API_URL);
+const PostService = {
+  createPost: async (postData) => {
+    try {
+      const response = await axios.post(API_URL, postData);
+      return response.data; // 성공적으로 등록된 게시물 반환
+    } catch (error) {
+      console.error('게시물 등록 오류:', error);
+      throw error; // 에러를 상위로 전파
     }
+  },
 
-    // 특정 게시물 가져오기
-    getPostById(id) {
-        return axios.get(`${API_URL}/${id}`);
-    }
+  getPosts: async () => {
+    const response = await axios.get(API_URL);
+    return response.data; // 게시물 목록 반환
+  },
+};
 
-    // 게시물 생성하기
-    createPost(post) {
-        return axios.post(API_URL, post);
-    }
-
-    // 게시물 업데이트하기
-    updatePost(id, post) {
-        return axios.put(`${API_URL}/${id}`, post);
-    }
-
-    // 게시물 삭제하기
-    deletePost(id) {
-        return axios.delete(`${API_URL}/${id}`);
-    }
-}
-
-export default new PostService();
+export default PostService;
