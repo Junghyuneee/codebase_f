@@ -1,0 +1,37 @@
+/* src/views/post/PostDetail.css */
+.post-detail-container {
+  max-width: 800px;
+  margin: auto; /* 중앙 정렬 */
+}
+
+.btn-danger, .btn-warning, .btn-primary {
+  margin-right: 5px; /* 버튼 간의 간격 조정 */
+  font-size: 0.875rem; /* 버튼 크기 조정 */
+}
+
+.card {
+  border: 1px solid #e0e0e0; /* 카드 테두리 */
+  border-radius: 0.5rem; /* 카드 모서리 둥글게 */
+}
+
+.card-body {
+  padding: 1.25rem; /* 카드의 패딩 조정 */
+}
+
+.button-group {
+  display: flex; /* Flexbox를 사용하여 가로 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  margin-top: 5px; /* 버튼 그룹 위쪽 여백 */
+}
+
+.button-group .btn {
+  margin-right: 10px; /* 버튼 간의 간격 조정 */
+}
+.custom-button {
+  background-color: #1d7ad1; /* 원하는 색상 코드 */
+  color: white; /* 텍스트 색상 */
+}
+
+.custom-button:hover {
+  background-color: #6d00c7; /* 호버 시 색상 변경 */
+}
