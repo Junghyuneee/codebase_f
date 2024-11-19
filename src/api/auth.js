@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export async function postSignUp(username, password, email, address, postcode, tel) {
-  const response = await axios.post('http://localhost:8080/auth/signup', {
+export async function  postSignUp(username, password, email, address, postcode, tel) {
+  return await axios.post('http://localhost:8080/auth/signup', {
     name: username,
     password: password,
     email: email,
@@ -9,16 +9,29 @@ export async function postSignUp(username, password, email, address, postcode, t
     postcode: postcode,
     tel: tel
   });
-  return response;
 }
 
 export async function postOAuthSignUp(email, username, address, postcode, tel){
-  const response = await axios.post('http://localhost:8080/auth/oauth/signup',{
+  return await axios.post('http://localhost:8080/auth/oauth/signup', {
     name: username,
     email: email,
     addr: address,
     postcode: postcode,
     tel: tel
   });
-  return response;
+}
+
+export async function postSignIn(email, password){
+  return await axios.post('http://localhost:8080/auth/login', {
+    email: email,
+    password: password,
+  });
+}
+
+export const kakaoLoginHandler = () => {
+  window.location.replace('http://localhost:8080/oauth2/authorization/kakao');
+}
+
+export const googleLoginHandler = () => {
+  window.location.replace('http://localhost:8080/oauth2/authorization/google');
 }
