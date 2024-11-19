@@ -27,7 +27,7 @@ function AdminNavBar() {
             <>
                 <Row>
                     <Col>
-                        <a href="/admin"><h3 className="h4 text-success text-center font-weight-bold mb-4">관리자 페이지</h3></a>
+                        <a href="/codebase_f/src/components/admin/Admin"><h3 className="h4 text-success text-center font-weight-bold mb-4">관리자 페이지</h3></a>
                         <Navbar className="navbar-dark bg-primary rounded mb-3 vh-100 align-items-start" expand="lg">
                             <Container className="flex-column align-items-start">
                                 <button className="navbar-toggler" id="nav-inner-primary">
@@ -44,16 +44,14 @@ function AdminNavBar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                href="/admin/membermanagement"
                                             >
                                                 회원관리 <span className="sr-only">(current)</span>
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                href="/admin/questions"
                                             >
                                                 문의사항
                                             </NavLink>

@@ -10,14 +10,14 @@ import axios from "axios"
 function DashBoardContent() {
     return (
         <Row>
-            <Col>
+            <Col className="p-0 m-4">
                 <h3 className="h4 text-success text-center font-weight-bold mb-4" to="/admin"></h3>
                 <div className="ml-3 mr-3">
                     <Row>
-                        <Col className="col mb-4 col-6">
+                        <Col className="mb-4 col-6">
                             <VisitorChart />
                         </Col>
-                        <Col className="col mb-4 col-6">
+                        <Col className="mb-4 col-6">
                             <PopularPostsChart />
                         </Col>
                     </Row>
@@ -74,9 +74,15 @@ const VisitorChart = () => {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true, // 필요할 경우 비율을 유지하지 않도록 설정
                     scales: {
-                        x: { title: { display: true, text: '날짜' } },
-                        y: { title: { display: true, text: '방문자 수' } }
+                        x: {
+                            beginAtZero: true,  // X축에서 0부터 시작
+                            title: { display: true, text: '날짜' }
+                        },
+                        y: {
+                            title: { display: true, text: '방문자 수' }
+                        }
                     }
                 }
             });
@@ -119,6 +125,7 @@ const PopularPostsChart = () => {
         // 차트 옵션
         const options = {
             responsive: true,  // 화면 크기에 맞춰 차트 크기 자동 조정
+            maintainAspectRatio: true, // 필요할 경우 비율을 유지하지 않도록 설정
             scales: {
                 x: {
                     beginAtZero: true,  // X축에서 0부터 시작

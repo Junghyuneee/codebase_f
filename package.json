@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.7.7",
     "bootstrap": "4.6.2",
+    "chart.js": "^4.4.6",
     "classnames": "^2.5.1",
     "react": "^18.3.1",
     "react-daum-postcode": "^3.1.3",
