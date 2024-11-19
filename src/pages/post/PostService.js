@@ -1,4 +1,4 @@
-// src/views/post/PostService.js
+// src/pages/post/PostService.js
 import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/posts'; // 백엔드 API URL

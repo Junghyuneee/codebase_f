@@ -4,7 +4,7 @@
 // src/pages/post/Post.js
 import React, { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import PostList from './PostList.jsx'; // 경로 수정
+import PostList from '../PostList.jsx'; // 경로 수정
 import PostDetail from './PostDetail.jsx'; // 경로 수정
 import PostEdit from './PostEdit.jsx'; // 경로 수정
 import PostCreate from './PostCreate.jsx'; // 경로 수정
