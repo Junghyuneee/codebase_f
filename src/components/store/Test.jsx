@@ -35,7 +35,7 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
 import Banner from "./Banner.jsx";
 
-export function ProjectCard() {
+export function ProjectCard(project) {
 
     return (
 
@@ -93,7 +93,7 @@ export function ProjectCard() {
     );
 }
 
-function ProjectExplain() {
+function ProjectExplain(project) {
     return (<>
         <div class="section">
 
@@ -129,16 +129,16 @@ function ProjectExplain() {
                             <a href="#pablo" onClick={(e) => e.preventDefault()}>
                                 Show more
                             </a>
-                            
+
                         </Col>
                     </Row>
 
 
                     <div className='p-4'>
-                            <h1 className='font-weight-bold'>
+                        <h1 className='font-weight-bold'>
                             123456원
-                            </h1>
-                            <br/>   
+                        </h1>
+                        <br />
                         <Row className='mb-2'>
                             <Col>
                                 <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
@@ -160,7 +160,7 @@ function ProjectExplain() {
                             </Col>
                         </Row>
                     </div>
-                    
+
                 </div>
 
             </Card>
@@ -170,7 +170,7 @@ function ProjectExplain() {
     );
 }
 
-function ProjectDetail() {
+function ProjectDetail(project) {
 
     return (
         <>
@@ -184,20 +184,48 @@ function ProjectDetail() {
     );
 }
 
-function Page() {
+function getProject(id) {
 
-    //ref 대체
-    const myInputRef = useRef(null);  // useRef 훅 사용
+
+    const [project, setProject] = useState([]);
 
     useEffect(() => {
-        // 컴포넌트가 마운트된 후 포커스를 입력 필드에 설정
-        if (myInputRef.current) {
-            myInputRef.current.focus();
-        }
+        // 데이터 가져오기
+        fetch(`http://localhost:8080/api/store/project/${id}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('데이터를 가져오는데 실패했습니다.');
+                }
+
+                return response.json();
+            })
+            .then((data) => {
+
+                setProject(data);
+
+            })
+            .catch((error) => {
+                console.error('API 호출 에러:', error);
+            });
     }, []);
 
+    return project;
+}
+function Page() {
 
-    //render() {
+    // 현재 페이지의 URL을 가져옵니다.
+    const currentUrl = window.location.href;
+
+    // URL 객체를 생성합니다.
+    const url = new URL(currentUrl).pathname;
+    console.log(url);
+    const id = url.replace("/store/", "");
+    console.log("id ",id);
+
+
+    const project = getProject(parseInt(id, 10));
+    console.log("project : ", project);
+
     return (
         <>
 
