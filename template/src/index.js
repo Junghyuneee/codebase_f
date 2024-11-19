@@ -46,7 +46,7 @@ root.render(
 			<Route path="*" element={<Navigate to="/" replace />} />
 
 			<Route path="/store/*" element={<Store />} />
-			<Route path="/api/reviews/*" element={<Review />} />
+			<Route path="/review/*" element={<Review />} />
 			<Route path="/post/*" element={<Post />} />
 		</Routes>
 	</BrowserRouter>

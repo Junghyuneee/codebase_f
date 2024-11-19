@@ -16,7 +16,7 @@ function ReviewEdit() {
 	useEffect(() => {
 		const fetchReview = async () => {
 			try {
-				const response = await axios.get(`/api/reviews/${id}`);
+				const response = await axios.get(`/api/review/detail/${id}`);
 				setTitle(response.data.title);
 				setContent(response.data.content);
 			} catch (error) {
@@ -29,9 +29,9 @@ function ReviewEdit() {
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 		try {
-			await axios.put(`/api/reviews/updateReview/${id}`, { title, content });
+			await axios.put(`/api/review/update/${id}`, { title, content });
 			alert('리뷰가 성공적으로 수정되었습니다.');
-			navigate.push(`/api/reviews/selectReview/${id}`); // 수정 후 상세 페이지로 이동
+			navigate.push(`/api/review/detail/${id}`); // 수정 후 상세 페이지로 이동
 		} catch (error) {
 			console.error('리뷰 수정 오류:', error);
 			alert('리뷰 수정 중 오류가 발생했습니다.');

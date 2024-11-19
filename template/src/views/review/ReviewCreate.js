@@ -49,14 +49,14 @@ function ReviewCreate() {
 
 		try {
 			// 서버에 데이터 전송
-			const response = await axios.post('/api/reviews', { title, content });
+			const response = await axios.post('/api/review', { title, content });
 
 			if (response.status === 201) {
 				// 성공적으로 등록되었을 경우
 				alert('리뷰가 성공적으로 등록되었습니다.');
 				setTitle('');
 				setContent('');
-				navigate('/api/reviews'); // 목록 페이지로 이동
+				navigate('/review'); // 목록 페이지로 이동
 			} else {
 				throw new Error('리뷰 등록에 실패했습니다.');
 			}
@@ -68,7 +68,7 @@ function ReviewCreate() {
 
 	//리뷰 목록 돌아가기
 	const handleNavigateToList = () => {
-		window.location.href = '/api/reviews'; // 'ReviewList' 페이지로 이동
+		navigate('/review'); // 'ReviewList' 페이지로 이동
 	};
 
 	return (
@@ -78,35 +78,29 @@ function ReviewCreate() {
 				<ReviewHeader />
 				<section className="section">
 					<Container>
-						{/* 버튼 */}
-						<div className="btn-wrapper ml-auto text-right">
-							<Button
-								className="btn-icon mb-3 mb-sm-0 ml-auto"
-								color="info"
-								onClick={handleNavigateToList}
-							>
-								<span className="btn-inner--text">목록</span>
-							</Button>
-						</div>
 						{/* 폼 태그 */}
-						<div className="bg-gradient-secondary shadow mt-5">
+						<div className="bg-gradient-secondary shadow mt-3 p-3">
+							{/* 버튼 */}
+							<div className="text-right">
+								<Button
+									className="btn-icon mb-3 mb-sm-0 btn-info"
+									color="info"
+									onClick={handleNavigateToList}
+									style={{ width: '5rem' }}
+								>
+									<span className="btn-inner--text">목록</span>
+								</Button>
+							</div>
 							<Row className="justify-content-center ">
 								<Col lg="12">
 									<Form onSubmit={handleSubmit}>
-										<FormGroup className="mt-5">
-											<InputGroup className="input-group-alternative">
-												<InputGroupAddon addonType="prepend">
-													<InputGroupText>
-														<i className="ni ni-user-run" />
-													</InputGroupText>
-												</InputGroupAddon>
-												<Input
-													placeholder="제목을 입력하세요."
-													type="text"
-													value={title}
-													onChange={(e) => setTitle(e.target.value)}
-												/>
-											</InputGroup>
+										<FormGroup className="mt-3">
+											<Input
+												placeholder="제목을 입력하세요."
+												type="text"
+												value={title}
+												onChange={(e) => setTitle(e.target.value)}
+											/>
 										</FormGroup>
 										<FormGroup className="mb-4">
 											<Input
