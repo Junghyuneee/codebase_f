@@ -1,0 +1,104 @@
+/*
+김은지
+2024 11 19
+*/
+/* Bootstrap의 기본 테이블 스타일을 초기화 */
+.table td tr th {
+    all: unset; /* 모든 기본 스타일 제거 */
+}
+
+table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+    display: table;
+    text-indent: initial;
+    unicode-bidi: isolate;
+    border-spacing: 2px;
+    border-color: gray;
+}
+
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    unicode-bidi: isolate;
+    border-color: inherit;
+}
+
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    unicode-bidi: isolate;
+    border-color: inherit;
+}
+
+table tr {
+    text-align: center;
+    display: table-row;
+    vertical-align: inherit;
+    unicode-bidi: isolate;
+    border-color: inherit;
+}
+
+table th {
+    background-color: #5e72e4;
+    color: white;
+    padding: 0.7rem;
+    display: table-cell;
+    vertical-align: inherit;
+    font-weight: bold;
+    text-align: center;
+    unicode-bidi: isolate;
+    font-size: 1rem;
+    border-left: 1px solid #dee2e6;
+}
+
+table td {
+    padding: 0.5rem;
+    text-align: center;
+    vertical-align: center;
+    display: table-cell;
+    unicode-bidi: isolate;
+    font-size: 0.875rem;
+    color: black;
+    border-top: 1px solid #dee2e6;
+}
+
+button {
+    position: relative;
+    text-transform: uppercase;
+    will-change: transform;
+    letter-spacing: 0.025em;
+    font-size: 0.875rem;
+    display: inline-block;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: all 0.15s ease;
+    color: #fff;
+    background-color: #f5365c;
+    border-style: hidden;
+}
+
+th td .left-border {
+    border-left: 1px solid #FFFF;
+}
+
+
+/* 테이블 요소 가로 비율 지정 */
+.table-layout {
+    width: 100%; /* 테이블 전체 너비 */
+    table-layout: fixed; /* 고정 레이아웃을 사용 */
+}
+
+.column-1 {
+    width: 10%; /* 1 비율 */
+}
+
+.column-3 {
+    width: 30%; /* 3 비율 */
+}

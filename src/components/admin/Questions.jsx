@@ -6,52 +6,54 @@ import React, { useState } from 'react';
 import { Table, Button } from 'reactstrap';
 import axios from "axios"
 
+import './Admin.css'; // CSS 파일 가져오기
+
 const MemberManagement = () => {
 
     return (
-        <div className="container mt-5">
-            <h3 className="mb-4">문의사항 페이지</h3>
-            <Table>
+        <div className="container">
+            <h3 className="mb-3 text-center">문의 사항 관리 페이지</h3>
+            <table className="table-layout">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>이름</th>
-                    <th>이메일</th>
-                    <th>제목</th>
-                    <th style={{borderLeft: '1px solid #dee2e6'}}>삭제</th>
+                    <th className="column-1">번호</th>
+                    <th className="column-1">이름</th>
+                    <th className="column-1">이메일</th>
+                    <th className="column-3">문의 제목</th>
+                    <th className="column-1">삭제</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <td>1</td>
-                    <td>홍길동</td>
-                    <td>aaaa@codebase</td>
-                    <th>제목</th>
-                    <td style={{borderLeft: '1px solid #dee2e6'}}>
-                        <Button className="btn-danger" onClick={(e) => e.preventDefault()}>삭제</Button>
+                    <td className="border-left">홍길동</td>
+                    <td className="border-left">aaaa@codebase</td>
+                    <td className="border-left">제목1</td>
+                    <td className="border-left">
+                        <button onClick={(e) => e.preventDefault()}>삭제</button>
                     </td>
                 </tr>
                 <tr>
                     <td>1</td>
-                    <td>홍길동</td>
-                    <td>aaaa@codebase</td>
-                    <th>제목</th>
-                    <td style={{borderLeft: '1px solid #dee2e6'}}>
-                        <Button className="btn-danger" onClick={(e) => e.preventDefault()}>삭제</Button>
+                    <td className="border-left">홍길동</td>
+                    <td className="border-left">aaaa@codebase</td>
+                    <td className="border-left">제목1</td>
+                    <td className="border-left">
+                        <button onClick={(e) => e.preventDefault()}>삭제</button>
                     </td>
                 </tr>
                 <tr>
                     <td>1</td>
-                    <td>홍길동</td>
-                    <td>aaaa@codebase</td>
-                    <th>문의 제목</th>
-                    <td style={{borderLeft: '1px solid #dee2e6'}}>
-                        <Button className="btn-danger" onClick={(e) => e.preventDefault()}>삭제</Button>
+                    <td className="border-left">홍길동</td>
+                    <td className="border-left">aaaa@codebase</td>
+                    <td className="border-left">제목1</td>
+                    <td className="border-left">
+                        <button onClick={(e) => e.preventDefault()}>삭제</button>
                     </td>
                 </tr>
 
                 </tbody>
-            </Table>
+            </table>
         </div>
     );
 };
