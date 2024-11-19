@@ -19,7 +19,7 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import DemoNavbar from "components/Navbars/DemoNavbar.js";
+import DemoNavbar from "../../../template/src/components/Navbars/DemoNavbar.jsx";
 import TeamSection from "./TeamSection.jsx";
 
 function Team() {
@@ -84,19 +84,19 @@ function Team() {
     {
       name: "팀 이름 1",
       description: "간단 설명",
-      image: require("assets/img/theme/img-1-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-1-1200x1000.jpg', import.meta.url).href,
       badges: ["프론트엔드", "백엔드", "배포"],
     },
     {
       name: "팀 이름 2",
       description: "팀 설명 2",
-      image: require("assets/img/theme/img-2-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-2-1200x1000.jpg', import.meta.url).href,
       badges: ["프론트엔드", "백엔드"],
     },
     {
       name: "팀 이름 3",
       description: "팀 설명 3",
-      image: require("assets/img/theme/img-1-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-1-1200x1000.jpg', import.meta.url).href,
       badges: ["백엔드", "배포"],
     },
   ];
@@ -105,19 +105,19 @@ function Team() {
     {
       name: "팀 이름 4",
       description: "팀 설명 4",
-      image: require("assets/img/theme/img-1-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-1-1200x1000.jpg', import.meta.url).href,
       badges: ["프론트엔드", "배포"],
     },
     {
       name: "팀 이름 5",
       description: "팀 설명 5",
-      image: require("assets/img/theme/img-1-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-1-1200x1000.jpg', import.meta.url).href,
       badges: ["프론트엔드"],
     },
     {
       name: "팀 이름 6",
       description: "팀 설명 6",
-      image: require("assets/img/theme/img-1-1200x1000.jpg"),
+      image: new URL('../../../template/src/assets/img/theme/img-1-1200x1000.jpg', import.meta.url).href,
       badges: ["백엔드", "배포"],
     },
   ];
