@@ -1,9 +1,9 @@
-// src/views/post/PostList.jsx
+// src/pages/post/PostList.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown } from 'react-bootstrap';
 import PostService from './PostService'; // API 호출을 위한 서비스
-import './PostList.css';
+import './PostList.css'; // CSS 파일 import
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);

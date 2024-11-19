@@ -1,9 +1,9 @@
-// src/views/post/PostCreate.jsx
+// src/pages/post/PostCreate.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container, Alert } from 'react-bootstrap';
-import PostService from './PostService';
-import './PostCreate.css';
+import PostService from './PostService'; // 같은 디렉토리에서 import
+import './PostCreate.css'; // CSS 파일 import
 
 const PostCreate = () => {
   const [topic, setTopic] = useState('');

@@ -1,13 +1,13 @@
 /* 전현식
 2024 11 03
 */
-// src/views/post/Post.js
+// src/pages/post/Post.js
 import React, { useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import PostList from './PostList'; // 경로 수정 필요 없음
-import PostDetail from './PostDetail.jsx'; // 경로 수정 필요 없음
-import PostEdit from './PostEdit.jsx'; // 경로 수정 필요 없음
-import PostCreate from './PostCreate.jsx'; // 경로 수정 필요 없음
+import PostList from './PostList.jsx'; // 경로 수정
+import PostDetail from './PostDetail.jsx'; // 경로 수정
+import PostEdit from './PostEdit.jsx'; // 경로 수정
+import PostCreate from './PostCreate.jsx'; // 경로 수정
 import DemoNavbar from "components/Navbars/DemoNavbar.js";
 import './Post.css'; // 필요 시 CSS 파일 import
 
