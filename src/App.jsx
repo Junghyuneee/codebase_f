@@ -26,13 +26,15 @@ function App() {
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LoginModal />} />
       <Route path="/register" element={<RegisterModal />} />
+
       <Route path="/store" exact element={<Store />} /> 
       <Route path="/store/cart" exact element={<StoreCart />} /> 
       <Route path="/store/test" exact element={<StoreTest />} />
       <Route path="/store/add" exact element={<StoreAdd />} /> 
       <Route path="/store/:id" element={<StoreDetail />} /> 
 
-        <Route path="/admin/*" exact element={<Admin />} />
+      <Route path="/admin/*" exact element={<Admin />} />
+
       <Route path="/team" exact element={<Team />} />
       <Route path="/teamdetail" exact element={<Teamdetail />} />
     </Routes>
