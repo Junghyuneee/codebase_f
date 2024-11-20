@@ -1,3 +1,7 @@
+/*
+김은지
+2024 11 11
+*/
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 

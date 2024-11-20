@@ -82,7 +82,7 @@ function Banner_mini() {
                                     <Button
                                         className="btn-white mt-4"
                                         color="default"
-                                        href="/store"
+                                        href="/store/add"
                                     >
                                         내 프로젝트 등록하기
                                     </Button>

@@ -1,0 +1,75 @@
+.app-container {
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    padding: 10px 20px;
+  }
+  
+  .header nav a {
+    margin-left: 10px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .main-content {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .project-details {
+    flex: 3;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .project-description {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .project-photo {
+    flex: 1;
+    height: 200px;
+    background-color: #ddd;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hashtags {
+    margin-top: 10px;
+  }
+  
+  .project-content {
+    flex: 2;
+  }
+  
+  .team-list {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 20px;
+    background-color: #f1f1f1;
+  }
+  
+  .team-list h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .team-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .team-list li {
+    margin-bottom: 5px;
+  }
+  

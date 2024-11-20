@@ -44,16 +44,14 @@ function AdminNavBar() {
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                href="/admin/membermanagement"
                                             >
                                                 회원관리 <span className="sr-only">(current)</span>
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
                                             <NavLink
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                href="/admin/questions"
                                             >
                                                 문의사항
                                             </NavLink>
