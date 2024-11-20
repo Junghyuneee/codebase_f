@@ -1,7 +1,11 @@
-
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
-
+/*cart
+2024 11 15
+배다원
+*/
+import React, { useEffect, useState, useRef, Outlet } from 'react';
+// nodejs library that concatenates classes
+import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
+// reactstrap components
 import {
     Badge,
     Button,
@@ -28,239 +32,223 @@ import {
     NavLink,
     Nav,
 } from "reactstrap";
-import classnames from "classnames";
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
-//import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
-
-import Banner from "./Banner.jsx";
-
-export function ProjectCard(project) {
-
-    return (
-
-        <section className="section">
-            <div class="">
-
-                <Card className="card-profile shadow">
-                    <div className="px-4">
-                        <CardImg className="py-5" style={{ borderRadius: '10px' }}
-                            alt="..."
-                            src={img}
-                            top
-                        />
-
-
-                        <div className="text-center mt-5">
-                            <h3>
-                                Jessica Jones
-                                <span className="font-weight-light">, 27</span>
-                            </h3>
-                            <div className="h6 font-weight-300">
-                                <i className="ni location_pin mr-2" />
-                                Bucharest, Romania
-                            </div>
-                            <div className="h6 mt-4">
-                                <i className="ni business_briefcase-24 mr-2" />
-                                Solution Manager - Creative Tim Officer
-                            </div>
-                            <div>
-                                <i className="ni education_hat mr-2" />
-                                University of Computer Science
-                            </div>
-                        </div>
-                        <div className="mt-5 py-5 border-top text-center">
-                            <Row className="justify-content-center">
-                                <Col lg="9">
-                                    <p>
-                                        An artist of considerable range, Ryan — the name taken
-                                        by Melbourne-raised, Brooklyn-based Nick Murphy —
-                                        writes, performs and records all of his own music,
-                                        giving it a warm, intimate feel with a solid groove
-                                        structure. An artist of considerable range.
-                                    </p>
-                                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                                        Show more
-                                    </a>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
-                </Card>
-            </div>
-        </section>
-
-    );
-}
-
-function ProjectExplain(project) {
-    return (<>
-        <div class="section">
-
-            <Card className='card-profile shadow'>
-                <div className="text-center mt-5">
-                    <h3>
-                        Jessica Jones{" "}
-                        <span className="font-weight-light">, 27</span>
-                    </h3>
-                    <div className="h6 font-weight-300">
-                        <i className="ni location_pin mr-2" />
-                        Bucharest, Romania
-                    </div>
-                    <div className="h6 mt-4">
-                        <i className="ni business_briefcase-24 mr-2" />
-                        Solution Manager - Creative Tim Officer
-                    </div>
-                    <div>
-                        <i className="ni education_hat mr-2" />
-                        University of Computer Science
-                    </div>
-                </div>
-                <div className="mt-5 py-5 border-top ">
-                    <Row className="justify-content-center mb-5">
-                        <Col lg="9">
-                            <p>
-                                An artist of considerable range, Ryan — the name taken
-                                by Melbourne-raised, Brooklyn-based Nick Murphy —
-                                writes, performs and records all of his own music,
-                                giving it a warm, intimate feel with a solid groove
-                                structure. An artist of considerable range.
-                            </p>
-                            <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                                Show more
-                            </a>
-
-                        </Col>
-                    </Row>
-
-
-                    <div className='p-4'>
-                        <h1 className='font-weight-bold'>
-                            123456원
-                        </h1>
-                        <br />
-                        <Row className='mb-2'>
-                            <Col>
-                                <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
-                            </Col>
-                            <Col style={{ paddingLeft: '0' }}>
-                                <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col>
-                                <Button color='default' outline block><i className="ni ni-chat-round" /> 채팅</Button>
-                            </Col>
-                            <Col style={{ padding: '0' }}>
-                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 찜하기</Button>
-                            </Col>
-                            <Col>
-                                <Button color='danger' outline block><i className="ni ni-tag" /> 신고</Button>
-                            </Col>
-                        </Row>
-                    </div>
-
-                </div>
-
-            </Card>
-        </div>
-
-    </>
-    );
-}
-
-function ProjectDetail(project) {
-
-    return (
-        <>
-            <Container>
-                <div className='section'>
-                    <h1 className='font-weight-bold'>상세설명</h1>
-                    {/*<Typography />*/}
-                </div>
-            </Container>
-        </>
-    );
-}
-
-function getProject(id) {
-
-
-    const [project, setProject] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch(`http://localhost:8080/api/store/project/${id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-
-                setProject(data);
-
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return project;
-}
+import Banner from "./Banner_mini";
 function Page() {
 
-    // 현재 페이지의 URL을 가져옵니다.
-    const currentUrl = window.location.href;
 
-    // URL 객체를 생성합니다.
-    const url = new URL(currentUrl).pathname;
-    console.log(url);
-    const id = url.replace("/store/", "");
-    console.log("id ",id);
+    const sampleCI = [
+        { id: 1, cart_id: 4, name: '브리츠 노이즈 캔슬링 블루투스 헤드폰', price: 10000, project_id: 13, username: '먀먀먀' },
+        { id: 2, cart_id: 4, name: '풀무원 스팀쿡 플러스 에어프라이어 15L AV15D11', price: 10000, project_id: 13, username: '먀먀먀' },
+        { id: 3, cart_id: 4, name: '인스탁스 스퀘어 SQ40 폴라로이드 즉석카메라+필름 40장+선물세트', price: 10000, project_id: 13, username: '먀먀먀' },
+        { id: 4, cart_id: 4, name: '복숭아', price: 10000, project_id: 13, username: '먀먀먀' },
+        { id: 5, cart_id: 4, name: '조아', price: 10000, project_id: 13, username: '먀먀먀' },
+        { id: 6, cart_id: 6, name: '딱복싫어물복', price: 999999, project_id: 13, username: '물복싫어딱복' }
 
-
-    const project = getProject(parseInt(id, 10));
-    console.log("project : ", project);
+    ];
 
     return (
         <>
+            <Banner></Banner>
+            <main>
 
-            <Banner />
-
-
-            <main >
                 <Container>
 
 
 
 
                     <Row>
-                        <Col lg="7">
+                        <Col lg="8">
 
-                            {ProjectCard()}
 
+                            {/* <CartItem /> */}
+                            {CartItem(sampleCI)}
 
                         </Col>
-                        <Col lg="5">
+                        <Col lg="4">
 
-                            {ProjectExplain()}
+
+                            {Invoice(sampleCI)}
+
 
                         </Col>
                     </Row>
                 </Container>
 
-                {ProjectDetail()}
+
 
             </main>
-
-
         </>
+
     );
-    //}
 }
 
 export default Page;
+
+
+function CartItem(CartItem) {
+
+
+
+
+    return (<>
+
+        <div className='section'>
+            <Button>전체삭제</Button>
+
+            <Card className='card shadow'>
+
+                <div className='p-2'>
+
+                    <Row className="align-items-center py-2" >
+                        {/* Thumbnail */}
+                        <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
+                            <img
+                                alt="Thumbnail"
+                                className="img-fluid rounded"
+                                src={Thumbnail}
+                                style={{ width: "120px", height: "auto" }}
+                            />
+                        </Col>
+
+                        {/* Title/Description */}
+                        <Col xs="5" sm="5" lg="6" xl="6">
+                            <div>
+                                <small className="d-block text-uppercase font-weight-bold">
+                                    Sample
+                                </small>
+                                <span className="text-muted">
+                                    이것은 샘플
+                                </span>
+                            </div>
+                        </Col>
+
+                        {/* Value */}
+                        <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                            <small className="d-block text-uppercase font-weight-bold mt-3">
+                                $123
+                            </small>
+                        </Col>
+
+                        {/* Remove Button */}
+                        <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                            <Button className="text-danger" size="sm">
+                                <i className="fa fa-trash" aria-hidden="true"></i>
+                            </Button>
+                        </Col>
+                    </Row>
+
+
+
+
+                </div>
+
+            </Card>
+
+            {CartItem.map((item) => (
+                // <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
+                //      <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
+                // </Col>
+
+                <a href={`/store/project/${item.project_id}`}>
+                <Card className='card shadow'>
+
+                    <div className='p-2'>
+
+                        <Row className="align-items-center py-2" >
+                            {/* Thumbnail */}
+                            <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
+                                <img
+                                    alt="Thumbnail"
+                                    className="img-fluid rounded"
+                                    src={Thumbnail}
+                                    style={{ width: "120px", height: "auto" }}
+                                />
+                            </Col>
+
+                            {/* Title/Description */}
+                            <Col xs="5" sm="5" lg="6" xl="6">
+                                <div>
+                                    <span className="d-block text-uppercase font-weight-bold">
+                                        {item.name}
+                                    </span>
+
+                                </div>
+                            </Col>
+
+                            {/* Value */}
+                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                                <small className="d-block text-uppercase font-weight-bold mt-3">
+                                    {item.price}원
+                                </small>
+                            </Col>
+
+                            {/* Remove Button */}
+                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                                <Button className="text-danger" size="sm">
+                                    <i className="fa fa-trash" aria-hidden="true">{item.id}삭제</i>
+                                </Button>
+                            </Col>
+                        </Row>
+
+
+
+
+                    </div>
+
+                </Card>
+                </a>
+
+
+            ))}
+
+
+        </div>
+
+
+    </>);
+
+}
+
+
+function Invoice(CartItem) {
+    var total = 0;
+    CartItem.forEach( function(item){
+        total = total + item.price;
+    });
+
+    return (<>
+
+        <div className='section'>
+            <Card className='card shadow'>
+                <blockquote className="card-blockquote">
+                    <div className=" mt-5">
+                        <h3>
+                            {total}원
+
+                        </h3>
+                        <div className="h6 font-weight-300">
+                            <i className="ni location_pin mr-2" />
+                            Bucharest, Romania
+                        </div>
+                        <div className="h6 mt-4">
+                            <i className="ni business_briefcase-24 mr-2" />
+                            Solution Manager - Creative Tim Officer
+                        </div>
+                        <div>
+                            <i className="ni education_hat mr-2" />
+                            University of Computer Science
+                        </div>
+
+
+                    </div>
+
+                    <Button>구매</Button>
+
+                </blockquote>
+            </Card>
+        </div>
+
+    </>);
+
+}
