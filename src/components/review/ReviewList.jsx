@@ -3,7 +3,7 @@
 2024--11-06
 */
 
-// src: api/reviews
+// src: /api/review
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './ReviewList.css';
@@ -18,7 +18,7 @@ import {
 } from 'reactstrap';
 
 import DemoNavbar from './DemoNavbar';
-//import SimpleFooter from 'components/Footers/SimpleFooter.js';
+import SimpleFooter from './SimpleFooter';
 import ReviewHeader from './ReviewHeader';
 
 const ReviewList = () => {
@@ -28,7 +28,7 @@ const ReviewList = () => {
 	// 페이지가 로드되었을 때 리뷰 목록을 가져옴
 	useEffect(() => {
 		// 데이터 가져오기
-		fetch('http://localhost:8080/api/review')
+		fetch(`http://localhost:8080/api/review`)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error('데이터를 가져오는데 실패했습니다.');
@@ -186,7 +186,7 @@ const ReviewList = () => {
 					</Container>
 				</section>
 			</main>
-			{/* <SimpleFooter /> */}
+			<SimpleFooter />
 		</>
 	);
 };

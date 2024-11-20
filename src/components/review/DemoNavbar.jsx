@@ -4,7 +4,7 @@ import Headroom from 'headroom.js';
 
 import logoWhite from '../../assets/img/brand/argon-react-white.png';
 import logo from '../../assets/img/brand/argon-react.png';
-// reactstrap components
+
 import {
 	Button,
 	UncontrolledCollapse,
