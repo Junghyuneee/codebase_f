@@ -1,11 +1,12 @@
-import './App.css'
-import "./assets/vendor/nucleo/css/nucleo.css";
-import "./assets/vendor/font-awesome/css/font-awesome.min.css";
-import "./assets/scss/argon-design-system-react.scss?v1.1.0";
+import './App.css';
+import './assets/vendor/nucleo/css/nucleo.css';
+import './assets/vendor/font-awesome/css/font-awesome.min.css';
+import './assets/scss/argon-design-system-react.scss?v1.1.0';
 
-import { Route, Routes } from "react-router-dom"
-import MainPage from "./pages/main/MainPage"
+import { Route, Routes } from 'react-router-dom';
+import MainPage from './pages/main/MainPage';
 import LoginModal from './components/auth/LoginModal';
+
 import RegisterModal from "./components/auth/RegisterModal";
 import Store from "./components/store/Store";
 
@@ -17,6 +18,8 @@ import Team from "./components/team/team.jsx"
 import Teamdetail from "./components/team/teamdetail.jsx"
 
 import Admin from "./components/admin/Admin.jsx";
+
+import Review from './components/review/Review.jsx';
 
 
 function App() {
@@ -36,9 +39,10 @@ function App() {
         <Route path="/admin/*" exact element={<Admin />} />
       <Route path="/team" exact element={<Team />} />
       <Route path="/teamdetail" exact element={<Teamdetail />} />
+        <Route path="/review/*" exact element={<Review />} />
     </Routes>
 
   )
 }
 
-export default App
+export default App;
