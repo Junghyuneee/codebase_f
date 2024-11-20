@@ -8,8 +8,11 @@ import MainPage from "./pages/main/MainPage"
 import LoginModal from './components/auth/LoginModal';
 import RegisterModal from "./components/auth/RegisterModal";
 import Store from "./components/store/Store";
+
 import StoreCart from "./components/store/Cart"
 import StoreTest from "./components/store/Test"
+import StoreAdd from "./components/store/CreateProject";
+import StoreDetail from "./components/store/ProjectDetail.jsx";
 import Team from "./components/team/team.jsx"
 import Teamdetail from "./components/team/teamdetail.jsx"
 
@@ -27,6 +30,9 @@ function App() {
       <Route path="/store" exact element={<Store />} /> 
       <Route path="/store/cart" exact element={<StoreCart />} /> 
       <Route path="/store/test" exact element={<StoreTest />} />
+      <Route path="/store/add" exact element={<StoreAdd />} /> 
+      <Route path="/store/:id" element={<StoreDetail />} /> 
+
         <Route path="/admin/*" exact element={<Admin />} />
       <Route path="/team" exact element={<Team />} />
       <Route path="/teamdetail" exact element={<Teamdetail />} />
