@@ -27,8 +27,8 @@ function Banner_mini() {
 
             <Navbar className="navbar-dark bg-info" expand="lg">
                 <Container>
-                    <NavbarBrand href="#pablo" onClick={(e) => e.preventDefault()}>
-                        Primary Color
+                    <NavbarBrand href="/store">
+                        CODEBASE
                     </NavbarBrand>
                     <button className="navbar-toggler" id="navbar-primary">
                         <span className="navbar-toggler-icon" />
@@ -76,10 +76,10 @@ function Banner_mini() {
                                         테스트페이지
                                     </DropdownItem>
                                     <DropdownItem
-                                        href="/store"
+                                        href="/store/iotest"
                                         
                                     >
-                                        메인화면
+                                        데이터테스터
                                     </DropdownItem>
                                     <DropdownItem divider />
                                     <DropdownItem
