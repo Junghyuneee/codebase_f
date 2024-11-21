@@ -16,19 +16,29 @@ import {
 
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {googleLoginHandler, kakaoLoginHandler, postSignIn} from "../../api/auth.js";
+import {getAccessToken, googleLoginHandler, kakaoLoginHandler, postSignIn} from "../../api/auth.js";
 
 const LoginModal = () => {
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    if (getAccessToken()) {
+      navigate("/", {replace: true});
+    }
+  }, []);
+
   const handleSignin = async () => {
     const response = await postSignIn(email, password);
-    console.log(response);
-    window.location.replace("/");
+    if(response){
+      window.location.replace("/");  
+    }else{
+      alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+    }
+    
   }
 
   return (
