@@ -1,4 +1,4 @@
-// src/pages/post/Post.js
+// src/pages/post/Post.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PostList from './PostList';
