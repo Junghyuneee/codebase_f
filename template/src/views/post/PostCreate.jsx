@@ -1,30 +1,39 @@
 // src/views/post/PostCreate.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Container } from 'react-bootstrap';
-import './PostCreate.css'; // 스타일을 위한 CSS 파일 import
+import { Button, Form, Container, Alert } from 'react-bootstrap';
+import PostService from './PostService';
+import './PostCreate.css';
 
 const PostCreate = () => {
   const [topic, setTopic] = useState('');
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('새 게시물 작성:', { topic, title, tags, content });
+    setError(''); // 이전 에러 메시지 초기화
+    try {
+      if (!topic || !title || !content) {
+        setError('모든 필드를 채워주세요.');
+        return;
+      }
 
-    // 여기서 API를 호출하여 게시물을 저장하는 로직을 추가해야 합니다.
-    // 예시: await api.createPost({ topic, title, tags, content });
-
-    // 게시물 작성 후 목록 페이지로 이동
-    navigate('/post');
+      await PostService.createPost({ topic, title, tags: tags.split(','), content });
+      navigate('/post'); // 게시물 목록 페이지로 이동
+    } catch (err) {
+      setError('게시물 작성 중 오류가 발생했습니다: ' + err.message);
+      console.error(err);
+    }
   };
 
   return (
     <Container className="post-create-container mt-4">
       <h1>자유게시판 등록</h1>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="topic">
           <Form.Label>토픽</Form.Label>
@@ -36,7 +45,6 @@ const PostCreate = () => {
             className="mb-3"
           />
         </Form.Group>
-
         <Form.Group controlId="title">
           <Form.Label>제목</Form.Label>
           <Form.Control
@@ -47,7 +55,6 @@ const PostCreate = () => {
             className="mb-3"
           />
         </Form.Group>
-
         <Form.Group controlId="tags">
           <Form.Label>태그</Form.Label>
           <Form.Control
@@ -58,7 +65,6 @@ const PostCreate = () => {
             className="mb-3"
           />
         </Form.Group>
-
         <Form.Group controlId="content">
           <Form.Label>본문</Form.Label>
           <Form.Control
@@ -73,7 +79,6 @@ const PostCreate = () => {
             여러분의 생각을 자유롭게 표현해 주세요. 함께 의견을 나누는 것이 중요합니다.
           </Form.Text>
         </Form.Group>
-
         <Button variant="primary" type="submit" className="mt-3">
           등록하기
         </Button>

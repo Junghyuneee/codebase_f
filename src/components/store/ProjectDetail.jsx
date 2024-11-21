@@ -29,13 +29,13 @@ import {
     Nav,
 } from "reactstrap";
 import classnames from "classnames";
-
+import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
 //import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
 
 import Banner from "./Banner.jsx";
 
-export function ProjectCard() {
+export function ProjectCard(project) {
 
     return (
 
@@ -46,45 +46,23 @@ export function ProjectCard() {
                     <div className="px-4">
                         <CardImg className="py-5" style={{ borderRadius: '10px' }}
                             alt="..."
-                            src={require("assets/img/theme/img-1-1200x1000.jpg")}
+                            src={img}
                             top
                         />
 
 
-                        <div className="text-center mt-5">
+                        <div className="text-center mt-5 mb-5">
                             <h3>
-                                Jessica Jones{" "}
+                                {project.name}
                                 <span className="font-weight-light">, 27</span>
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
                                 Bucharest, Romania
                             </div>
-                            <div className="h6 mt-4">
-                                <i className="ni business_briefcase-24 mr-2" />
-                                Solution Manager - Creative Tim Officer
-                            </div>
-                            <div>
-                                <i className="ni education_hat mr-2" />
-                                University of Computer Science
-                            </div>
+                            
                         </div>
-                        <div className="mt-5 py-5 border-top text-center">
-                            <Row className="justify-content-center">
-                                <Col lg="9">
-                                    <p>
-                                        An artist of considerable range, Ryan — the name taken
-                                        by Melbourne-raised, Brooklyn-based Nick Murphy —
-                                        writes, performs and records all of his own music,
-                                        giving it a warm, intimate feel with a solid groove
-                                        structure. An artist of considerable range.
-                                    </p>
-                                    <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                                        Show more
-                                    </a>
-                                </Col>
-                            </Row>
-                        </div>
+                       
                     </div>
                 </Card>
             </div>
@@ -93,14 +71,14 @@ export function ProjectCard() {
     );
 }
 
-function ProjectExplain() {
+function ProjectExplain(project) {
     return (<>
         <div class="section">
 
             <Card className='card-profile shadow'>
                 <div className="text-center mt-5">
                     <h3>
-                        Jessica Jones{" "}
+                        {project.name}
                         <span className="font-weight-light">, 27</span>
                     </h3>
                     <div className="h6 font-weight-300">
@@ -117,28 +95,14 @@ function ProjectExplain() {
                     </div>
                 </div>
                 <div className="mt-5 py-5 border-top ">
-                    <Row className="justify-content-center mb-5">
-                        <Col lg="9">
-                            <p>
-                                An artist of considerable range, Ryan — the name taken
-                                by Melbourne-raised, Brooklyn-based Nick Murphy —
-                                writes, performs and records all of his own music,
-                                giving it a warm, intimate feel with a solid groove
-                                structure. An artist of considerable range.
-                            </p>
-                            <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                                Show more
-                            </a>
-                            
-                        </Col>
-                    </Row>
+                    
 
 
                     <div className='p-4'>
-                            <h1 className='font-weight-bold'>
-                            123456원
-                            </h1>
-                            <br/>   
+                        <h1 className='font-weight-bold'>
+                            {project.price}원
+                        </h1>
+                        <br />
                         <Row className='mb-2'>
                             <Col>
                                 <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
@@ -160,7 +124,7 @@ function ProjectExplain() {
                             </Col>
                         </Row>
                     </div>
-                    
+
                 </div>
 
             </Card>
@@ -170,42 +134,69 @@ function ProjectExplain() {
     );
 }
 
-function ProjectDetail() {
+function ProjectDetail(project) {
 
     return (
         <>
             <Container>
                 <div className='section'>
                     <h1 className='font-weight-bold'>상세설명</h1>
-                    {/*<Typography />*/}
+                    {project.content}
                 </div>
             </Container>
         </>
     );
 }
 
-function Page() {
+function getProject(id) {
 
-    //ref 대체
-    const myInputRef = useRef(null);  // useRef 훅 사용
+
+    const [project, setProject] = useState([]);
 
     useEffect(() => {
-        // 컴포넌트가 마운트된 후 포커스를 입력 필드에 설정
-        if (myInputRef.current) {
-            myInputRef.current.focus();
-        }
+        // 데이터 가져오기
+        fetch(`http://localhost:8080/api/store/project/${id}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('데이터를 가져오는데 실패했습니다.');
+                }
+
+                return response.json();
+            })
+            .then((data) => {
+
+                setProject(data);
+
+            })
+            .catch((error) => {
+                console.error('API 호출 에러:', error);
+            });
     }, []);
 
+    return project;
+}
+function Page() {
 
-    //render() {
+    // 현재 페이지의 URL을 가져옵니다.
+    const currentUrl = window.location.href;
+
+    // URL 객체를 생성합니다.
+    const url = new URL(currentUrl).pathname;
+    //console.log(url);
+    const id = url.replace("/store/", "");
+    console.log("id ",id);
+
+
+    const project = getProject(parseInt(id, 10));
+    console.log("project : ", project);
+
     return (
         <>
-            <DemoNavbar />
 
             <Banner />
 
 
-            <main ref={myInputRef} >
+            <main >
                 <Container>
 
 
@@ -214,23 +205,23 @@ function Page() {
                     <Row>
                         <Col lg="7">
 
-                            {ProjectCard()}
+                            {ProjectCard(project)}
 
 
                         </Col>
                         <Col lg="5">
 
-                            {ProjectExplain()}
+                            {ProjectExplain(project)}
 
                         </Col>
                     </Row>
                 </Container>
 
-                {ProjectDetail()}
+                {ProjectDetail(project)}
 
             </main>
 
-            <SimpleFooter />
+
         </>
     );
     //}
