@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown } from 'react-bootstrap';
-import PostService from './PostService'; // API 호출을 위한 서비스
-import './PostList.css'; // CSS 파일 import
+import PostService from './PostService';
+import './PostList.css';
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
@@ -11,17 +11,19 @@ const PostList = () => {
   const [sortOption, setSortOption] = useState('최신순');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const postsPerPage = 3;
 
-  // 게시물 가져오기
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
+      setError(null);
       try {
         const fetchedPosts = await PostService.getPosts();
         setPosts(fetchedPosts);
       } catch (error) {
         console.error('게시물 가져오기 실패:', error);
+        setError('게시물 로드 중 오류가 발생했습니다.');
       } finally {
         setLoading(false);
       }
@@ -30,7 +32,6 @@ const PostList = () => {
     fetchPosts();
   }, []);
 
-  // 게시물 정렬
   const sortedPosts = [...posts].sort((a, b) => {
     switch (sortOption) {
       case '최신순':
@@ -46,18 +47,15 @@ const PostList = () => {
     }
   });
 
-  // 게시물 필터링
   const filteredPosts = sortedPosts.filter(post => 
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
     post.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 페이지네이션 관련 계산
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
-  // 페이지 변경 핸들러
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -100,13 +98,17 @@ const PostList = () => {
         </Dropdown.Menu>
       </Dropdown>
 
-      <Row>
-        {loading ? (
-          <Col className="text-center">
-            <h5>로딩 중...</h5>
-          </Col>
-        ) : currentPosts.length > 0 ? (
-          currentPosts.map(post => (
+      {loading ? (
+        <Col className="text-center">
+          <h5>로딩 중...</h5>
+        </Col>
+      ) : error ? (
+        <Col className="text-center">
+          <h5>{error}</h5>
+        </Col>
+      ) : currentPosts.length > 0 ? (
+        <Row>
+          {currentPosts.map(post => (
             <Col md={4} key={post.id} className="mb-4">
               <Card className="post-card shadow-sm">
                 <Card.Body>
@@ -126,13 +128,13 @@ const PostList = () => {
                 </Card.Body>
               </Card>
             </Col>
-          ))
-        ) : (
-          <Col className="text-center">
-            <h5>게시물이 없습니다.</h5>
-          </Col>
-        )}
-      </Row>
+          ))}
+        </Row>
+      ) : (
+        <Col className="text-center">
+          <h5>게시물이 없습니다.</h5>
+        </Col>
+      )}
 
       <Pagination className="justify-content-center">
         <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />

@@ -51,7 +51,7 @@ root.render(
 
       <Route path="/Store" exact element={<Store />} />
  origin/post
-      <Route path="/post/*" element={<Post />} />
+      <Route path="/post" exact element={<Post />} />
       <Route path="/Admin/*" exact element={<Admin />} />
     
 
