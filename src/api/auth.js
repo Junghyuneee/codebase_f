@@ -1,13 +1,13 @@
 import apiClient from "@/api/apiClient.js";
 
-let accessToken = "";
+// let accessToken = "";
 
 export function setAccessToken(token) {
-    accessToken = token; // Update the token
+    localStorage.setItem('accessToken', token); // Update the token
 }
 
 export function getAccessToken() {
-    return accessToken; // Retrieve the token
+    return localStorage.getItem('accessToken'); // Retrieve the token
 }
 
 export async function postSignUp(username, password, email, address, postcode, tel) {
@@ -35,7 +35,18 @@ export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
     // Save the access token after logging in
     setAccessToken(response.data.accessToken);
-    return response;
+    if(getAccessToken() === "Invalid password") {
+        localStorage.clear();
+        return false;
+    }
+    return true;
+}
+
+export async function postSignOut(){
+    localStorage.clear();
+
+    const response = await apiClient.post("/auth/signout");
+    console.log(response);
 }
 
 export const kakaoLoginHandler = () => {
