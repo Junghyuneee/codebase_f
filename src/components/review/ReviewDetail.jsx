@@ -137,8 +137,8 @@ const ReviewDetail = () => {
 													</small>
 												</Col>
 											</Row>
-											<Row className="justify-content-center mt-5 py-5">
-												<Col lg="9">
+											<Row className=" py-5">
+												<Col className="text-lg-left">
 													<strong>{review.content}</strong>
 												</Col>
 											</Row>

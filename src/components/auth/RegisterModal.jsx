@@ -18,8 +18,8 @@ import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
 import Postcode from "./DaumAddress";
-import { postOAuthSignUp, postSignUp } from "../../api/auth";
-import { useLocation, useParams } from "react-router-dom";
+import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "../../api/auth";
+import { useLocation } from "react-router-dom";
 
 const RegisterModal = () => {
 
@@ -48,17 +48,12 @@ const RegisterModal = () => {
       const response = social
         ? await postOAuthSignUp(email, username, address + " " + addressDetail, postcode, tel)
         : await postSignUp(username, password, email, address + " " + addressDetail, postcode, tel);
-      console.log(response);
+      console.log(response)
+      window.location.replace("/");
     }
   }
 
-  const kakaoLoginHandler = () => {
-    window.location.replace('http://localhost:8080/oauth2/authorization/kakao');
-  }
 
-  const googleLoginHandler = () => {
-    window.location.replace('http://localhost:8080/oauth2/authorization/google');
-  }
 
   return (
     <main>
@@ -80,10 +75,9 @@ const RegisterModal = () => {
                   </div>
                   <div className="text-center">
                     <Button
-                      className="btn-neutral btn-icon mr-4"
-                      color="default"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                        className="btn-neutral btn-icon ml-1"
+                        color="default"
+                        onClick={googleLoginHandler}
                     >
                       <span className="btn-inner--icon mr-1">
                         <img
@@ -91,7 +85,7 @@ const RegisterModal = () => {
                           src={GoogleLogo}
                         />
                       </span>
-                      <span className="btn-inner--text">Github</span>
+                      <span className="btn-inner--text">Google</span>
                     </Button>
                     <Button
                       className="btn-neutral btn-icon ml-1"
