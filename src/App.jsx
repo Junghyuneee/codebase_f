@@ -17,6 +17,7 @@ import Admin from "./components/admin/Admin.jsx";
 import OauthCallbackPage from "@/components/auth/OauthCallbackPage.jsx";
 
 import Review from './components/review/Review.jsx';
+import Post from './components/post/Post.jsx'; 
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
       <Route path="/teamdetail" exact element={<Teamdetail />} />
         <Route path="/review/*" exact element={<Review />} />
         <Route path="/oauth" element={<OauthCallbackPage/>}/>
+        <Route path="/post/*" element={<Post />} /> 
     </Routes>
 
   )

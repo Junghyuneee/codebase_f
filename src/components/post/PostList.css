@@ -1,4 +1,10 @@
-/* src/views/post/PostList.css */
+/* src/components/post/PostList.css */
+
+.container {
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 20px; /* 여백 추가 */
+}
 
 .post-card {
   height: 100%; /* 카드 높이를 동일하게 유지 */
@@ -51,33 +57,11 @@
   color: white; /* 호버 시 글씨색 변경 */
   border-color: #0056b3; /* 호버 시 테두리 색상 변경 */
 }
+
 .pagination .page-item.active .page-link {
   background-color: #007bff; /* 현재 페이지 배경색 */
   border-color: #007bff; /* 현재 페이지 테두리 색상 */
   color: white; /* 현재 페이지 텍스트 색상 */
-}
-
-/* 현재 페이지 링크에서 추가 텍스트 숨기기 */
-.pagination .page-item.active .page-link:after {
-  content: ''; /* 현재 페이지 표시를 비우기 */
-  display: none; /* 현재 페이지 표시 숨기기 */
-}
-
-
-
-/* 커스텀 버튼 스타일 */
-.custom-button {
-  padding: 0.5rem 1rem; /* 버튼의 패딩 조정 */
-  font-size: 1rem; /* 글씨 크기 조정 */
-  border-radius: 0.5rem; /* 버튼 모서리 둥글게 */
-  width: auto; /* 기본 너비로 설정 */
-  max-width: 120px; /* 최대 너비 설정 */
-  transition: background-color 0.3s, color 0.3s; /* 부드러운 효과 추가 */
-}
-
-.custom-button:hover {
-  background-color: #0056b3; /* 호버 시 배경색 변경 */
-  color: white; /* 호버 시 글씨색 변경 */
 }
 
 /* 모바일 반응형 디자인 */
