@@ -1,0 +1,22 @@
+.table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table th,
+.table td {
+	padding: 10px;
+	text-align: left;
+}
+
+.table th {
+	background-color: #f8f9fa;
+}
+
+.table tbody tr {
+	border-top: 1px solid #ddd;
+}
+
+.table tbody tr:last-child {
+	border-bottom: 2px solid #ccc; /* 하단 선 추가 */
+}

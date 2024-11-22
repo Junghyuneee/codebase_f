@@ -16,12 +16,30 @@ import {
 
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
-import { useState } from "react";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {getAccessToken, googleLoginHandler, kakaoLoginHandler, postSignIn} from "../../api/auth.js";
 
 const LoginModal = () => {
-
+  let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (getAccessToken()) {
+      navigate("/", {replace: true});
+    }
+  }, []);
+
+  const handleSignin = async () => {
+    const response = await postSignIn(email, password);
+    if(response){
+      window.location.replace("/");  
+    }else{
+      alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+    }
+    
+  }
 
   return (
     <main>
@@ -46,10 +64,9 @@ const LoginModal = () => {
                   </div>
                   <div className="btn-wrapper text-center">
                     <Button
-                      className="btn-neutral btn-icon"
-                      color="default"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                        className="btn-neutral btn-icon ml-1"
+                        color="default"
+                        onClick={kakaoLoginHandler}
                     >
                       <span className="btn-inner--icon mr-1">
                         <img
@@ -60,10 +77,9 @@ const LoginModal = () => {
                       <span className="btn-inner--text">Kakao</span>
                     </Button>
                     <Button
-                      className="btn-neutral btn-icon ml-1"
-                      color="default"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                        className="btn-neutral btn-icon ml-1"
+                        color="default"
+                        onClick={googleLoginHandler}
                     >
                       <span className="btn-inner--icon mr-1">
                         <img
@@ -115,6 +131,7 @@ const LoginModal = () => {
                         className="my-4"
                         color="primary"
                         type="button"
+                        onClick={handleSignin}
                       >
                         Sign in
                       </Button>
@@ -135,8 +152,8 @@ const LoginModal = () => {
                 <Col className="text-right" xs="6">
                   <a
                     className="text-light"
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
+                    style={{cursor: "pointer"}}
+                    onClick={() => navigate("/register")}
                   >
                     <small>Create new account</small>
                   </a>
