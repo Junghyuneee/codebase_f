@@ -174,6 +174,7 @@ function ProjectCards() {
 
                         {projects.map((project) => (
                             <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
+                                {console.log(project)}
                                 <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
                             </Col>
                         ))}
