@@ -4,8 +4,8 @@
 */
 
 // src: /api/review/update/{id}
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	Button,
 	FormGroup,
@@ -14,16 +14,16 @@ import {
 	Row,
 	Col,
 	Form,
-} from 'reactstrap';
+} from "reactstrap";
 
-import DemoNavbar from './DemoNavbar';
-import SimpleFooter from './SimpleFooter';
-import ReviewHeader from './ReviewHeader';
+import DemoNavbar from "./DemoNavbar";
+import SimpleFooter from "./SimpleFooter";
+import ReviewHeader from "./ReviewHeader";
 
 const ReviewUpdate = () => {
 	const { id } = useParams(); //URL에서 id 파라미터를 가져옴
-	const [title, setTitle] = useState('');
-	const [content, setContent] = useState('');
+	const [title, setTitle] = useState("");
+	const [content, setContent] = useState("");
 	const navigate = useNavigate();
 
 	// 리뷰 데이터 가져오기
@@ -37,8 +37,8 @@ const ReviewUpdate = () => {
 				setTitle(data.title);
 				setContent(data.content);
 			} catch (error) {
-				console.error('리뷰 불러오기 오류:', error);
-				alert('리뷰를 불러오는 중 오류가 발생했습니다.');
+				console.error("리뷰 불러오기 오류:", error);
+				alert("리뷰를 불러오는 중 오류가 발생했습니다.");
 			}
 		};
 		fetchReview();
@@ -48,7 +48,7 @@ const ReviewUpdate = () => {
 	const handleUpdate = async (e) => {
 		e.preventDefault();
 		if (!title.trim() || !content.trim()) {
-			alert('제목과 내용을 모두 입력해주세요.');
+			alert("제목과 내용을 모두 입력해주세요.");
 			return;
 		}
 
@@ -56,20 +56,26 @@ const ReviewUpdate = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/update/${id}`,
 				{
-					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ title, content }),
 				}
 			);
 			if (response.ok) {
-				alert('리뷰가 수정되었습니다.');
+				alert("리뷰가 수정되었습니다.");
+
+				// 수정된 데이터로 다시 리뷰 상세 페이지를 가져오기
+				//const updatedReview = await response.json(); //서버에서 수정된 데이터 받아오기
+				//setTitle(updatedReview.title); //수정된 제목 반영
+				//setContent(updatedReview.content); //수정된 내용 반영
+
 				navigate(`/review/detail/${id}`); //수정 후 해당 리뷰의 상세 페이지로 돌아감
 			} else {
-				alert('리뷰 수정에 실패했습니다.');
+				alert("리뷰 수정에 실패했습니다.");
 			}
 		} catch (error) {
-			console.error('리뷰 수정 오류:', error);
-			alert('리뷰 수정 중 오류가 발생했습니다.');
+			console.error("리뷰 수정 오류:", error);
+			alert("리뷰 수정 중 오류가 발생했습니다.");
 		}
 	};
 
