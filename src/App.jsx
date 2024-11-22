@@ -7,6 +7,10 @@ import { Route, Routes } from "react-router-dom"
 import MainPage from "./pages/main/MainPage"
 import LoginModal from './components/auth/LoginModal';
 import RegisterModal from "./components/auth/RegisterModal";
+ origin/post
+
+// import ProjectList from "./pages/store/Store";
+
 import Store from "./components/store/Store";
 import StoreCart from "./components/store/Cart"
 import StoreTest from "./components/store/Test"
@@ -20,6 +24,7 @@ import OauthCallbackPage from "@/components/auth/OauthCallbackPage.jsx";
 
 import Review from './components/review/Review.jsx';
 
+ main
 
 function App() {
 
@@ -29,11 +34,16 @@ function App() {
       <Route path="/" element={<MainPage />} />
       <Route path="/login" element={<LoginModal />} />
       <Route path="/register" element={<RegisterModal />} />
+ origin/post
+   
+      {/* <Route path="/Store" exact element={<ProjectList />} /> */}
+
       <Route path="/store" exact element={<Store />} /> 
       <Route path="/store/cart" exact element={<StoreCart />} /> 
       <Route path="/store/test" exact element={<StoreTest />} />
       <Route path="/store/add" exact element={<StoreAdd />} />
       <Route path="/store/:id" element={<StoreDetail />} />
+ main
 
         <Route path="/admin/*" exact element={<Admin />} />
       <Route path="/team" exact element={<Team />} />

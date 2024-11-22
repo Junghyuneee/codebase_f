@@ -1,0 +1,23 @@
+/* src/pages/post/PostEdit.css */
+.post-edit-container {
+    border: 2px solid #007bff; /* 테두리 색상 */
+    border-radius: 10px;       /* 모서리 둥글게 */
+    padding: 20px;             /* 내부 여백 */
+    background-color: #f8f9fa; /* 배경색 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  textarea {
+    border-radius: 5px; /* 텍스트 에디터 둥글게 */
+    border: 1px solid #ced4da; /* 테두리 색상 */
+  }
+  
+  button {
+    width: 100%; /* 버튼을 전체 너비로 설정 */
+  }
+  
