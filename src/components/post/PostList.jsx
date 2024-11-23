@@ -1,53 +1,53 @@
-// src/views/post/PostList.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown } from 'react-bootstrap';
-import PostService from './PostService'; // API 호출을 위한 서비스
 import './PostList.css';
 
 const PostList = () => {
-  const [posts, setPosts] = useState([]);
+  const initialPosts = [
+    { id: 1, title: '첫 번째 게시물', author: '작성자 A', tags: ['해시태그1'], likes: 73, views: 100 },
+    { id: 2, title: '두 번째 게시물', author: '작성자 B', tags: ['해시태그2'], likes: 45, views: 200 },
+    { id: 3, title: '세 번째 게시물', author: '작성자 C', tags: ['해시태그3'], likes: 30, views: 150 },
+    { id: 4, title: '네 번째 게시물', author: '작성자 D', tags: ['해시태그4'], likes: 50, views: 300 },
+    { id: 5, title: '다섯 번째 게시물', author: '작성자 E', tags: ['해시태그5'], likes: 20, views: 50 },
+    { id: 6, title: '여섯 번째 게시물', author: '작성자 F', tags: ['해시태그6'], likes: 10, views: 75 },
+    { id: 7, title: '일곱 번째 게시물', author: '작성자 G', tags: ['해시태그7'], likes: 50, views: 300 },
+    { id: 8, title: '여덜 번째 게시물', author: '작성자 H', tags: ['해시태그8'], likes: 20, views: 50 },
+    { id: 9, title: '아홉 번째 게시물', author: '작성자 Y', tags: ['해시태그9'], likes: 10, views: 75 },
+  ];
+
   const [currentPage, setCurrentPage] = useState(1);
   const [sortOption, setSortOption] = useState('최신순');
-  const [searchTerm, setSearchTerm] = useState('');
-  const postsPerPage = 3;
+  const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태 추가
+  const postsPerPage = 3; // 페이지당 게시물 수
+  const totalPages = Math.ceil(initialPosts.length / postsPerPage); // 총 페이지 수
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const fetchedPosts = await PostService.getPosts();
-        setPosts(fetchedPosts);
-      } catch (error) {
-        console.error('게시물 가져오기 실패:', error);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  const sortedPosts = [...posts].sort((a, b) => {
+  // 게시물 정렬
+  const sortedPosts = [...initialPosts].sort((a, b) => {
     switch (sortOption) {
       case '최신순':
-        return b.id - a.id;
+        return b.id - a.id; // ID로 최신순 정렬
       case '추천순':
-        return b.likes - a.likes;
-      case '댓글순':
-        return 0; // 댓글 수에 대한 데이터가 없으므로 0으로 설정
+        return b.likes - a.likes; // 좋아요로 추천순 정렬
       case '조회순':
-        return b.views - a.views;
+        return b.views - a.views; // 조회수로 정렬
       default:
         return 0;
     }
   });
 
+  // 검색어에 따라 게시물 필터링
   const filteredPosts = sortedPosts.filter(post =>
-    post.title.includes(searchTerm) || post.author.includes(searchTerm)
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // 현재 페이지에 해당하는 게시물 가져오기
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
+  // 페이지 변경 처리
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -64,11 +64,11 @@ const PostList = () => {
           type="text" 
           placeholder="커뮤니티 내에서 검색" 
           className="search-bar" 
-          value={searchTerm}
+          value={searchTerm} 
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1);
-          }}
+            setCurrentPage(1); // 검색 시 페이지를 1로 리셋
+          }} 
         />
       </Form>
 
@@ -77,12 +77,12 @@ const PostList = () => {
           {sortOption}
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {['최신순', '추천순', '댓글순', '조회순'].map(option => (
+          {['최신순', '추천순', '조회순'].map(option => (
             <Dropdown.Item 
               key={option} 
               onClick={() => {
                 setSortOption(option);
-                setCurrentPage(1);
+                setCurrentPage(1); // 페이지를 1로 리셋
               }}
             >
               {option}
@@ -93,8 +93,8 @@ const PostList = () => {
 
       <Row>
         {currentPosts.map(post => (
-          <Col md={4} key={post.id} className="mb-4">
-            <Card className="post-card shadow-sm">
+          <Col md={4} xs={12} key={post.id} className="mb-4">
+            <Card className="post-card shadow-sm"> {/* 카드에 그림자 추가 */}
               <Card.Body>
                 <Card.Title className="font-weight-bold">{post.title}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">작성자: {post.author}</Card.Subtitle>
@@ -114,8 +114,8 @@ const PostList = () => {
           </Col>
         ))}
       </Row>
-
-      <Pagination className="justify-content-center">
+      
+      <Pagination className="justify-content-center mt-4">
         <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
         {[...Array(Math.ceil(filteredPosts.length / postsPerPage))].map((_, index) => (
           <Pagination.Item
