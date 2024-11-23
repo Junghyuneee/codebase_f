@@ -2,7 +2,7 @@ import axios from "axios";
 import {getAccessToken, setAccessToken} from "@/api/auth.js";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`,
     withCredentials: true,
     credentials: true,
 })
