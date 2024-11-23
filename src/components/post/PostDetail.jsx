@@ -1,4 +1,4 @@
-// src/views/post/PostDetail.jsx
+// src/components/post/PostDetail.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, Container, Form, Alert } from 'react-bootstrap';

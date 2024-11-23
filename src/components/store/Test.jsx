@@ -1,18 +1,30 @@
-/*cart
-2024 11 15
-배다원
+/* store
+배다원 
+2024 10 30
 */
+
+
+
 import React, { useEffect, useState, useRef, Outlet } from 'react';
+import { Link } from "react-router-dom";
 // nodejs library that concatenates classes
-import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
-// reactstrap components
+
+//nav 테스트
+import Banner from "./Banner_mini";
+import Banner_mini from "./Banner_mini";
+import img from "../../assets/img/theme/img-1-1200x1000.jpg";
+
+import apiClient from '@/api/apiClient';
+
+
 import {
-    Badge,
     Button,
     Card,
-    CardBody,
     CardImg,
+    ButtonGroup,
+    CardBody,
     FormGroup,
+
     Input,
     InputGroupAddon,
     InputGroupText,
@@ -20,235 +32,174 @@ import {
     Container,
     Row,
     Col,
-
-    UncontrolledCollapse,
+    Badge,
+    DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    DropdownToggle,
-    UncontrolledDropdown,
-    NavbarBrand,
-    Navbar,
-    NavItem,
-    NavLink,
-    Nav,
+    UncontrolledDropdown
 } from "reactstrap";
 
-import Banner from "./Banner_mini";
-function Page() {
 
-
-    const sampleCI = [
-        { id: 1, cart_id: 4, name: '브리츠 노이즈 캔슬링 블루투스 헤드폰', price: 10000, project_id: 13, username: '먀먀먀' },
-        { id: 2, cart_id: 4, name: '풀무원 스팀쿡 플러스 에어프라이어 15L AV15D11', price: 10000, project_id: 13, username: '먀먀먀' },
-        { id: 3, cart_id: 4, name: '인스탁스 스퀘어 SQ40 폴라로이드 즉석카메라+필름 40장+선물세트', price: 10000, project_id: 13, username: '먀먀먀' },
-        { id: 4, cart_id: 4, name: '복숭아', price: 10000, project_id: 13, username: '먀먀먀' },
-        { id: 5, cart_id: 4, name: '조아', price: 10000, project_id: 13, username: '먀먀먀' },
-        { id: 6, cart_id: 6, name: '딱복싫어물복', price: 999999, project_id: 13, username: '물복싫어딱복' }
-
-    ];
+function OneProjectCard({ name, price }) {
 
     return (
         <>
-            <Banner></Banner>
+            <Card className="bg-white shadow border-0 card-lift--hover">
+
+                <blockquote className="card-blockquote p-4">
+                    <CardImg style={{ borderRadius: '10px' }}
+                        alt="..."
+                        src={img}
+                        top
+                    />
+                    <h4 className="display-4 font-weight-bold text-black"
+                        style={{
+                            display: '-webkit-box',          // Flexbox 사용
+                            WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
+                            WebkitLineClamp: 2,              // 두 줄까지만 표시
+                            overflow: 'hidden',               // 넘치는 텍스트 숨기기
+                            textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
+                            width: '100%',                    // 부모 폭에 맞게 설정
+                            margin: 0                         // 기본 마진 제거
+                        }}
+                    >
+                        {name}
+                    </h4>
+                    <br /><br />
+
+
+                </blockquote>
+
+                <Badge color="secondary" pill className="mr-1"
+                    style={{
+                        fontSize: '14px',
+                        position: 'absolute', // 절대 위치 설정
+                        bottom: '30px',      // 하단에서 10px
+                        left: '30px'        // w좌측에서 10px
+                    }}>
+                    {price}원
+                </Badge>
+            </Card>
+
+
+        </>
+    );
+
+}
+
+function GetProject() {
+    //토큰 사용 테스트
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        // 데이터 가져오기
+        apiClient.get('http://localhost:8080/api/store')
+            .then((response) => {
+                setProjects(response.data); // 응답 데이터 설정
+            })
+            .catch((error) => {
+                console.error('API 호출 에러:', error);
+            });
+    }, []);
+
+
+    return projects;
+}
+
+
+function ProjectCards() {
+    const initprojects = GetProject();
+ 
+    const [sortOption, setSortOption] = useState('최신순');//기본값 (최신순)
+
+    const sortedProjects = [...initprojects].sort((a, b) => {
+        console.log("sortOption : ", sortOption);
+        switch (sortOption) {
+            case '최신순':
+                return b.id - a.id; // ID로 최신순 정렬
+            case '조회순':
+                return b.hit - a.hit; // 조회수로 정렬
+            case '이름순':
+                  return a.name.localeCompare(b.name, 'ko'); // 가나다 정렬
+            default:
+                return 0;
+        }
+
+    });
+
+    const projects = sortedProjects;
+    return (
+        <>
+
+            
+            <section className="section bg-secondary pt-4"
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center', // 가로 가운데 정렬
+                    padding: '0px',
+                    maxWidth: '100vw'
+                }}>
+                <div style={{ marginLeft: '10%', marginRight: '10%' }}>
+                
+      <ButtonGroup>
+        <Button
+          color="primary"
+          outline
+          onClick={() => setSortOption('최신순')}
+          active={sortOption === '최신순'}
+        >
+          최신순
+        </Button>
+        <Button
+          color="primary"
+          outline
+          onClick={() => setSortOption('조회순')}
+          active={sortOption === '조회순'}
+        >
+          조회순
+        </Button>
+        <Button
+          color="primary"
+          outline
+          onClick={() => setSortOption('이름순')}
+          active={sortOption === '이름순'}
+        >
+          이름순
+        </Button>
+
+      </ButtonGroup>
+
+                    <Row className="row-grid align-items-center">
+
+                        {projects.map((project) => (
+                            <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
+                                {console.log(project)}
+                                <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
+                            </Col>
+                        ))}
+
+                    </Row>
+                </div>
+            </section>
+        </>
+    );
+}
+
+function Page() {
+
+    return (
+        <>
+            <Banner />
+            <Banner_mini />
             <main>
 
-                <Container>
-
-
-
-
-                    <Row>
-                        <Col lg="8">
-
-
-                            {/* <CartItem /> */}
-                            {CartItem(sampleCI)}
-
-                        </Col>
-                        <Col lg="4">
-
-
-                            {Invoice(sampleCI)}
-
-
-                        </Col>
-                    </Row>
-                </Container>
-
-
-
+                <ProjectCards />
             </main>
         </>
-
     );
+
 }
 
 export default Page;
 
 
-function CartItem(CartItem) {
-
-
-
-
-    return (<>
-
-        <div className='section'>
-            <Button>전체삭제</Button>
-
-            <Card className='card shadow'>
-
-                <div className='p-2'>
-
-                    <Row className="align-items-center py-2" >
-                        {/* Thumbnail */}
-                        <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
-                            <img
-                                alt="Thumbnail"
-                                className="img-fluid rounded"
-                                src={Thumbnail}
-                                style={{ width: "120px", height: "auto" }}
-                            />
-                        </Col>
-
-                        {/* Title/Description */}
-                        <Col xs="5" sm="5" lg="6" xl="6">
-                            <div>
-                                <small className="d-block text-uppercase font-weight-bold">
-                                    Sample
-                                </small>
-                                <span className="text-muted">
-                                    이것은 샘플
-                                </span>
-                            </div>
-                        </Col>
-
-                        {/* Value */}
-                        <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                            <small className="d-block text-uppercase font-weight-bold mt-3">
-                                $123
-                            </small>
-                        </Col>
-
-                        {/* Remove Button */}
-                        <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                            <Button className="text-danger" size="sm">
-                                <i className="fa fa-trash" aria-hidden="true"></i>
-                            </Button>
-                        </Col>
-                    </Row>
-
-
-
-
-                </div>
-
-            </Card>
-
-            {CartItem.map((item) => (
-                // <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
-                //      <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
-                // </Col>
-
-                <a href={`/store/project/${item.project_id}`}>
-                <Card className='card shadow'>
-
-                    <div className='p-2'>
-
-                        <Row className="align-items-center py-2" >
-                            {/* Thumbnail */}
-                            <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
-                                <img
-                                    alt="Thumbnail"
-                                    className="img-fluid rounded"
-                                    src={Thumbnail}
-                                    style={{ width: "120px", height: "auto" }}
-                                />
-                            </Col>
-
-                            {/* Title/Description */}
-                            <Col xs="5" sm="5" lg="6" xl="6">
-                                <div>
-                                    <span className="d-block text-uppercase font-weight-bold">
-                                        {item.name}
-                                    </span>
-
-                                </div>
-                            </Col>
-
-                            {/* Value */}
-                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                                <small className="d-block text-uppercase font-weight-bold mt-3">
-                                    {item.price}원
-                                </small>
-                            </Col>
-
-                            {/* Remove Button */}
-                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                                <Button className="text-danger" size="sm">
-                                    <i className="fa fa-trash" aria-hidden="true">{item.id}삭제</i>
-                                </Button>
-                            </Col>
-                        </Row>
-
-
-
-
-                    </div>
-
-                </Card>
-                </a>
-
-
-            ))}
-
-
-        </div>
-
-
-    </>);
-
-}
-
-
-function Invoice(CartItem) {
-    var total = 0;
-    CartItem.forEach( function(item){
-        total = total + item.price;
-    });
-
-    return (<>
-
-        <div className='section'>
-            <Card className='card shadow'>
-                <blockquote className="card-blockquote">
-                    <div className=" mt-5">
-                        <h3>
-                            {total}원
-
-                        </h3>
-                        <div className="h6 font-weight-300">
-                            <i className="ni location_pin mr-2" />
-                            Bucharest, Romania
-                        </div>
-                        <div className="h6 mt-4">
-                            <i className="ni business_briefcase-24 mr-2" />
-                            Solution Manager - Creative Tim Officer
-                        </div>
-                        <div>
-                            <i className="ni education_hat mr-2" />
-                            University of Computer Science
-                        </div>
-
-
-                    </div>
-
-                    <Button>구매</Button>
-
-                </blockquote>
-            </Card>
-        </div>
-
-    </>);
-
-}
