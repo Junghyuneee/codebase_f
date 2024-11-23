@@ -11,7 +11,7 @@ const initialPosts = [
   { id: 5, title: '다섯 번째 게시물', author: '작성자 E', tags: ['해시태그5'], likes: 20, views: 50 },
   { id: 6, title: '여섯 번째 게시물', author: '작성자 F', tags: ['해시태그6'], likes: 10, views: 75 },
   { id: 7, title: '일곱 번째 게시물', author: '작성자 G', tags: ['해시태그7'], likes: 50, views: 300 },
-  { id: 8, title: '여덜 번째 게시물', author: '작성자 H', tags: ['해시태그8'], likes: 20, views: 50 },
+  { id: 8, title: '여덟 번째 게시물', author: '작성자 H', tags: ['해시태그8'], likes: 20, views: 50 },
   { id: 9, title: '아홉 번째 게시물', author: '작성자 Y', tags: ['해시태그9'], likes: 10, views: 75 },
 ];
 
