@@ -36,6 +36,30 @@ import Post from 'views/post/Post.js';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
+ origin/post
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" exact element={<Index />} />
+      <Route path="/landing-page" exact element={<Landing />} />
+      <Route path="/login-page" exact element={<Login />} />
+      <Route path="/profile-page" exact element={<Profile />} />
+      <Route path="/register-page" exact element={<Register />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+
+      <Route path="/Store" exact element={<Store />} />
+ origin/post
+      <Route path="/post" exact element={<Post />} />
+      <Route path="/Admin/*" exact element={<Admin />} />
+    
+
+      
+
+ main
+    </Routes>
+    <VisitorIp />
+  </BrowserRouter>
+
+
 	<BrowserRouter>
 		<Routes>
 			<Route path="/" exact element={<Index />} />
@@ -50,4 +74,5 @@ root.render(
 			<Route path="/post/*" element={<Post />} />
 		</Routes>
 	</BrowserRouter>
+ main
 );
