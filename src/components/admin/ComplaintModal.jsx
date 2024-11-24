@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {Modal, Button, ModalHeader, ModalBody, ModalFooter} from "reactstrap";
+import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
 
 const ComplaintModal = () => {
@@ -17,27 +17,43 @@ const ComplaintModal = () => {
                 <Modal isOpen={isModalOpen}>
                     <ModalHeader>신고 하기</ModalHeader>
                     <ModalBody>
-                        <FormCheck
-                            type="radio"
-                            id="option1"
-                            name="radioGroup"
-                            label="옵션 1"
-                            value="option1"
-                        />
-                        <FormCheck
-                            type="radio"
-                            id="option2"
-                            name="radioGroup"
-                            label="옵션 2"
-                            value="option2"
-                        />
-                        <FormCheck
-                            type="radio"
-                            id="option3"
-                            name="radioGroup"
-                            label="옵션 3"
-                            value="option3"
-                        />
+                        <FormGroup>
+                            <FormCheck
+                                type="radio"
+                                id="option1"
+                                name="radioGroup"
+                                label="마음에 들지 않아요"
+                                value="option1"
+                            />
+                            <FormCheck
+                                type="radio"
+                                id="option2"
+                                name="radioGroup"
+                                label="관련 없는 콘텐츠에요"
+                                value="option2"
+                            />
+                            <FormCheck
+                                type="radio"
+                                id="option3"
+                                name="radioGroup"
+                                label="거짓 정보가 포함되어 있어요"
+                                value="option3"
+                            />
+                            <FormCheck
+                                type="radio"
+                                id="option4"
+                                name="radioGroup"
+                                label="선정적인 내용이 있어요"
+                                value="option4"
+                            />
+                            <FormCheck
+                                type="radio"
+                                id="option5"
+                                name="radioGroup"
+                                label="공격적인 내용이 있어요"
+                                value="option5"
+                            />
+                        </FormGroup>
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={closeModal}>닫기</Button>
