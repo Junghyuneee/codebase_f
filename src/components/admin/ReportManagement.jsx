@@ -6,17 +6,17 @@ import React, { useState } from 'react';
 import axios from "axios"
 
 import '/src/components/admin/Admin.css';
-import ComplaintModal from './ComplaintModal.jsx';
+import ReportModal from './ReportModal.jsx';
 
 // 신고 버튼 옮기면 지우기
 import {Button, Modal} from "reactstrap";
 
-const ComplaintsManagement = () => {
+const ReportManagement = () => {
 
     return (
         <div className="container">
             <h3 className="mb-3 text-center">신고 사항 관리 페이지</h3>
-            <ComplaintModal />
+            <ReportModal />
             <table className="table-layout">
                 <thead>
                 <tr>
@@ -66,4 +66,4 @@ const ComplaintsManagement = () => {
     );
 };
 
-export default ComplaintsManagement;
+export default ReportManagement;

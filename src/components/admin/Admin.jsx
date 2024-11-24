@@ -9,7 +9,7 @@ import AdminNavBar from "./AdminNavBar.jsx";
 import DashboardContent from "./DashBoard.jsx";
 import MemberManagement from "./MemberManagement.jsx";
 import QuestionsManagement from "./Questions.jsx";
-import ComplaintsManagement from "./ComplaintsManagement.jsx";
+import ReportManagement from "./ReportManagement.jsx";
 
 function Admin() {
     return (
@@ -23,7 +23,7 @@ function Admin() {
                     <Route path="/questions" element={<QuestionsManagement />} />
                     <Route path="/complaints" element={
 
-                            <ComplaintsManagement />
+                            <ReportManagement />
 
                     } />
                 </Routes>

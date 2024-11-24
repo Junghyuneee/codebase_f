@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
 
-const ComplaintModal = () => {
+const ReportModal = ({category, categoryId, memberId, memberName}) => {
 
     const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 정의
 
@@ -10,9 +10,15 @@ const ComplaintModal = () => {
 
     const closeModal = () => { setModalOpen(false); } // 모달 닫기 함수
 
+    const handleReport = () => { // 신고 처리하는 함수
+        console.log(`카테고리: ${category}, 카테고리 id: ${categoryId}`);
+        alert("신고가 접수되었습니다.");
+        closeModal(); // 모달 닫기
+    }
+
     return (
         <>
-            <button onClick={openModal}>신고</button>
+            <Button color='danger' outline block onClick={openModal}><i className="ni ni-tag" /> 신고</Button>
             {isModalOpen && (
                 <Modal isOpen={isModalOpen}>
                     <ModalHeader>신고 하기</ModalHeader>
@@ -57,7 +63,7 @@ const ComplaintModal = () => {
                     </ModalBody>
                     <ModalFooter>
                         <Button onClick={closeModal}>닫기</Button>
-                        <Button>신고</Button>
+                        <Button onClick={handleReport}>신고</Button>
                     </ModalFooter>
                 </Modal>
             )}
@@ -65,4 +71,4 @@ const ComplaintModal = () => {
     )
 }
 
-export default ComplaintModal;
+export default ReportModal;
