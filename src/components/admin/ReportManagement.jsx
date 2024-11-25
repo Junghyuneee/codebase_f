@@ -2,16 +2,37 @@
 김은지
 2024 11 19
 */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from "axios"
 
 import '/src/components/admin/Admin.css';
 import ReportModal from './ReportModal.jsx';
-
-// 신고 버튼 옮기면 지우기
-import {Button, Modal} from "reactstrap";
+import apiClient from "@/api/apiClient.js";
 
 const ReportManagement = () => {
+    const [reports, setReports] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchReports = async () => {
+            try {
+                const response = await apiClient.get("/report/readAll");
+                setReports(response.data); // 서버에서 데이터 가져오기
+                console.log(response.data);
+            } catch (error) {
+                console.error("데이터 로드 실패:", error);
+                setError("신고 데이터를 불러오는 데 실패했습니다.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReports();
+    }, []);
+
+    if (loading) return <p>로딩 중...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div className="container">
@@ -19,47 +40,30 @@ const ReportManagement = () => {
             <ReportModal />
             <table className="table-layout">
                 <thead>
-                <tr>
-                    <th className="column-1">번호</th>
-                    <th className="column-1">이름</th>
-                    <th className="column-1">카테고리</th>
-                    <th className="column-3">신고 내용</th>
-                    <th className="column-1">처리 여부</th>
-                    <th className="column-1">처리</th>
-                </tr>
+                    <tr>
+                        <th className="column-1">번호</th>
+                        <th className="column-1">이름</th>
+                        <th className="column-1">카테고리</th>
+                        <th className="column-3">게시글 제목</th>
+                        <th className="column-3">신고 내용</th>
+                        <th className="column-1">처리 여부</th>
+                        <th className="column-1">처리</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td className="border-left">홍길동</td>
-                    <td className="border-left">프로젝트</td>
-                    <td className="border-left">신고1</td>
-                    <td className="border-left">X</td>
-                    <td className="border-left">
-                        <button onClick={(e) => e.preventDefault()}>처리</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td className="border-left">홍길동</td>
-                    <td className="border-left">자유게시판</td>
-                    <td className="border-left">신고1</td>
-                    <td className="border-left">O</td>
-                    <td className="border-left">
-                        <button onClick={(e) => e.preventDefault()}>처리</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td className="border-left">홍길동</td>
-                    <td className="border-left">리뷰</td>
-                    <td className="border-left">신고1</td>
-                    <td className="border-left">O</td>
-                    <td className="border-left">
-                        <button onClick={(e) => e.preventDefault()}>처리</button>
-                    </td>
-                </tr>
-
+                    {reports.map((report) => (
+                        <tr key={report.reportId}>
+                            <td>{report.reportId}</td>
+                            <td className="border-left">{report.memberName}</td>
+                            <td className="border-left">{report.category}</td>
+                            <td className="border-left">{report.categoryTitle}</td>
+                            <td className="border-left">{report.content}</td>
+                            <td className="border-left">{report.completed}</td>
+                            <td className="border-left">
+                                <button onClick={(e) => e.preventDefault()}>처리</button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
