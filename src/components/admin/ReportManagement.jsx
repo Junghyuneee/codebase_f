@@ -2,8 +2,7 @@
 김은지
 2024 11 19
 */
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
+import { useState, useEffect } from 'react';
 
 import '/src/components/admin/Admin.css';
 import ReportModal from './ReportModal.jsx';
@@ -55,10 +54,20 @@ const ReportManagement = () => {
                         <tr key={report.reportId}>
                             <td>{report.reportId}</td>
                             <td className="border-left">{report.memberName}</td>
-                            <td className="border-left">{report.category}</td>
+                            <td className="border-left">
+                                {report.category === 0
+                                ? "프로젝트"
+                                :report.category === 1
+                                ? "자유게시판"
+                                : "리뷰"}
+                            </td>
                             <td className="border-left">{report.categoryTitle}</td>
                             <td className="border-left">{report.content}</td>
-                            <td className="border-left">{report.completed}</td>
+                            <td className="border-left">
+                                {report.completed === true
+                                ? "O"
+                                : "X"}
+                            </td>
                             <td className="border-left">
                                 <button onClick={(e) => e.preventDefault()}>처리</button>
                             </td>

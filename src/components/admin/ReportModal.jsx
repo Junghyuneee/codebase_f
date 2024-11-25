@@ -1,3 +1,7 @@
+/*
+김은지
+2024 11 24
+*/
 import React, { useState } from "react";
 import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
