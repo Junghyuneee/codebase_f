@@ -1,15 +1,14 @@
 // src/components/post/PostDetail.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
+import { Button, Card, Container, Form, Alert, Modal } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa';
-import './PostDetail.css'; // 스타일을 위한 CSS 파일 import
+import './PostDetail.css';
 
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // 게시물 데이터 (실제 데이터는 API 호출로 가져와야 함)
   const post = { 
     title: `게시물 ${id}`, 
     content: `내용 ${id}`,
@@ -23,18 +22,19 @@ const PostDetail = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
 
-  // 게시물 삭제 핸들러
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportContent, setReportContent] = useState('');
+  const [reportCommentIndex, setReportCommentIndex] = useState(null);
+
   const handleDelete = () => {
     console.log(`게시물 ${id}가 삭제되었습니다.`);
     navigate('/post');
   };
 
-  // 게시물 수정 핸들러
   const handleEdit = () => {
     navigate(`/post/${id}/edit`);
   };
 
-  // 댓글 작성 핸들러
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (comment) {
@@ -43,17 +43,32 @@ const PostDetail = () => {
     }
   };
 
-  // 게시물 신고 핸들러
-  const handleReportPost = () => {
-    setReportMessage(`게시물 ${id}가 신고되었습니다.`);
+  const handleShowReportModal = (index) => {
+    setReportCommentIndex(index);
+    setShowReportModal(true);
   };
 
-  // 댓글 신고 핸들러
-  const handleReportComment = (commentIndex) => {
-    setReportMessage(`댓글이 신고되었습니다.`);
+  const handleCloseReportModal = () => {
+    setShowReportModal(false);
+    setReportContent('');
+    setReportCommentIndex(null);
   };
 
-  // 댓글 수정 핸들러
+  const handleReportSubmit = (e) => {
+    e.preventDefault();
+    if (reportCommentIndex !== null) {
+      setReportMessage(`댓글이 신고되었습니다. 내용: ${reportContent}`);
+      handleCloseReportModal();
+    } else {
+      setReportMessage(`게시물 ${id}가 신고되었습니다. 내용: ${reportContent}`);
+      handleCloseReportModal();
+    }
+  };
+
+  const handleReportComment = (index) => {
+    handleShowReportModal(index);
+  };
+
   const handleEditComment = (index) => {
     const updatedComment = prompt("수정할 댓글을 입력하세요:", comments[index].text);
     if (updatedComment !== null) {
@@ -63,30 +78,25 @@ const PostDetail = () => {
     }
   };
 
-  // 댓글 삭제 핸들러
   const handleDeleteComment = (index) => {
     const updatedComments = comments.filter((_, i) => i !== index);
     setComments(updatedComments);
   };
 
-  // 게시물 좋아요 핸들러
   const handleLikePost = () => {
     setLikeCount(likeCount + 1);
   };
 
-  // 게시물 싫어요 핸들러
   const handleDislikePost = () => {
     setDislikeCount(dislikeCount + 1);
   };
 
-  // 댓글 좋아요 핸들러
   const handleLikeComment = (index) => {
     const updatedComments = [...comments];
     updatedComments[index].likeCount += 1;
     setComments(updatedComments);
   };
 
-  // 댓글 싫어요 핸들러
   const handleDislikeComment = (index) => {
     const updatedComments = [...comments];
     updatedComments[index].dislikeCount += 1;
@@ -107,7 +117,7 @@ const PostDetail = () => {
               ))}
             </div>
             <div>
-              <Button variant="outline-danger" onClick={handleReportPost} className="ms-2 btn-sm">
+              <Button variant="outline-danger" onClick={handleShowReportModal} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 게시물 신고
               </Button>
               <Button variant="warning" onClick={handleEdit} className="me-2 btn-sm">수정</Button>
@@ -170,6 +180,29 @@ const PostDetail = () => {
       {reportMessage && (
         <Alert variant="info" className="mt-3">{reportMessage}</Alert>
       )}
+
+      {/* 신고 모달 */}
+      <Modal show={showReportModal} onHide={handleCloseReportModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{reportCommentIndex !== null ? "댓글 신고" : "게시물 신고"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleReportSubmit}>
+            <Form.Group controlId="reportContent">
+              <Form.Label>신고 내용</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={reportContent}
+                onChange={(e) => setReportContent(e.target.value)}
+                required
+                placeholder="신고 내용을 입력하세요"
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="mt-3">신고하기</Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };
