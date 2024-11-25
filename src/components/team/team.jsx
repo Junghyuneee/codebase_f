@@ -19,7 +19,7 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import DemoNavbar from "../../../template/src/components/Navbars/DemoNavbar.jsx";
+import DemoNavbar from "./Navbar.jsx";
 import TeamSection from "./TeamSection.jsx";
 
 function Team() {
