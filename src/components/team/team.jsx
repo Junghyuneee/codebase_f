@@ -118,16 +118,16 @@ function Team() {
                     <div className="d-flex justify-content-end">
                       <Button className="btn-icon mb-3 mb-sm-0" color="info" onClick={toggle}>
                           <span className="btn-inner--icon mr-1">
-                            <i className="fa fa-code" />
+                            <i className="fa fa-plus-circle" />
                           </span>
-                          <span className="btn-inner--text">팀 등록하기</span>
+                          <span className="btn-inner--text">프로젝트 등록하기</span>
                       </Button>
                       <Button
                           className="btn-white btn-icon mb-3 mb-sm-0 ml-1"
                           color="default"
                         >
-                          <span className="btn-inner--icon mr-1">
-                            <i className="ni ni-cloud-download-95" />
+                          <span className="btn-inner--icon mr-1" >
+                            <i className="fa fa-user-plus" />
                           </span>
                           <span className="btn-inner--text">팀원으로 등록</span>
                       </Button>
