@@ -31,7 +31,7 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName}
 
         try {
             // response : 응답 객체
-            const response = await apiClient.post("/report/create",{
+            const response = await apiClient.post("/reports/create",{
                 category: category,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, Container, Form, Alert, Modal } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa';
 import './PostDetail.css';
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -117,6 +118,13 @@ const PostDetail = () => {
               ))}
             </div>
             <div>
+              <ReportModal
+                    category={1}
+                    categoryId={id}
+                    categoryTitle={post.title}
+                    memberId={0}
+                    memberName={""}
+              />
               <Button variant="outline-danger" onClick={handleShowReportModal} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 게시물 신고
               </Button>
