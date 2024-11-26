@@ -1,9 +1,10 @@
 // src/views/post/PostDetail.jsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
-import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa'; // 아이콘 추가
-import './PostDetail.css'; // 스타일을 위한 CSS 파일 import
+import { Button, Card, Container, Form, Alert, Modal } from 'react-bootstrap';
+import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa';
+import './PostDetail.css';
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -98,6 +99,13 @@ const PostDetail = () => {
               <Button variant="outline-danger" onClick={handleReportPost} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 게시물신고
               </Button>
+              <ReportModal
+                  category={1}
+                  categoryId={id}
+                  categoryTitle={post.title}
+                  memberId={0}
+                  memberName={""}
+              />
               <Button variant="warning" onClick={handleEdit} className="me-2 btn-sm">수정</Button>
               <Button variant="danger" onClick={handleDelete} className="btn-sm">삭제</Button>
             </div>
