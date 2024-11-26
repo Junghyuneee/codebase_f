@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Card, Container, Form, Alert, Modal } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa';
 import './PostDetail.css';
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -21,8 +22,9 @@ const PostDetail = () => {
   const [reportMessage, setReportMessage] = useState('');
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
+
   const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState('');
+  const [reportContent, setReportContent] = useState('');
   const [reportCommentIndex, setReportCommentIndex] = useState(null);
 
   const handleDelete = () => {
@@ -49,18 +51,23 @@ const PostDetail = () => {
 
   const handleCloseReportModal = () => {
     setShowReportModal(false);
-    setReportReason('');
+    setReportContent('');
     setReportCommentIndex(null);
   };
 
   const handleReportSubmit = (e) => {
     e.preventDefault();
-    const message = reportCommentIndex !== null 
-      ? `댓글이 신고되었습니다. 사유: ${reportReason}` 
-      : `게시물 ${id}가 신고되었습니다. 사유: ${reportReason}`;
-    
-    setReportMessage(message);
-    handleCloseReportModal();
+    if (reportCommentIndex !== null) {
+      setReportMessage(`댓글이 신고되었습니다. 내용: ${reportContent}`);
+      handleCloseReportModal();
+    } else {
+      setReportMessage(`게시물 ${id}가 신고되었습니다. 내용: ${reportContent}`);
+      handleCloseReportModal();
+    }
+  };
+
+  const handleReportComment = (index) => {
+    handleShowReportModal(index);
   };
 
   const handleEditComment = (index) => {
@@ -111,7 +118,14 @@ const PostDetail = () => {
               ))}
             </div>
             <div>
-              <Button variant="outline-danger" onClick={() => handleShowReportModal(null)} className="ms-2 btn-sm">
+              <ReportModal
+                    category={1}
+                    categoryId={id}
+                    categoryTitle={post.title}
+                    memberId={0}
+                    memberName={""}
+              />
+              <Button variant="outline-danger" onClick={handleShowReportModal} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 게시물 신고
               </Button>
               <Button variant="warning" onClick={handleEdit} className="me-2 btn-sm">수정</Button>
@@ -158,7 +172,7 @@ const PostDetail = () => {
                 <Button variant="link" className="me-2" onClick={() => handleDislikeComment(index)}>
                   <FaThumbsDown /> {c.dislikeCount}
                 </Button>
-                <Button variant="danger" className="me-2" onClick={() => handleShowReportModal(index)}>
+                <Button variant="danger" className="me-2" onClick={() => handleReportComment(index)}>
                   <FaExclamationTriangle /> 댓글 신고
                 </Button>
                 <Button variant="warning" className="me-2" onClick={() => handleEditComment(index)}>수정</Button>
@@ -182,51 +196,20 @@ const PostDetail = () => {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleReportSubmit}>
-            <Form.Group>
-              <Form.Label>신고 사유</Form.Label>
-              <div>
-                <Form.Check
-                  type="radio"
-                  label="마음에 들지 않아요"
-                  value="마음에 들지 않아요"
-                  checked={reportReason === "마음에 들지 않아요"}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  label="관련 없는 콘텐츠예요"
-                  value="관련 없는 콘텐츠예요"
-                  checked={reportReason === "관련 없는 콘텐츠예요"}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  label="거짓 정보가 포함되어 있어요"
-                  value="거짓 정보가 포함되어 있어요"
-                  checked={reportReason === "거짓 정보가 포함되어 있어요"}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  label="선정적인 내용이 있어요"
-                  value="선정적인 내용이 있어요"
-                  checked={reportReason === "선정적인 내용이 있어요"}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-                <Form.Check
-                  type="radio"
-                  label="공격적인 내용이 있어요"
-                  value="공격적인 내용이 있어요"
-                  checked={reportReason === "공격적인 내용이 있어요"}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-              </div>
+            <Form.Group controlId="reportContent">
+              <Form.Label>신고 내용</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={reportContent}
+                onChange={(e) => setReportContent(e.target.value)}
+                required
+                placeholder="신고 내용을 입력하세요"
+              />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-3">신고하기</Button>
           </Form>
         </Modal.Body>
-     
-
       </Modal>
     </Container>
   );
