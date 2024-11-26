@@ -20,6 +20,7 @@ import {
     Row,
     Col,
 } from "reactstrap";
+import {Link} from "react-router-dom";
 
 function AdminNavBar() {
 
@@ -41,21 +42,21 @@ function AdminNavBar() {
                                 <Nav className="flex-column w-100" navbar>
                                     <NavItem>
                                         <NavLink
-                                            href="/admin/dashboard"
+                                            to="/admin/dashboard" tag={Link}
                                         >
                                             대시보드 <span className="sr-only">(current)</span>
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
                                         <NavLink
-                                            href="/admin/membermanagement"
+                                            to="/admin/memberManagement" tag={Link}
                                         >
                                             회원관리 <span className="sr-only">(current)</span>
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
                                         <NavLink
-                                            href="/admin/questions"
+                                            to="/admin/questions" tag={Link}
                                         >
                                             문의사항
                                         </NavLink>
@@ -67,25 +68,22 @@ function AdminNavBar() {
                                             left
                                         >
                                             <DropdownItem
-                                                href="/admin/complaints"
+                                                to="/admin/reports?category=readAll" tag={Link}
                                             >
                                                 전체
                                             </DropdownItem>
                                             <DropdownItem
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                to="/admin/reports?category=readProject" tag={Link}
                                             >
                                                 프로젝트
                                             </DropdownItem>
                                             <DropdownItem
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                to="/admin/reports?category=readPost" tag={Link}
                                             >
                                                 자유게시판
                                             </DropdownItem>
                                             <DropdownItem
-                                                href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                to="/admin/reports?category=readReview" tag={Link}
                                             >
                                                 리뷰
                                             </DropdownItem>
