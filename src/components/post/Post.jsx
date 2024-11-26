@@ -1,9 +1,7 @@
-import React, { lazy, Suspense, useState, useEffect } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DemoNavbar from "./DemoNavbar.jsx"; // Navbar 임포트
-import Headroom from 'headroom.js'; // Headroom 임포트
 
 // Lazy loading components
 const PostList = lazy(() => import('./PostList'));
@@ -19,34 +17,45 @@ const Loading = () => (
 );
 
 const Post = () => {
-  const [collapseClasses, setCollapseClasses] = useState('');
-
-  useEffect(() => {
-    const navbarMain = document.getElementById('navbar-main');
-    if (navbarMain) {
-      let headroom = new Headroom(navbarMain);
-      headroom.init();
-    }
-  }, []);
-
-  const onExiting = () => {
-    setCollapseClasses('collapsing-out');
-  };
-
-  const onExited = () => {
-    setCollapseClasses('');
-  };
-
   return (
-    <div>
-      <header className="header-global">
-        <DemoNavbar
-          collapseClasses={collapseClasses}
-          onExiting={onExiting}
-          onExited={onExited}
+    <div
+      style={{
+        backgroundColor: '#f0f4f8',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: '20px',
+        position: 'relative', // 물방울 모양을 위해 상대적 위치 설정
+      }}
+    >
+      <main
+        style={{
+          width: '100%',
+          maxWidth: '1200px',
+          padding: '40px 20px', // 패딩 조정
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          backgroundColor: '#fff',
+          borderRadius: '10px',
+          position: 'relative', // 물방울 모양을 위해 상대적 위치 설정
+        }}
+      >
+        {/* 물방울 모양 추가 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-50px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100px',
+            height: '100px',
+            backgroundColor: '#007bff',
+            borderRadius: '50%',
+            filter: 'blur(20px)',
+            zIndex: -1,
+          }}
         />
-      </header>
-      <main>
+
         <section>
           <Row className="justify-content-center">
             <Col lg="10">
