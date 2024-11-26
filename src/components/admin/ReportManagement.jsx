@@ -42,7 +42,7 @@ const ReportManagement = () => {
             }
 
             try {
-                const response = await apiClient.get(`/reports/${category}`);
+                const response = await apiClient.get(`/reports/read/${category}`);
                 setReports(response.data); // 서버에서 데이터 가져오기
                 console.log(response.data);
             } catch (error) {
