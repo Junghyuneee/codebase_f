@@ -6,8 +6,9 @@ import React, { useState } from "react";
 import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
 import apiClient from "@/api/apiClient.js";
+import {FaExclamationTriangle} from "react-icons/fa";
 
-const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName}) => {
+const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName, style}) => {
 
     const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 정의
 
@@ -61,7 +62,9 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName}
 
     return (
         <>
-            <Button color='danger' outline block onClick={openModal}><i className="ni ni-tag" /> 신고</Button>
+            <Button style={style} color='danger' outline onClick={openModal} className="ms-2 btn-sm">
+                <FaExclamationTriangle /> 신고
+            </Button>
             {isModalOpen && (
                 <Modal isOpen={isModalOpen}>
                     <ModalHeader>신고 하기</ModalHeader>
