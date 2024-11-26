@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Container, Row, Col } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Lazy loading components
@@ -57,22 +57,20 @@ const Post = () => {
         />
 
         <section>
-          <Container className="pt-lg-7">
-            <Row className="justify-content-center">
-              <Col lg="10">
-                <h1 className="text-center mb-4"></h1>
-                <Suspense fallback={<Loading />}>
-                  <Routes>
-                    <Route path="/" element={<PostList />} />
-                    <Route path="new" element={<PostCreate />} />
-                    <Route path=":id" element={<PostDetail />} />
-                    <Route path=":id/edit" element={<PostEdit />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Suspense>
-              </Col>
-            </Row>
-          </Container>
+          <Row className="justify-content-center">
+            <Col lg="10">
+              <h1 className="text-center mb-4"></h1>
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/" element={<PostList />} />
+                  <Route path="new" element={<PostCreate />} />
+                  <Route path=":id" element={<PostDetail />} />
+                  <Route path=":id/edit" element={<PostEdit />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </Col>
+          </Row>
         </section>
       </main>
     </div>
