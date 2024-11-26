@@ -9,9 +9,9 @@ import ReportModal from "@/components/admin/ReportModal.jsx";
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const post = { 
-    title: `게시물 ${id}`, 
+
+  const post = {
+    title: `게시물 ${id}`,
     content: `내용 ${id}`,
     author: '작성자 A',
     tags: ['해시태그1', '해시태그2']
@@ -121,7 +121,7 @@ const PostDetail = () => {
               <ReportModal
                     category={1}
                     categoryId={id}
-                    categoryTitle={post.name}
+                    categoryTitle={post.title}
                     memberId={0}
                     memberName={""}
               />
