@@ -21,11 +21,7 @@ function Admin() {
                     <Route path="/dashboard" element={<DashboardContent />} />
                     <Route path="/membermanagement" element={<MemberManagement />} />
                     <Route path="/questions" element={<QuestionsManagement />} />
-                    <Route path="/complaints" element={
-
-                            <ReportManagement />
-
-                    } />
+                    <Route path="/reports" element={<ReportManagement />} />
                 </Routes>
             </main>
         </div>
