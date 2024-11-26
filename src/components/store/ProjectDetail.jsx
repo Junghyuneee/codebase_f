@@ -34,6 +34,7 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 //import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
 
 import Banner from "./Banner.jsx";
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
 export function ProjectCard(project) {
 
@@ -120,7 +121,15 @@ function ProjectExplain(project) {
                                 <Button color='default' outline block><i className="ni ni-favourite-28" /> 찜하기</Button>
                             </Col>
                             <Col>
-                                <Button color='danger' outline block><i className="ni ni-tag" /> 신고</Button>
+                                <ReportModal
+                                    category={0}
+                                    categoryId={project.id}
+                                    categoryTitle={project.name}
+                                    memberId={0}
+                                    memberName={""}
+                                    style={{width:'100%', padding: '.375rem .75rem', fontSize: '1rem'
+                                    }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
+                                />
                             </Col>
                         </Row>
                     </div>

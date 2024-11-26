@@ -124,10 +124,8 @@ const PostDetail = () => {
                     categoryTitle={post.title}
                     memberId={0}
                     memberName={""}
+                    style={{}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
               />
-              <Button variant="outline-danger" onClick={handleShowReportModal} className="ms-2 btn-sm">
-                <FaExclamationTriangle /> 게시물 신고
-              </Button>
               <Button variant="warning" onClick={handleEdit} className="me-2 btn-sm">수정</Button>
               <Button variant="danger" onClick={handleDelete} className="btn-sm">삭제</Button>
             </div>
