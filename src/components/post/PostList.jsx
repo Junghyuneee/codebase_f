@@ -87,7 +87,7 @@ const PostList = () => {
                 <Card.Title>{post.title}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">작성자: {post.author}</Card.Subtitle>
                 <Card.Text>
-                  <span>토픽: {post.topic}</span><br /> {/* 토픽 추가 */}
+                  <span>주제: {post.topic}</span><br /> {/* 토픽 추가 */}
                   <span>등록일: {new Date(post.created_at).toLocaleString()}</span><br />
                   <span>좋아요 수: {post.likes}</span><br />
                   <span>조회수: {post.views}</span><br />

@@ -54,7 +54,7 @@ const PostCreate = () => {
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="topic">
-          <Form.Label>토픽</Form.Label>
+          <Form.Label>주제</Form.Label>
           <Form.Control
             type="text"
             value={topic}
