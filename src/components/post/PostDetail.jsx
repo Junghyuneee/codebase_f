@@ -9,9 +9,9 @@ import ReportModal from "@/components/admin/ReportModal.jsx";
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const post = {
-    title: `게시물 ${id}`,
+  
+  const post = { 
+    title: `게시물 ${id}`, 
     content: `내용 ${id}`,
     author: '작성자 A',
     tags: ['해시태그1', '해시태그2']
@@ -125,6 +125,9 @@ const PostDetail = () => {
                     memberId={0}
                     memberName={""}
               />
+              <Button variant="outline-danger" onClick={handleShowReportModal} className="ms-2 btn-sm">
+                <FaExclamationTriangle /> 게시물 신고
+              </Button>
               <Button variant="warning" onClick={handleEdit} className="me-2 btn-sm">수정</Button>
               <Button variant="danger" onClick={handleDelete} className="btn-sm">삭제</Button>
             </div>
