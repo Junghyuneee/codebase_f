@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import {getData} from './storeAPI';
+import { getData } from './storeAPI';
 
 import {
     Badge,
@@ -55,15 +55,15 @@ export function ProjectCard(project) {
                         <div className="text-center mt-5 mb-5">
                             <h3>
                                 {project.name}
-                               
+
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
                                 제작자 : asdf
                             </div>
-                            
+
                         </div>
-                       
+
                     </div>
                 </Card>
             </div>
@@ -77,28 +77,27 @@ function ProjectExplain(project) {
         <div class="section">
 
             <Card className='card-profile shadow'>
-                <div className="text-center mt-5">
-                    <h3>
+                <div className=" mt-5">
+                    <h3 className='text-center'>
                         {project.name}
-         
+
                     </h3>
-                    <div className="h6 font-weight-300">
+                    <div className="text-center h6 font-weight-300">
                         <i className="ni location_pin mr-2" />
                         제작자 : asdf
                     </div>
                     <div className="h6 mt-4">
                         <i className="ni business_briefcase-24 mr-2" />
-                        -
+
                     </div>
-                    <div>
-                        <i className="ni education_hat mr-2" />
-                        상세설명의 내용이 담김
-                    </div>
+                    <Container>
+                        <div>
+                            <i className="ni education_hat mr-2" />
+                            {project.content}상세설명의 내용이 담김 줄바꿈 2줄 설정하기
+                        </div>
+                    </Container>
                 </div>
                 <div className="mt-5 py-5 border-top ">
-                    
-
-
                     <div className='p-4'>
                         <h1 className='font-weight-bold'>
                             {project.price}원
@@ -118,7 +117,7 @@ function ProjectExplain(project) {
                                 <Button color='default' outline block><i className="ni ni-chat-round" /> 채팅</Button>
                             </Col>
                             <Col style={{ padding: '0' }}>
-                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 찜하기</Button>
+                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰쓰기</Button>
                             </Col>
                             <Col>
                                 <ReportModal
@@ -127,7 +126,8 @@ function ProjectExplain(project) {
                                     categoryTitle={project.name}
                                     memberId={0}
                                     memberName={""}
-                                    style={{width:'100%', padding: '.375rem .75rem', fontSize: '1rem'
+                                    style={{
+                                        width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
                                     }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
                                 />
                             </Col>
@@ -150,40 +150,14 @@ function ProjectDetail(project) {
             <Container>
                 <div className='section'>
                     <h1 className='font-weight-bold'>상세설명</h1>
-                    {project.content}
+                    <hr />
+                    <h3>{project.content}</h3>
                 </div>
             </Container>
         </>
     );
 }
 
-function getProject(id) {
-
-
-    const [project, setProject] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch(`http://localhost:8080/api/store/${id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-
-                setProject(data);
-
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return project;
-}
 function Page() {
 
     // 현재 페이지의 URL을 가져옵니다.
@@ -193,13 +167,13 @@ function Page() {
     const url = new URL(currentUrl).pathname;
     //console.log(url);
     let id = url.replace("/store/", "");
-    console.log("id ",id);
+    console.log("id ", id);
 
 
     //const project = getProject(parseInt(id, 10));
     id = parseInt(id, 10);
     const project = getData(`/api/store/${id}`);
-    
+
     console.log("project : ", project);
 
     return (

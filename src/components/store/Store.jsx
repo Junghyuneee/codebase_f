@@ -85,30 +85,6 @@ function OneProjectCard({ name, price }) {
 
 }
 
-function GetProject() {
-
-    const [projects, setProjects] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch('http://localhost:8080/api/store')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                setProjects(data);
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return projects;
-}
 
 
 function ProjectCards() {

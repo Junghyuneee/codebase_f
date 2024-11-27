@@ -36,22 +36,9 @@ function ProjectForm() {
       age: document.getElementById("age").value,
     };
     console.log(formData);
-    //sendToBackend(formData);
     postData('/api/store', formData);
   };
 
-  const sendToBackend = async (data) => {
-    console.log(data);
-    try {
-      const response = await apiClient.post(
-        "/api/store",
-        data
-      );
-      console.log("Response:", response.data);
-    } catch (error) {
-      console.error("Error posting data:", error);
-    }
-  };
 
   const clearForm = () => {
     document.getElementById("contactForm").reset(); // 폼 초기화
