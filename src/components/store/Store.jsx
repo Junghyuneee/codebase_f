@@ -12,6 +12,9 @@ import Banner from "./Banner";
 import Banner_mini from "./Banner_mini";
 import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
+import {getData} from '@/api/store.js';
+
+
 import {
     Button,
     Card,
@@ -109,8 +112,8 @@ function GetProject() {
 
 
 function ProjectCards() {
-    const initprojects = GetProject();
- 
+    //const initprojects = GetProject();
+    const initprojects = getData('/api/store');
     const [sortOption, setSortOption] = useState('최신순');//기본값 (최신순)
 
     const sortedProjects = [...initprojects].sort((a, b) => {

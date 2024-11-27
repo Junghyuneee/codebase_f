@@ -16,6 +16,7 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
 import apiClient from '@/api/apiClient';
 
+import {getData} from '@/api/store.js';
 
 import {
     Button,
@@ -93,7 +94,7 @@ function GetProject() {
 
     useEffect(() => {
         // 데이터 가져오기
-        apiClient.get('http://localhost:8080/api/store')
+        apiClient.get('/api/store')
             .then((response) => {
                 setProjects(response.data); // 응답 데이터 설정
             })
@@ -109,7 +110,10 @@ function GetProject() {
 
 function ProjectCards() {
     const initprojects = GetProject();
- 
+
+    const data = getData('/api/store');
+    console.log("data: ", data); // 데이터를 콘솔에 출력
+
     const [sortOption, setSortOption] = useState('최신순');//기본값 (최신순)
 
     const sortedProjects = [...initprojects].sort((a, b) => {
