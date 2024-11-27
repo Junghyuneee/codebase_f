@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from "@/api/apiClient.js";
 
-export function getData(url){
+export function getData(url) {
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -26,3 +26,21 @@ export function getData(url){
 
     return data; // 상태 반환
 }
+
+export function postData(url, data){
+
+    const sendToBackend = async (data) => {
+        console.log(data);
+        try {
+          const response = await apiClient.post(
+            url,
+            data
+          );
+          console.log("Response:", response.data);
+        } catch (error) {
+          console.error("Error posting data:", error);
+        }
+    };
+    
+    sendToBackend();
+} 
