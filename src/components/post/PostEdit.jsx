@@ -1,81 +1,92 @@
-// src/pages/post/PostEdit.jsx
-import React, { useState } from 'react';
+// src/components/post/PostEdit.jsx
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Form, Container } from 'react-bootstrap';
-import './PostEdit.css'; // 스타일을 위한 CSS 파일 import
 
 const PostEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  const [post, setPost] = useState({
+    title: '',
+    content: '',
+    topic: ''
+  });
 
-  const [topic, setTopic] = useState(''); // 토픽 상태
-  const [title, setTitle] = useState(''); // 제목 상태
-  const [tags, setTags] = useState(''); // 태그 상태
-  const [content, setContent] = useState(''); // 내용 상태
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/post/detail/${id}`);
+        if (!response.ok) throw new Error('게시물 가져오기 실패');
+        const data = await response.json();
+        setPost(data);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
 
-  const handleSubmit = (e) => {
+    fetchPost();
+  }, [id]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPost(prevPost => ({ ...prevPost, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('게시물 수정:', { id, topic, title, tags, content });
-    navigate(`/post/${id}`); // 수정 후 상세페이지로 이동
+    try {
+      const response = await fetch(`http://localhost:8080/api/post/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(post),
+      });
+
+      if (!response.ok) throw new Error('게시물 수정 실패');
+      navigate(`/post/${id}`);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (
-    <Container className="post-edit-container mt-4">
-      <h1>자유게시판 수정</h1>
+    <Container className="mt-4">
+      <h1>게시물 수정</h1>
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="topic">
-          <Form.Label>토픽</Form.Label>
-          <Form.Control
-            type="text"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            placeholder="토픽을 입력하세요"
-            required
-            className="mb-3"
-          />
-        </Form.Group>
-
         <Form.Group controlId="title">
           <Form.Label>제목</Form.Label>
           <Form.Control
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="제목을 입력하세요"
+            name="title"
+            value={post.title}
+            onChange={handleChange}
             required
-            className="mb-3"
           />
         </Form.Group>
-
-        <Form.Group controlId="tags">
-          <Form.Label>태그</Form.Label>
-          <Form.Control
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="쉼표로 구분하여 입력"
-            className="mb-3"
-          />
-        </Form.Group>
-
-        <Form.Group controlId="content">
-          <Form.Label>본문</Form.Label>
+        <Form.Group controlId="content" className="mt-3">
+          <Form.Label>내용</Form.Label>
           <Form.Control
             as="textarea"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            name="content"
+            rows={5}
+            value={post.content}
+            onChange={handleChange}
             required
-            rows={6}
-            className="mb-3"
           />
-          <Form.Text className="text-muted">
-            여러분의 생각을 자유롭게 표현해 주세요. 함께 의견을 나누는 것이 중요합니다.
-          </Form.Text>
         </Form.Group>
-
-        <Button variant="primary" type="submit" className="mt-3">
-          수정하기
-        </Button>
+        <Form.Group controlId="topic" className="mt-3">
+          <Form.Label>주제</Form.Label>
+          <Form.Control
+            type="text"
+            name="topic"
+            value={post.topic}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit" className="mt-3">수정하기</Button>
       </Form>
     </Container>
   );
