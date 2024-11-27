@@ -36,8 +36,8 @@ function ProjectForm() {
       age: document.getElementById("age").value,
     };
     console.log(formData);
-    sendToBackend(formData);
-    postData('/api/store', {test:"test", hey : "asdf"});
+    //sendToBackend(formData);
+    postData('/api/store', formData);
   };
 
   const sendToBackend = async (data) => {

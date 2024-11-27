@@ -5,7 +5,8 @@ import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
 // reactstrap components
 import classnames from "classnames";
 import axios from "axios";
-
+import {postData} from './storeAPI';
+import apiClient from "@/api/apiClient";
 // reactstrap components
 import {
   Badge,
@@ -35,14 +36,15 @@ function ProjectForm() {
       age: document.getElementById("age").value,
     };
     console.log(formData);
-    sendToBackend(formData);
+    //sendToBackend(formData);
+    postData('/api/store', formData);
   };
 
   const sendToBackend = async (data) => {
     console.log(data);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/store",
+      const response = await apiClient.post(
+        "/api/store",
         data
       );
       console.log("Response:", response.data);
