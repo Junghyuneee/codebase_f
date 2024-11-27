@@ -34,7 +34,7 @@ export async function postOAuthSignUp(email, username, address, postcode, tel) {
 export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
     // Save the access token after logging in
-    setAccessToken(response.data.accessToken);
+    setAccessToken('Bearer ' + response.data.accessToken);
     if(getAccessToken() === "Invalid password") {
         localStorage.clear();
         return false;
