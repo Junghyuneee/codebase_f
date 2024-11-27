@@ -2,7 +2,7 @@ import axios from "axios";
 import {getAccessToken, setAccessToken} from "@/api/auth.js";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`,
     withCredentials: true,
     credentials: true,
 })
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(config => {
         const token = getAccessToken();
         if (token && token.startsWith("Bearer ")) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `${token}`;
         }
         return config;
     },
