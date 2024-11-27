@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert,} from 'react-bootstrap';
+import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
@@ -14,9 +14,10 @@ const PostDetail = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
 
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasDisliked, setHasDisliked] = useState(false);
+
   const [editCommentIndex, setEditCommentIndex] = useState(null);
-
-
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -71,6 +72,34 @@ const PostDetail = () => {
     }
   };
 
+  const handleLike = () => {
+    if (hasLiked) {
+      setLikeCount(likeCount - 1);
+      setHasLiked(false);
+    } else {
+      setLikeCount(likeCount + 1);
+      setHasLiked(true);
+      if (hasDisliked) {
+        setDislikeCount(dislikeCount - 1);
+        setHasDisliked(false);
+      }
+    }
+  };
+
+  const handleDislike = () => {
+    if (hasDisliked) {
+      setDislikeCount(dislikeCount - 1);
+      setHasDisliked(false);
+    } else {
+      setDislikeCount(dislikeCount + 1);
+      setHasDisliked(true);
+      if (hasLiked) {
+        setLikeCount(likeCount - 1);
+        setHasLiked(false);
+      }
+    }
+  };
+
   return (
     <Container className="post-detail-container mt-4">
       {post ? (
@@ -87,8 +116,12 @@ const PostDetail = () => {
               </div>
             </div>
             <div className="mt-3">
-              <Button variant="link" onClick={() => setLikeCount(likeCount + 1)}><FaThumbsUp /> {likeCount}</Button>
-              <Button variant="link" onClick={() => setDislikeCount(dislikeCount + 1)}><FaThumbsDown /> {dislikeCount}</Button>
+              <Button variant="link" onClick={handleLike}>
+                <FaThumbsUp /> {likeCount}
+              </Button>
+              <Button variant="link" onClick={handleDislike}>
+                <FaThumbsDown /> {dislikeCount}
+              </Button>
               <ReportModal
                 category={1}
                 categoryId={id}
@@ -131,7 +164,6 @@ const PostDetail = () => {
           </Card.Body>
         </Card>
       )) : <p>댓글이 없습니다.</p>}
-
     </Container>
   );
 };
