@@ -11,6 +11,8 @@ export function getData(url){
         const fetchProjects = async () => {
             try {
                 const response = await apiClient.get(url); // API 호출
+                //console.log('Response Headers: ', response.config.headers); // 요청한 헤더 출력
+                //console.log('Response data: ', response.data); //응답의 데이터 출력
                 setData(response.data); // 데이터 상태 업데이트
             } catch (err) {
                 setError(err); // 에러 상태 업데이트

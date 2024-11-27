@@ -12,7 +12,7 @@ import Banner from "./Banner";
 import Banner_mini from "./Banner_mini";
 import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
-import {getData} from '@/api/store.js';
+import {getData} from './storeAPI';
 
 
 import {

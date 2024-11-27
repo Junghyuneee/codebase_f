@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import {getData} from './storeAPI';
 
 import {
     Badge,
@@ -55,11 +55,11 @@ export function ProjectCard(project) {
                         <div className="text-center mt-5 mb-5">
                             <h3>
                                 {project.name}
-                                <span className="font-weight-light">, 27</span>
+                               
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
-                                Bucharest, Romania
+                                제작자 : asdf
                             </div>
                             
                         </div>
@@ -80,19 +80,19 @@ function ProjectExplain(project) {
                 <div className="text-center mt-5">
                     <h3>
                         {project.name}
-                        <span className="font-weight-light">, 27</span>
+         
                     </h3>
                     <div className="h6 font-weight-300">
                         <i className="ni location_pin mr-2" />
-                        Bucharest, Romania
+                        제작자 : asdf
                     </div>
                     <div className="h6 mt-4">
                         <i className="ni business_briefcase-24 mr-2" />
-                        Solution Manager - Creative Tim Officer
+                        -
                     </div>
                     <div>
                         <i className="ni education_hat mr-2" />
-                        University of Computer Science
+                        상세설명의 내용이 담김
                     </div>
                 </div>
                 <div className="mt-5 py-5 border-top ">
@@ -164,7 +164,7 @@ function getProject(id) {
 
     useEffect(() => {
         // 데이터 가져오기
-        fetch(`http://localhost:8080/api/store/project/${id}`)
+        fetch(`http://localhost:8080/api/store/${id}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('데이터를 가져오는데 실패했습니다.');
@@ -192,11 +192,14 @@ function Page() {
     // URL 객체를 생성합니다.
     const url = new URL(currentUrl).pathname;
     //console.log(url);
-    const id = url.replace("/store/", "");
+    let id = url.replace("/store/", "");
     console.log("id ",id);
 
 
-    const project = getProject(parseInt(id, 10));
+    //const project = getProject(parseInt(id, 10));
+    id = parseInt(id, 10);
+    const project = getData(`/api/store/${id}`);
+    
     console.log("project : ", project);
 
     return (
