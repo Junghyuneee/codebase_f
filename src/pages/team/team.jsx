@@ -21,8 +21,8 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import DemoNavbar from "./Navbar.jsx";
-import TeamSection from "./TeamSection.jsx";
+import DemoNavbar from "../../components/team/Navbar.jsx";
+import TeamSection from "../../components/team/TeamSection.jsx";
 
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -95,8 +95,9 @@ function Team() {
 
   return (
     <>
-      <DemoNavbar />
+      
       <main>
+        
         <div className="position-relative">
           {/* Hero Section */}
           <section className="section section-lg section-shaped pb-250">

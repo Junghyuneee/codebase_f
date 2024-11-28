@@ -10,7 +10,7 @@ import RegisterModal from "./components/auth/RegisterModal";
 
 import Store from "./components/store/StoreRoutes.jsx";
 
-import Team from "./components/team/team.jsx"
+import Team from "./pages/team/team.jsx"
 import Teamdetail from "./components/team/teamdetail.jsx"
 
 import Admin from "./components/admin/Admin.jsx";
