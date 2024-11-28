@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getAccessToken, setAccessToken} from "@/api/auth.js";
+import {getAccessToken, setAccessToken} from "@/api/auth/getset.js";
 
 const apiClient = axios.create({
     baseURL: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`,
