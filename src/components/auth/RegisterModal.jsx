@@ -18,7 +18,7 @@ import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
 import Postcode from "./DaumAddress";
-import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "../../api/auth";
+import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "../../api/auth/auth.js";
 import { useLocation } from "react-router-dom";
 
 const RegisterModal = () => {
@@ -40,8 +40,8 @@ const RegisterModal = () => {
 
   useEffect(() => {
     setEmail(encodedUsername ? decodeURIComponent(encodedUsername) : "");
-    setSocial(encodedUsername ? true : false);
-  }, [])
+    setSocial(!!encodedUsername);
+  }, [encodedUsername])
 
   const handleSignUp = async () => {
     if (window.confirm('회원가입 하시겠습니까?')) {

@@ -1,6 +1,6 @@
 import VisitorIp from "../../components/admin/VisitorIp.jsx";
 import {Button} from "reactstrap";
-import {postSignOut} from "@/api/auth.js";
+import {postSignOut} from "@/api/auth/auth.js";
 import {useNavigate} from "react-router-dom";
 
 const MainPage = () => {
