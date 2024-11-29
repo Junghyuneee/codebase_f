@@ -8,11 +8,11 @@ import { Link } from "react-router-dom";
 // nodejs library that concatenates classes
 
 //nav 테스트
-import Banner from "./Banner";
-import Banner_mini from "./Banner_mini";
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
+import Banner from "@/components/store/Banner";
+import Banner_mini from '@/components/store/Banner_mini';
+import img from "@/assets/img/theme/img-1-1200x1000.jpg";
+import {getData} from '@/components/store/storeAPI';
 
-import {getData} from './storeAPI';
 
 
 import {
