@@ -175,6 +175,16 @@ function Page() {
 
                 <ProjectCards />
             </main>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <br/>
+            <br/><br/>
+            <br/>
+            <br/>
+            <br/>
         </>
     );
 
