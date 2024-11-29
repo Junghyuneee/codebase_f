@@ -36,7 +36,7 @@ function ProjectForm() {
       age: document.getElementById("age").value,
     };
     console.log(formData);
-    postData('/api/store', formData);
+    postData('/api/store/add', formData);
   };
 
 
@@ -82,8 +82,7 @@ function Page() {
                       <Input
                         placeholder="프로젝트 명"
                         type="text"
-                        onFocus={(e) => this.setState({ nameFocused: true })}
-                        onBlur={(e) => this.setState({ nameFocused: false })}
+                        id = "title"
                       />
                     </InputGroup>
                   </FormGroup>
@@ -102,8 +101,9 @@ function Page() {
                     <Input
                       className="form-control-alternative"
                       cols="80"
-                      name="name"
+                      name="content"
                       placeholder="프로젝트 설명"
+                      id = "content"
                       rows="20"
                       type="textarea"
                     />
