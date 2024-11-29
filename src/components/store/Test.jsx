@@ -33,6 +33,7 @@ function ProjectForm() {
   const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
+  const [price ,setPrice] = useState(0);
 	const navigate = useNavigate();
 
 
@@ -78,6 +79,7 @@ function ProjectForm() {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
+    formData.append('price', price);
     formData.append('file', file);
     console.log(formData);
 
@@ -132,6 +134,19 @@ function ProjectForm() {
               
                     />
                     {/*accept=".zip"*/}
+                    
+                  </InputGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="가격"
+                      type="number"
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup className="mb-4">
