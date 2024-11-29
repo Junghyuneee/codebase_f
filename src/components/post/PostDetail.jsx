@@ -1,27 +1,22 @@
-// src/components/post/PostDetail.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert, Modal } from 'react-bootstrap';
-import { FaThumbsUp, FaThumbsDown, FaExclamationTriangle } from 'react-icons/fa';
+import { Button, Card, Container, Form, Alert,} from 'react-bootstrap';
+import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [selectedReportReason, setSelectedReportReason] = useState('');
-  const [reportCommentIndex, setReportCommentIndex] = useState(null);
-  const [reportMessage, setReportMessage] = useState('');
 
-  const reportReasons = [
-    "마음에 들지 않아요", "관련 없는 콘텐츠예요", "거짓 정보가 포함되어 있어요",
-    "선정적인 내용이 있어요", "공격적인 내용이 있어요"
-  ];
+  const [editCommentIndex, setEditCommentIndex] = useState(null);
+
+
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -52,32 +47,28 @@ const PostDetail = () => {
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (comment) {
-      setComments([...comments, { author: '작성자', text: comment }]);
+      if (editCommentIndex !== null) {
+        const updatedComments = comments.map((c, index) =>
+          index === editCommentIndex ? { ...c, text: comment } : c
+        );
+        setComments(updatedComments);
+        setEditCommentIndex(null);
+      } else {
+        setComments([...comments, { author: '작성자', text: comment }]);
+      }
       setComment('');
     }
   };
 
-  const handleShowReportModal = (index) => {
-    setReportCommentIndex(index);
-    setShowReportModal(true);
+  const handleEditComment = (index) => {
+    setEditCommentIndex(index);
+    setComment(comments[index].text);
   };
 
-  const handleCloseReportModal = () => {
-    setShowReportModal(false);
-    setSelectedReportReason('');
-    setReportCommentIndex(null);
-  };
-
-  const handleReportSubmit = (e) => {
-    e.preventDefault();
-    if (!selectedReportReason) {
-      alert('신고 사유를 선택해 주세요.');
-      return;
+  const handleDeleteComment = (index) => {
+    if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+      setComments(comments.filter((_, i) => i !== index));
     }
-    setReportMessage(reportCommentIndex !== null 
-      ? `댓글이 신고되었습니다. 사유: ${selectedReportReason}` 
-      : `게시물 ${id}가 신고되었습니다. 사유: ${selectedReportReason}`);
-    handleCloseReportModal();
   };
 
   return (
@@ -98,7 +89,13 @@ const PostDetail = () => {
             <div className="mt-3">
               <Button variant="link" onClick={() => setLikeCount(likeCount + 1)}><FaThumbsUp /> {likeCount}</Button>
               <Button variant="link" onClick={() => setDislikeCount(dislikeCount + 1)}><FaThumbsDown /> {dislikeCount}</Button>
-              <Button variant="danger" onClick={() => handleShowReportModal(null)}><FaExclamationTriangle /> 신고</Button>
+              <ReportModal
+                category={1}
+                categoryId={id}
+                categoryTitle={post.title}
+                memberId={0}
+                memberName={""}
+              />
             </div>
           </Card.Body>
         </Card>
@@ -111,7 +108,7 @@ const PostDetail = () => {
           <Form.Label>댓글 작성</Form.Label>
           <Form.Control as="textarea" rows={3} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="댓글을 입력하세요" required />
         </Form.Group>
-        <Button variant="primary" type="submit">댓글 작성</Button>
+        <Button variant="primary" type="submit">{editCommentIndex !== null ? '댓글 수정' : '댓글 작성'}</Button>
       </Form>
 
       <h5>댓글 목록</h5>
@@ -120,30 +117,21 @@ const PostDetail = () => {
           <Card.Body>
             <Card.Subtitle className="mb-1 text-muted">{c.author}</Card.Subtitle>
             <Card.Text>{c.text}</Card.Text>
-            <Button variant="danger" onClick={() => handleShowReportModal(index)}><FaExclamationTriangle /> 신고</Button>
+            <div className="d-flex justify-content-end">
+              <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
+              <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
+              <ReportModal
+                category={1}
+                categoryId={id}
+                categoryTitle={post.title}
+                memberId={0}
+                memberName={""}
+              />
+            </div>
           </Card.Body>
         </Card>
       )) : <p>댓글이 없습니다.</p>}
 
-      {reportMessage && <Alert variant="info" className="mt-3">{reportMessage}</Alert>}
-
-      {/* 신고 모달 */}
-      <Modal show={showReportModal} onHide={handleCloseReportModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{reportCommentIndex !== null ? "댓글 신고" : "게시물 신고"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleReportSubmit}>
-            <Form.Group controlId="reportReason">
-              <Form.Label>신고 사유</Form.Label>
-              {reportReasons.map((reason, index) => (
-                <Form.Check key={index} type="radio" label={reason} name="reportReason" value={reason} checked={selectedReportReason === reason} onChange={(e) => setSelectedReportReason(e.target.value)} />
-              ))}
-            </Form.Group>
-            <Button variant="primary" type="submit" className="mt-3">신고하기</Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
     </Container>
   );
 };

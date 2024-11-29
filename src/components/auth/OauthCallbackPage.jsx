@@ -1,21 +1,25 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import {setAccessToken} from "@/api/auth.js";
+import {setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
 
 const OauthCallbackPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const handleOauthREdirect = async () => {
+        const handleOauthRedirect = async () => {
             const urlParmas = new URLSearchParams(window.location.search);
-            const token = urlParmas.get("token");
+            const token = 'Bearer '+ decodeURIComponent(urlParmas.get("token"));
 
             if (token) {
                 setAccessToken(token);
+                setEmail(decodeURIComponent(urlParmas.get("email")));
+                setName(decodeURIComponent(urlParmas.get("name")));
+                setMemberId(urlParmas.get("memberId"));
+                setProjectCount(urlParmas.get("projectId"));
                 navigate("/", {replace: true});
             }
         }
-        handleOauthREdirect();
+        handleOauthRedirect();
     }, [navigate]);
     return (
         <div>
