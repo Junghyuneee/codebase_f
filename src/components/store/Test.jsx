@@ -1,205 +1,197 @@
-/* store
-배다원 
-2024 10 30
-*/
-
-
-
-import React, { useEffect, useState, useRef, Outlet } from 'react';
-import { Link } from "react-router-dom";
+/*cart*/
+import React, { useEffect, useState, useRef, Outlet } from "react";
+import { useNavigate } from 'react-router-dom';
 // nodejs library that concatenates classes
-
-//nav 테스트
-import Banner from "./Banner_mini";
-import Banner_mini from "./Banner_mini";
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
-
-import apiClient from '@/api/apiClient';
-
-
+import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
+// reactstrap components
+import classnames from "classnames";
+import axios from "axios";
+import { postData } from './storeAPI';
+import apiClient from "@/api/apiClient";
+// reactstrap components
 import {
-    Button,
-    Card,
-    CardImg,
-    ButtonGroup,
-    CardBody,
-    FormGroup,
-
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Container,
-    Row,
-    Col,
-    Badge,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    UncontrolledDropdown
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  CardImg,
+  FormGroup,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  Container,
+  Row,
+  Col,
 } from "reactstrap";
 
+import Banner from "./Banner_mini";
+import Banner_mini from "./Banner_mini";
 
-function OneProjectCard({ name, price }) {
+function ProjectForm() {
 
-    return (
-        <>
-            <Card className="bg-white shadow border-0 card-lift--hover">
-
-                <blockquote className="card-blockquote p-4">
-                    <CardImg style={{ borderRadius: '10px' }}
-                        alt="..."
-                        src={img}
-                        top
-                    />
-                    <h4 className="display-4 font-weight-bold text-black"
-                        style={{
-                            display: '-webkit-box',          // Flexbox 사용
-                            WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
-                            WebkitLineClamp: 2,              // 두 줄까지만 표시
-                            overflow: 'hidden',               // 넘치는 텍스트 숨기기
-                            textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                            width: '100%',                    // 부모 폭에 맞게 설정
-                            margin: 0                         // 기본 마진 제거
-                        }}
-                    >
-                        {name}
-                    </h4>
-                    <br /><br />
+  const [title, setTitle] = useState('');
+	const [content, setContent] = useState('');
+  const [file, setFile] = useState(null);
+  const [price ,setPrice] = useState(0);
+	const navigate = useNavigate();
 
 
-                </blockquote>
-
-                <Badge color="secondary" pill className="mr-1"
-                    style={{
-                        fontSize: '14px',
-                        position: 'absolute', // 절대 위치 설정
-                        bottom: '30px',      // 하단에서 10px
-                        left: '30px'        // w좌측에서 10px
-                    }}>
-                    {price}원
-                </Badge>
-            </Card>
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]; // 선택된 파일 가져오기
+    setFile(selectedFile); // 상태 업데이트
+  };  
 
 
-        </>
-    );
-
-}
-
-function GetProject() {
-    //토큰 사용 테스트
-    const [projects, setProjects] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        apiClient.get('http://localhost:8080/api/store')
-            .then((response) => {
-                setProjects(response.data); // 응답 데이터 설정
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-
-    return projects;
-}
-
-
-function ProjectCards() {
-    const initprojects = GetProject();
+  function valid(){
+    if (!title.trim() || !content.trim()) {
+			alert('제목과 내용을 모두 입력해주세요.');
+			return false;
+		}
+    return true;
+  }
  
-    const [sortOption, setSortOption] = useState('최신순');//기본값 (최신순)
+  function filevalid(){
+    if (file) {
+      console.log('업로드할 파일:', file);
+      // 파일을 서버에 업로드하는 로직 추가
+      //zip 파일 확인 코드 추가예정
+      /* accept 속성 주석친거 안으로 넣기 ㅠㅅ ㅠ*/
+      return true;
+    } else {
+      console.log('파일이 선택되지 않았습니다.');
+      alert("프로젝트 파일을 게시해주세요");
+      return false;
+    }
 
-    const sortedProjects = [...initprojects].sort((a, b) => {
-        console.log("sortOption : ", sortOption);
-        switch (sortOption) {
-            case '최신순':
-                return b.id - a.id; // ID로 최신순 정렬
-            case '조회순':
-                return b.hit - a.hit; // 조회수로 정렬
-            case '이름순':
-                  return a.name.localeCompare(b.name, 'ko'); // 가나다 정렬
-            default:
-                return 0;
-        }
+  }
 
-    });
+  function submit(event){
 
-    const projects = sortedProjects;
-    return (
-        <>
+    if(!valid()){
+      return;
+    }
+    if(!filevalid()){
+      return;
+    }
+    
+    
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('price', price);
+    formData.append('file', file);
+    console.log(formData);
 
-            
-            <section className="section bg-secondary pt-4"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center', // 가로 가운데 정렬
-                    padding: '0px',
-                    maxWidth: '100vw'
-                }}>
-                <div style={{ marginLeft: '10%', marginRight: '10%' }}>
-                
-      <ButtonGroup>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('최신순')}
-          active={sortOption === '최신순'}
-        >
-          최신순
-        </Button>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('조회순')}
-          active={sortOption === '조회순'}
-        >
-          조회순
-        </Button>
-        <Button
-          color="primary"
-          outline
-          onClick={() => setSortOption('이름순')}
-          active={sortOption === '이름순'}
-        >
-          이름순
-        </Button>
 
-      </ButtonGroup>
+    if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
+      postData('/api/store/add', formData);
+      navigate("/store");
+      alert("게시되었습니다.");
+    }
+    else {
+      //확인창에서 취소
+      return;
+    }
 
-                    <Row className="row-grid align-items-center">
+  };
 
-                        {projects.map((project) => (
-                            <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
-                                {console.log(project)}
-                                <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
-                            </Col>
-                        ))}
 
-                    </Row>
+  return (
+    <>
+      <section className="section section-lg pt-lg-0 section-contact-us mt-7">
+        <Row className="justify-content-center">
+          <Col lg="10">
+            <Card className="bg-gradient-secondary shadow">
+              <CardBody className="p-lg-5">
+                <h4 className="mb-1">프로젝트 등록신청서</h4>
+                <p className="mt-0">프로젝트 등록신청서를 작성해주세요.</p>
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="프로젝트 명"
+                      type="text"
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-email-83" />
+                        <span>&nbsp;&nbsp;&nbsp;프로젝트.zip</span>
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input 
+                    type="file" 
+                    onChange={handleFileChange}
+              
+                    />
+                    {/*accept=".zip"*/}
+                    
+                  </InputGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="가격"
+                      type="number"
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup className="mb-4">
+                  <Input
+                    className="form-control-alternative"
+                    cols="80"
+                    name="content"
+                    placeholder="프로젝트 설명"
+                    onChange={(e) => setContent(e.target.value)}
+                    rows="20"
+                    type="textarea"
+                  />
+                </FormGroup>
+                <div>
+                  <Button
+                    onClick={(e)=>submit(e)}
+                    block
+                    className="btn-round"
+                    color="default"
+                    size="lg"
+                    type="button"
+                  >
+                    제 출
+                  </Button>
                 </div>
-            </section>
-        </>
-    );
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+
+
+      </section>
+    </>
+  );
 }
 
 function Page() {
-
-    return (
-        <>
-            <Banner />
-            <Banner_mini />
-            <main>
-
-                <ProjectCards />
-            </main>
-        </>
-    );
-
+  return (
+    <>
+      <main className="bg-secondary">
+        <Banner_mini />
+        <Container>{ProjectForm()}</Container>
+      </main>
+    </>
+  );
 }
 
 export default Page;
-
-
