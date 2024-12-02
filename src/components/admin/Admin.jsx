@@ -2,7 +2,6 @@
 김은지
 2024 11 08
 */
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import AdminNavBar from "./AdminNavBar.jsx";
