@@ -21,8 +21,9 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import DemoNavbar from "../../components/team/Navbar.jsx";
+import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
+import '../../assets/css/argon-design-system-react.css'
 
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -55,18 +56,36 @@ function Team() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    const data = new FormData();
+    data.append("projectTeam", JSON.stringify({
+      pjtname: formData.pjtname,
+      pjtowner: formData.pjtowner,
+      pjtdescription: formData.pjtdescription,
+      pjcategory: formData.pjcategory,
+    }));
+    data.append("file", formData.pjtimg);
+  
+    // FormData 확인용 로그
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+  
     try {
-      const response = await axios.post('/api/projectteams', formData); // Backend API 호출
+      const response = await axios.post('/api/projectteams', data);
       if (response.status === 200) {
         alert('프로젝트가 성공적으로 생성되었습니다!');
-        toggle(); // 모달 닫기
-        // 필요한 경우, 상태 초기화 또는 리스트 갱신 로직 추가
+        toggle();
       }
     } catch (error) {
       console.error('프로젝트 생성 중 오류 발생:', error);
-      alert('프로젝트 생성에 실패했습니다. 다시 시도해주세요.');
     }
   };
+  
+  
+  
+  
+  
+  
 
   const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
 
@@ -89,15 +108,26 @@ function Team() {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        pjtimg: file, // 파일 객체 저장
+      }));
+    }
+  };
+  
+
   useEffect(() => {
     fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
   }, []);
 
   return (
     <>
-      
+      <Navbar/>
       <main>
-        
+      
         <div className="position-relative">
           {/* Hero Section */}
           <section className="section section-lg section-shaped pb-250">
@@ -206,11 +236,11 @@ function Team() {
               <FormGroup>
                 <Label for="pjtimg">이미지</Label>
                 <Input
-                  type="text"
+                  type="file"
                   name="pjtimg"
                   id="pjtimg"
-                  value={formData.pjtimg}
-                  onChange={handleChange}
+                  accept="image/*"
+                  onChange={handleFileChange}
                 />
               </FormGroup>
               <FormGroup>
@@ -227,12 +257,17 @@ function Team() {
               <FormGroup>
                 <Label for="pjcategory">카테고리</Label>
                 <Input
-                  type="text"
+                  type="select"
                   name="pjcategory"
                   id="pjcategory"
                   value={formData.pjcategory}
                   onChange={handleChange}
-                />
+                >
+                  <option value="">카테고리 선택</option>
+                  <option value="Java">Java</option>
+                  <option value="Python">Python</option>
+                  <option value="React">React</option>
+                </Input>
               </FormGroup>
               <Button color="primary" type="submit">
                 프로젝트 생성
