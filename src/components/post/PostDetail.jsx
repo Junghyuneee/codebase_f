@@ -26,6 +26,8 @@ const PostDetail = () => {
         if (!response.ok) throw new Error('게시물 가져오기 실패');
         const data = await response.json();
         setPost(data);
+        setLikeCount(data.likeCount); // 좋아요 카운트 설정
+        setDislikeCount(data.dislikeCount); // 싫어요 카운트 설정
       } catch (err) {
         console.error(err.message);
       }
@@ -72,33 +74,41 @@ const PostDetail = () => {
     }
   };
 
-  const handleLike = () => {
-    if (hasLiked) {
-      setLikeCount(likeCount - 1);
-      setHasLiked(false);
-    } else {
-      setLikeCount(likeCount + 1);
-      setHasLiked(true);
-      if (hasDisliked) {
-        setDislikeCount(dislikeCount - 1);
-        setHasDisliked(false);
-      }
+  const handleLike = async () => {
+    if (hasLiked) return; // 이미 좋아요를 눌렀다면 처리하지 않음
+    try {
+        const response = await fetch(`http://localhost:8080/api/post/${id}/like`, { method: 'PUT' });
+        if (!response.ok) throw new Error('좋아요 처리 실패');
+        const updatedPost = await response.json();
+        setLikeCount(updatedPost.likeCount);
+        setDislikeCount(updatedPost.dislikeCount);
+        setHasLiked(true);
+        if (hasDisliked) {
+            setDislikeCount(prevCount => prevCount - 1);
+            setHasDisliked(false);
+        }
+    } catch (err) {
+        console.error(err.message);
     }
-  };
+};
 
-  const handleDislike = () => {
-    if (hasDisliked) {
-      setDislikeCount(dislikeCount - 1);
-      setHasDisliked(false);
-    } else {
-      setDislikeCount(dislikeCount + 1);
-      setHasDisliked(true);
-      if (hasLiked) {
-        setLikeCount(likeCount - 1);
-        setHasLiked(false);
-      }
+const handleDislike = async () => {
+    if (hasDisliked) return; // 이미 싫어요를 눌렀다면 처리하지 않음
+    try {
+        const response = await fetch(`http://localhost:8080/api/post/${id}/dislike`, { method: 'PUT' });
+        if (!response.ok) throw new Error('싫어요 처리 실패');
+        const updatedPost = await response.json();
+        setLikeCount(updatedPost.likeCount);
+        setDislikeCount(updatedPost.dislikeCount);
+        setHasDisliked(true);
+        if (hasLiked) {
+            setLikeCount(prevCount => prevCount - 1);
+            setHasLiked(false);
+        }
+    } catch (err) {
+        console.error(err.message);
     }
-  };
+};
 
   return (
     <Container className="post-detail-container mt-4">
@@ -116,10 +126,10 @@ const PostDetail = () => {
               </div>
             </div>
             <div className="mt-3">
-              <Button variant="link" onClick={handleLike}>
+              <Button variant="link" onClick={handleLike} disabled={hasLiked}>
                 <FaThumbsUp /> {likeCount}
               </Button>
-              <Button variant="link" onClick={handleDislike}>
+              <Button variant="link" onClick={handleDislike} disabled={hasDisliked}>
                 <FaThumbsDown /> {dislikeCount}
               </Button>
               <ReportModal
