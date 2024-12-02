@@ -16,3 +16,8 @@ export const joinChatroom = async (id) =>{
     const response = await apiClient.post(`/chats/${id}`);
     return response.data;
 }
+
+export const leaveChatroom = async (id) =>{
+    const response = await apiClient.delete(`/chats/${id}`);
+    return response.data;
+}
