@@ -2,7 +2,6 @@
 김은지
 2024 11 07
 */
-import React from "react";
 
 // reactstrap components
 import {
@@ -11,7 +10,6 @@ import {
     DropdownItem,
     DropdownToggle,
     UncontrolledDropdown,
-    NavbarBrand,
     Navbar,
     NavItem,
     NavLink,
@@ -81,6 +79,11 @@ function AdminNavBar() {
                                                 to="/admin/reports?category=readPost" tag={Link}
                                             >
                                                 자유게시판
+                                            </DropdownItem>
+                                            <DropdownItem
+                                                to="/admin/reports?category=readPostComment" tag={Link}
+                                            >
+                                                자유게시판 댓글
                                             </DropdownItem>
                                             <DropdownItem
                                                 to="/admin/reports?category=readReview" tag={Link}
