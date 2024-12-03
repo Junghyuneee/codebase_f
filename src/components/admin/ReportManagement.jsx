@@ -2,12 +2,11 @@
 김은지
 2024 11 19
 */
-import React, {useState, useEffect, Outlet} from 'react';
+import {useState, useEffect} from 'react';
 
 import '/src/components/admin/Admin.css';
-import ReportModal from './ReportModal.jsx';
-import apiClient from "@/api/apiClient.js";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
+import axios from "axios";
 
 const ReportManagement = () => {
     const [reports, setReports] = useState([]);
@@ -18,13 +17,15 @@ const ReportManagement = () => {
         if(!rawCategory) return;
         const updateCategory = (rawCategory) => {
             if (rawCategory === "readAll") {
-                setCategory(3);
+                setCategory(4);
             } else if (rawCategory === "readProject") {
                 setCategory(0);
             } else if (rawCategory === "readPost") {
                 setCategory(1);
-            } else {
+            } else if (rawCategory === "readPostComment") {
                 setCategory(2);
+            } else {
+                setCategory(3);
             }
         }
         console.log(category);
@@ -42,7 +43,7 @@ const ReportManagement = () => {
             }
 
             try {
-                const response = await apiClient.get(`/reports/read/${category}`);
+                const response = await axios.get(`http://localhost:8080/reports/read/${category}`);
                 setReports(response.data); // 서버에서 데이터 가져오기
                 console.log(response.data);
             } catch (error) {
@@ -62,9 +63,10 @@ const ReportManagement = () => {
     return (
         <div className="container">
             <h3 className="mb-3 text-center">
-                {category === 3 ? "전체 "
+                {category === 4 ? "전체 "
                 : category === 0 ? "프로젝트 "
-                : category === 1 ? "자유게시판 "
+                : category === 1 ? "자유게시판 " 
+                : category === 2 ? "자유게시판 댓글 "
                 : "리뷰 "}
                 신고 사항 관리 페이지
             </h3>
@@ -90,6 +92,8 @@ const ReportManagement = () => {
                                 ? "프로젝트"
                                 :report.category === 1
                                 ? "자유게시판"
+                                :report.category === 2
+                                ? "자유게시판 댓글"
                                 : "리뷰"}
                             </td>
                             <td className="border-left">{report.categoryTitle}</td>
