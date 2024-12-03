@@ -21,9 +21,9 @@ const MainPage = () => {
             <Button onClick={postSignOut}>
                 Logout
             </Button>
+            <Button onClick={() => navigate('/review')}>Review</Button>
             <VisitorIp/>
         </div>
     )
 }
 
-export default MainPage
