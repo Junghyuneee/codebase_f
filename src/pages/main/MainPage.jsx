@@ -1,17 +1,18 @@
-import VisitorIp from "../../components/admin/VisitorIp.jsx";
-import {Button} from "reactstrap";
-import {postSignOut} from "@/api/auth.js";
+import VisitorIp from '../../components/admin/VisitorIp.jsx';
+import { Button } from 'reactstrap';
+import { postSignOut } from '@/api/auth.js';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage = () => {
-  return (
-    <div className="container-fluid">
-      MainPage
-        <Button onClick={postSignOut}>
-            Logout
-        </Button>
-      <VisitorIp />
-    </div>
-  )
-}
+	const navigate = useNavigate();
+	return (
+		<div className="container-fluid">
+			MainPage
+			<Button onClick={postSignOut}>Logout</Button>
+			<Button onClick={() => navigate('/review')}>Review</Button>
+			<VisitorIp />
+		</div>
+	);
+};
 
-export default MainPage
+export default MainPage;
