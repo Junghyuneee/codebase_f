@@ -1,68 +1,83 @@
-import {useEffect, useRef, useState} from "react";
-import {Stomp} from "@stomp/stompjs";
-import {getAccessToken} from "@/api/auth/getset.js";
+import {createContext, useEffect, useReducer} from "react";
 import DemoNavbar from "@/components/review/DemoNavbar.jsx";
 import SidePanel from "@/components/chat/SidePanel/SidePanel.jsx";
 import MainPanel from "@/components/chat/MainPanel/MainPanel.jsx";
-import {showChatrooms} from "@/api/chat/chatroom.js";
+import {createChatroom, leaveChatroom, showChatrooms} from "@/api/chat/chatroom.js";
+
+const chatRoomListReducer = (state, action) => {
+    switch (action.type) {
+        case 'INIT':
+            return action.data;
+        case 'CREATE':
+            return [...state, action.data];
+        case 'DELETE':
+            return state.filter((item) => item.id !== action.data);
+        default:
+            return state;
+    }
+}
+
+const chatRoomReducer = (state, action) => {
+    switch (action.type) {
+        case 'LEAVE':
+            return null;
+        case 'SELECT':
+            return action.data;
+
+    }
+}
+
+export const ChatRoomContext = createContext();
+export const ChatRoomDispatchContext = createContext();
 
 const ChatPage = () => {
-    const stompClient = useRef(Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`));
-    const accessToken = getAccessToken();
-    const [currentChatRoom, setCurrentChatRoom] = useState(null);
-    const [chatTitle, setChatTitle] = useState("");
-
+    const [chatRoomList, chatRoomListDispatch] = useReducer(chatRoomListReducer, []);
+    const [currentChatRoom, chatRoomDispatch] = useReducer(chatRoomReducer, null);
 
     useEffect(() => {
-        const initializeStompClient = async () => {
-            stompClient.current.connect(
-                {
-                    Authorization: `${accessToken}`,
-                },
-                () => {
-                    stompClient.current.subscribe('/sub/chats', (chatMessage) => {
-                        console.log(JSON.parse(chatMessage.body));
-                    });
-                    stompClient.current.publish({
-                        destination: 'pub/chats',
-                        body: JSON.stringify({
-                            'sender': "tmp",
-                            'message': 'connected'
-                        }),
-                    })
-                },
-                function (error, result) {
-                    alert(result);
-                }
-            );
-        };
-        initializeStompClient();
-        return () => {
-            if (stompClient) {
-                stompClient.disconnect(() => {
-                    console.log("Disconnected");
-                })
-            }
+        const fetchChatRooms = async () => {
+            const response = await showChatrooms();
+            chatRoomListDispatch({type: 'INIT', data: response});
         }
-    }, [accessToken]);
+        fetchChatRooms();
+    }, [])
 
+    const onCreate = async (title) => {
+        const response = await createChatroom(title);
+        chatRoomListDispatch({type: 'CREATE', data: response});
+    }
+
+    const onDelete = async (id) => {
+        const response = await leaveChatroom(id);
+        if (response) {
+            chatRoomListDispatch({type: 'DELETE', data: id})
+        }
+        return response;
+    }
+
+    const onSelect = (chatroom) => {
+        chatRoomDispatch({type: 'SELECT', data: chatroom})
+    }
+
+    const onLeave = () => {
+        chatRoomDispatch({type: 'LEAVE'})
+    }
 
     return (
         <>
             <DemoNavbar/>
-            <div style={{display: 'flex'}}>
-                <div style={{width: '300px'}}>
-                    <SidePanel currentChatroom={currentChatRoom} setCurrentChatroom={setCurrentChatRoom}/>
-                </div>
-                <div style={{width: '100%'}}>
-                    <MainPanel
-                        chatRoom={currentChatRoom}
-                        stompClient={stompClient}
-                        setChatRoom={setCurrentChatRoom}
-                    />
-                </div>
-            </div>
-        </>
+            <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
+                <ChatRoomDispatchContext.Provider value={{onCreate, onDelete, onSelect, onLeave}}>
+                    <div style={{display: 'flex'}}>
+                        <div style={{width: '300px'}}>
+                            <SidePanel/>
+                        </div>
+                        <div style={{width: '100%'}}>
+                            <MainPanel/>
+                        </div>
+                    </div>
+                </ChatRoomDispatchContext.Provider>
+            </ChatRoomContext.Provider></>
     )
 }
 

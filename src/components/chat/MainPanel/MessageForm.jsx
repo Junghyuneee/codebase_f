@@ -1,25 +1,29 @@
-import {useRef, useState} from 'react'
+import {useContext, useEffect, useRef, useState} from 'react'
 import {Col, Form, ProgressBar, Row} from "react-bootstrap"
 import {getAccessToken, getEmail} from "@/api/auth/getset.js";
-import apiClient from "@/api/apiClient.js";
 import PropTypes from "prop-types";
+import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
 
 // import { mime } from 'mime-types';
 
-function MessageForm({chatRoom, stompClient}) {
+function MessageForm({stompClient}) {
 
     const [content, setContent] = useState("");
     const [errors, setErrors] = useState([]);
+    const chatRoom = useContext(ChatRoomContext).currentChatRoom;
+
+    useEffect(() => {
+        setContent("");
+    }, [chatRoom])
 
     const sendMessage = () => {
-        stompClient.publish({
-            destination: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/pub/chats/${chatRoom.id}`,
+        stompClient.current.publish({
+            destination: `/pub/chats/${chatRoom.id}`,
             headers: {
                 'Authorization': getAccessToken(),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'sender': getEmail(),
                 'message': content
             })
         });
@@ -38,7 +42,8 @@ function MessageForm({chatRoom, stompClient}) {
         <div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Control as="textarea" rows={3} value={content} onChange={(e) => setContent(e.target.value)}/>
+                    <Form.Control as="textarea" disabled={!(chatRoom && chatRoom?.id)} rows={3} value={content}
+                                  onChange={(e) => setContent(e.target.value)}/>
                 </Form.Group>
             </Form>
 
@@ -55,6 +60,7 @@ function MessageForm({chatRoom, stompClient}) {
                         className="message-form-button"
                         style={{width: '100%'}}
                         onClick={handleSubmit}
+                        disabled={!(chatRoom && chatRoom?.id)}
                     >
                         SEND
                     </button>
@@ -78,9 +84,10 @@ function MessageForm({chatRoom, stompClient}) {
 }
 
 MessageForm.propTypes = {
-    chatRoom: PropTypes.object,
     stompClient: PropTypes.shape({
-        publish: PropTypes.func.isRequired,
+        current: PropTypes.shape({
+            publish: PropTypes.func.isRequired,
+        })
     })
 }
 

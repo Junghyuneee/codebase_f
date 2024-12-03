@@ -1,35 +1,80 @@
-import {useEffect, useState} from 'react'
+import {useContext, useEffect, useRef, useState} from 'react'
 import Message from "./Message.jsx"
 import MessageForm from "./MessageForm.jsx"
 import MessageHeader from "@/components/chat/MainPanel/MessageHeader.jsx";
-import PropTypes from "prop-types";
+import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
+import {Stomp} from "@stomp/stompjs";
+import {getAccessToken} from "@/api/auth/getset.js";
+import {getMessages} from "@/api/chat/message.js";
 
-const MainPanel = ({chatRoom, stompClient, setChatRoom}) => {
+const MainPanel = () => {
 
+    const chatRoom = useContext(ChatRoomContext).currentChatRoom;
     const [messages, setMessages] = useState([]);
-    const [messagesLoading, setMessagesLoading] = useState(true);
+    const stompClient = useRef(null);
+    const subscriptionRef = useRef(null);
 
     useEffect(() => {
-        const getMessages = async () => {
-            // const messages = await getMessages();
+
+        if (!stompClient.current || !stompClient.current.connected) {
+            stompClient.current = Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`);
+            stompClient.current.connect(
+                {
+                    Authorization: getAccessToken(),
+                },
+                () => {
+                    console.log('Connected to chat room', chatRoom?.id);
+                },
+                (error) => console.error('WebSocket error: ', error)
+            );
         }
 
-        getMessages();
-    }, []);
+        const subscribeToChatRoom = async () => {
+            if (chatRoom && chatRoom.id && stompClient.current.connected) {
+
+                const response = await getMessages(chatRoom.id);
+                setMessages(response);
+
+                if (subscriptionRef.current) {
+                    console.log('Unsubscribing from previous chat room');
+                    subscriptionRef.current.unsubscribe();
+                }
+
+                console.log('Connected to chat room', chatRoom.id);
+                subscriptionRef.current = stompClient.current.subscribe(
+                    `/sub/chats/${chatRoom.id}`,
+                    (chatMessage) => {
+                        console.log('Received message:', chatMessage.body);
+                        setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
+                    },
+                    {Authorization: `${getAccessToken()}`}
+                );
+            }
+        }
+
+        subscribeToChatRoom();
+
+        return () => {
+            if (subscriptionRef.current) {
+                console.log('Cleaning up subscription for chat room:', chatRoom?.id);
+                subscriptionRef.current.unsubscribe();
+                setMessages([]);
+            }
+        }
+    }, [chatRoom]);
 
     const renderMessages = (messages) => (
         messages.length > 0 &&
         messages.map(message =>
             <Message
-                key={message.timestamp}
+                key={message.id}
                 message={message}
-                user={this.props.user}
             />
         )
     )
     return (
         <div style={{padding: '2rem 2rem 0 2rem'}}>
-            {chatRoom && <MessageHeader chatRoom={chatRoom} setChatRoom={setChatRoom}/>}
+            {chatRoom && <MessageHeader/>}
             <div style={{
                 width: '100%',
                 height: '450px',
@@ -46,16 +91,12 @@ const MainPanel = ({chatRoom, stompClient, setChatRoom}) => {
                 {/*}*/}
             </div>
             <MessageForm
-                chatRoom={chatRoom}
                 stompClient={stompClient}
             />
         </div>
     )
 }
-MainPanel.propTypes = {
-    chatRoom: PropTypes.string.isRequired,
-    stompClient: PropTypes.object.isRequired,
-    setChatRoom: PropTypes.func.isRequired,
-}
 
 export default MainPanel;
+
+

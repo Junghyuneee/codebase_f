@@ -1,23 +1,16 @@
 import {FaPlus} from 'react-icons/fa';
 import {Modal, Button, Form} from "react-bootstrap";
-import {useEffect, useState} from "react";
-import {createChatroom, showChatrooms} from "@/api/chat/chatroom.js";
-import PropTypes from "prop-types";
+import {useContext, useState} from "react";
+import {ChatRoomContext, ChatRoomDispatchContext,} from "@/pages/chat/ChatPage.jsx";
 
-const ChatRooms = ({setCurrentChatroom}) => {
+const ChatRooms = () => {
 
     const [show, setShow] = useState(false);
-    const [name, setName] = useState("");
-    const [chatRooms, setChatRooms] = useState([]);
+    const [title, setTitle] = useState("");
     const [activeChatRoomId, setActiveChatRoomId] = useState("");
 
-    useEffect(() => {
-        const initChatRooms = async () => {
-            const response = await showChatrooms();
-            setChatRooms(response)
-        }
-        initChatRooms();
-    }, [])
+    const chatRooms = useContext(ChatRoomContext).chatRoomList;
+    const {onCreate, onSelect} = useContext(ChatRoomDispatchContext);
 
     const handleClose = () => {
         setShow(false);
@@ -27,16 +20,11 @@ const ChatRooms = ({setCurrentChatroom}) => {
         setShow(true);
     }
 
-    const addChatroom = async () => {
-        return await createChatroom(name);
-    }
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (name.length > 0) {
-            addChatroom().then((response) => {
-                setChatRooms([...chatRooms, response]);
-            }).then(() => setShow(false));
+        if (title.length > 0) {
+            await onCreate(title);
+            setShow(false);
         }
     }
 
@@ -46,7 +34,7 @@ const ChatRooms = ({setCurrentChatroom}) => {
                 <li key={room.id}
                     onClick={() => {
                         setActiveChatRoomId(room.id);
-                        setCurrentChatroom(room)
+                        onSelect(room);
                     }}
                     style={{cursor: 'pointer', backgroundColor: room.id === activeChatRoomId && "#FFFFFF45"}}
                 >
@@ -85,8 +73,9 @@ const ChatRooms = ({setCurrentChatroom}) => {
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>방 이름</Form.Label>
                             <Form.Control
-                                onChange={(e) => setName(e.target.value)}
-                                type="text" placeholder="채팅방 이름"/>
+                                onChange={(e) => setTitle(e.target.value)}
+                                type="text"
+                                placeholder="채팅방 이름"/>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
@@ -102,9 +91,5 @@ const ChatRooms = ({setCurrentChatroom}) => {
         </div>
     )
 }
-
-ChatRooms.propTypes = {
-    setCurrentChatroom: PropTypes.func.isRequired, // setCurrentChatroom은 필수 함수
-};
 
 export default ChatRooms;
