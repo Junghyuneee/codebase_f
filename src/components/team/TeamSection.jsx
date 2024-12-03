@@ -64,8 +64,8 @@ function TeamSection() {
   };
 
   // 팀 상세 페이지 이동
-  const navigateToTeamdetail = () => {
-    navigate("/teamdetail");
+  const navigateToTeamdetail = (id) => {
+    navigate(`/teamdetail/${id}`);
   };
 
   return (
@@ -141,7 +141,10 @@ function TeamSection() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={navigateToTeamdetail}>
+          <Button
+            color="primary"
+            onClick={() => navigateToTeamdetail(selectedTeam?.pjt_id)}
+          >
             팀원 되기
           </Button>
           <Button color="secondary" onClick={() => toggleModal(null)}>
