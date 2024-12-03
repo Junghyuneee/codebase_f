@@ -50,19 +50,21 @@ function OneProjectCard({ name, price }) {
                         src={img}
                         top
                     />
-                    <h4 className="display-4 font-weight-bold text-black"
+                    <h5 className=" font-weight-bold text-black"
                         style={{
+                            
                             display: '-webkit-box',          // Flexbox 사용
                             WebkitBoxOrient: 'vertical',     // 세로 방향으로 정렬
                             WebkitLineClamp: 2,              // 두 줄까지만 표시
                             overflow: 'hidden',               // 넘치는 텍스트 숨기기
                             textOverflow: 'ellipsis',         // 넘치는 텍스트를 ...으로 표시
-                            width: '100%',                    // 부모 폭에 맞게 설정
-                            margin: 0                         // 기본 마진 제거
+                            width: '100%',
+                            height: '50px',                    // 부모 폭에 맞게 설정
+                            marginTop: '10px'                         // 기본 마진 제거
                         }}
                     >
                         {name}
-                    </h4>
+                    </h5>
                     <br /><br />
 
 
