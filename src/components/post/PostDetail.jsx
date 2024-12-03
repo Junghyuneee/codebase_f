@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert,} from 'react-bootstrap';
+import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
@@ -14,9 +14,10 @@ const PostDetail = () => {
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
 
+  const [hasLiked, setHasLiked] = useState(false);
+  const [hasDisliked, setHasDisliked] = useState(false);
+
   const [editCommentIndex, setEditCommentIndex] = useState(null);
-
-
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -25,6 +26,8 @@ const PostDetail = () => {
         if (!response.ok) throw new Error('게시물 가져오기 실패');
         const data = await response.json();
         setPost(data);
+        setLikeCount(data.likeCount); // 좋아요 카운트 설정
+        setDislikeCount(data.dislikeCount); // 싫어요 카운트 설정
       } catch (err) {
         console.error(err.message);
       }
@@ -71,6 +74,42 @@ const PostDetail = () => {
     }
   };
 
+  const handleLike = async () => {
+    if (hasLiked) return; // 이미 좋아요를 눌렀다면 처리하지 않음
+    try {
+        const response = await fetch(`http://localhost:8080/api/post/${id}/like`, { method: 'PUT' });
+        if (!response.ok) throw new Error('좋아요 처리 실패');
+        const updatedPost = await response.json();
+        setLikeCount(updatedPost.likeCount);
+        setDislikeCount(updatedPost.dislikeCount);
+        setHasLiked(true);
+        if (hasDisliked) {
+            setDislikeCount(prevCount => prevCount - 1);
+            setHasDisliked(false);
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
+};
+
+const handleDislike = async () => {
+    if (hasDisliked) return; // 이미 싫어요를 눌렀다면 처리하지 않음
+    try {
+        const response = await fetch(`http://localhost:8080/api/post/${id}/dislike`, { method: 'PUT' });
+        if (!response.ok) throw new Error('싫어요 처리 실패');
+        const updatedPost = await response.json();
+        setLikeCount(updatedPost.likeCount);
+        setDislikeCount(updatedPost.dislikeCount);
+        setHasDisliked(true);
+        if (hasLiked) {
+            setLikeCount(prevCount => prevCount - 1);
+            setHasLiked(false);
+        }
+    } catch (err) {
+        console.error(err.message);
+    }
+};
+
   return (
     <Container className="post-detail-container mt-4">
       {post ? (
@@ -87,8 +126,12 @@ const PostDetail = () => {
               </div>
             </div>
             <div className="mt-3">
-              <Button variant="link" onClick={() => setLikeCount(likeCount + 1)}><FaThumbsUp /> {likeCount}</Button>
-              <Button variant="link" onClick={() => setDislikeCount(dislikeCount + 1)}><FaThumbsDown /> {dislikeCount}</Button>
+              <Button variant="link" onClick={handleLike} disabled={hasLiked}>
+                <FaThumbsUp /> {likeCount}
+              </Button>
+              <Button variant="link" onClick={handleDislike} disabled={hasDisliked}>
+                <FaThumbsDown /> {dislikeCount}
+              </Button>
               <ReportModal
                 category={1}
                 categoryId={id}
@@ -131,7 +174,6 @@ const PostDetail = () => {
           </Card.Body>
         </Card>
       )) : <p>댓글이 없습니다.</p>}
-
     </Container>
   );
 };

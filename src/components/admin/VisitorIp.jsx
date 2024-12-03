@@ -9,7 +9,7 @@ function VisitorIp() {
     const [ip, setIp] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/get-ip')
+        axios.get('http://localhost:8080/dashboard/get-ip')
             .then(response => {
                 setIp(response.data.ip);
                 console.log(ip)

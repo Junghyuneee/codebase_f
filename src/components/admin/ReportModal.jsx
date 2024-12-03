@@ -2,11 +2,11 @@
 김은지
 2024 11 24
 */
-import React, { useState } from "react";
+import { useState } from "react";
 import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
-import apiClient from "@/api/apiClient.js";
 import {FaExclamationTriangle} from "react-icons/fa";
+import axios from "axios";
 
 const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName, style}) => {
 
@@ -32,7 +32,7 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName,
 
         try {
             // response : 응답 객체
-            const response = await apiClient.post("/reports/create",{
+            const response = await axios.post("http://localhost:8080/reports/create",{
                 category: category,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
@@ -42,14 +42,14 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName,
                 // 전송할 데이터를 JSON 형식으로 작성
             });
 
-            alert(response.data.categoryId + "신고가 성공적으로 접수되었습니다.")
+            alert("'" + response.data.title + "'" + response.data.message)
 
-        } catch (error) {
+        } catch (error) { // 실패하게 어떻게 하지..? 작동 확인을 못하겠는데....
             console.error("신고 중 에러 발생:", error);
             // 에러 응답 처리
             if (error.response) {
                 // 서버가 반환한 에러 응답
-                alert(`신고 실패: ${error.response.data.message || "알 수 없는 에러"}`);
+                alert("'" + error.response.data.title + "'" + error.response.data.message)
             } else {
                 // 네트워크 문제 또는 서버 응답 없음
                 alert("신고 요청에 실패했습니다. 네트워크를 확인해주세요.");

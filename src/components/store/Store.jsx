@@ -8,9 +8,12 @@ import { Link } from "react-router-dom";
 // nodejs library that concatenates classes
 
 //nav 테스트
-import Banner from "./Banner";
-import Banner_mini from "./Banner_mini";
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
+import Banner from "@/components/store/Banner";
+import Banner_mini from '@/components/store/Banner_mini';
+import img from "@/assets/img/theme/img-1-1200x1000.jpg";
+import {getData} from '@/components/store/storeAPI';
+
+
 
 import {
     Button,
@@ -82,35 +85,11 @@ function OneProjectCard({ name, price }) {
 
 }
 
-function GetProject() {
-
-    const [projects, setProjects] = useState([]);
-
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch('http://localhost:8080/api/store')
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
-
-                return response.json();
-            })
-            .then((data) => {
-                setProjects(data);
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return projects;
-}
 
 
 function ProjectCards() {
-    const initprojects = GetProject();
- 
+    //const initprojects = GetProject();
+    const initprojects = getData('/api/store');
     const [sortOption, setSortOption] = useState('최신순');//기본값 (최신순)
 
     const sortedProjects = [...initprojects].sort((a, b) => {
@@ -196,6 +175,16 @@ function Page() {
 
                 <ProjectCards />
             </main>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <br/>
+            <br/><br/>
+            <br/>
+            <br/>
+            <br/>
         </>
     );
 

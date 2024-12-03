@@ -15,6 +15,8 @@ import {
   ModalFooter,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
+
 
 function TeamSection() {
   const [teams, setTeams] = useState([]); // 초기 상태 빈 배열
@@ -62,8 +64,8 @@ function TeamSection() {
   };
 
   // 팀 상세 페이지 이동
-  const navigateToTeamdetail = () => {
-    navigate("/teamdetail");
+  const navigateToTeamdetail = (id) => {
+    navigate(`/teamdetail/${id}`);
   };
 
   return (
@@ -78,7 +80,11 @@ function TeamSection() {
                     <Card className="card-lift--hover shadow border-0">
                       <CardImg
                         alt={team.pjtname || "프로젝트 이미지"}
-                        src={team.pjtimg || "../../../template/src/assets/img/theme/img-1-1200x1000.jpg"}
+                        src={
+                          team.pjtimg
+                            ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`
+                            : defaultImage
+                        }
                         top
                       />
                       <CardBody className="py-5">
@@ -135,7 +141,10 @@ function TeamSection() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={navigateToTeamdetail}>
+          <Button
+            color="primary"
+            onClick={() => navigateToTeamdetail(selectedTeam?.pjt_id)}
+          >
             팀원 되기
           </Button>
           <Button color="secondary" onClick={() => toggleModal(null)}>
