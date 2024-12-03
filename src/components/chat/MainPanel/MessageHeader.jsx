@@ -1,20 +1,8 @@
 import {
-    Accordion,
     Button,
-    Card,
-    Col,
     Container,
-    Form,
-    FormControl,
-    Image,
-    InputGroup,
     Row,
-    useAccordionButton
 } from "react-bootstrap"
-import {FaLock} from "react-icons/fa"
-import {MdFavorite} from 'react-icons/md'
-import {AiOutlineSearch} from 'react-icons/ai'
-import {leaveChatroom} from "@/api/chat/chatroom.js";
 import {useContext} from "react";
 import {ChatRoomContext, ChatRoomDispatchContext} from "@/pages/chat/ChatPage.jsx";
 

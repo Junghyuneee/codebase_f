@@ -27,7 +27,9 @@ const chatRoomReducer = (state, action) => {
     }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ChatRoomContext = createContext();
+// eslint-disable-next-line react-refresh/only-export-components
 export const ChatRoomDispatchContext = createContext();
 
 const ChatPage = () => {
