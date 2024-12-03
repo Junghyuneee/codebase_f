@@ -54,7 +54,7 @@ export function ProjectCard(project) {
 
                         <div className="text-center mt-5 mb-5">
                             <h3>
-                                {project.name}
+                                {project.title}
 
                             </h3>
                             <div className="h6 font-weight-300">
@@ -79,7 +79,7 @@ function ProjectExplain(project) {
             <Card className='card-profile shadow'>
                 <div className=" mt-5">
                     <h3 className='text-center'>
-                        {project.name}
+                        {project.title}
 
                     </h3>
                     <div className="text-center h6 font-weight-300">
@@ -123,7 +123,7 @@ function ProjectExplain(project) {
                                 <ReportModal
                                     category={0}
                                     categoryId={project.id}
-                                    categoryTitle={project.name}
+                                    categoryTitle={project.title}
                                     memberId={0}
                                     memberName={""}
                                     style={{

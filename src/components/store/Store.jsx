@@ -100,7 +100,7 @@ function ProjectCards() {
             case '조회순':
                 return b.hit - a.hit; // 조회수로 정렬
             case '이름순':
-                  return a.name.localeCompare(b.name, 'ko'); // 가나다 정렬
+                  return a.title.localeCompare(b.title, 'ko'); // 가나다 정렬
             default:
                 return 0;
         }
@@ -154,7 +154,7 @@ function ProjectCards() {
                         {projects.map((project) => (
                             <Col xs="12" sm="12" md="6" lg="4" xl="3" className='p-2'>
                                 {console.log(project)}
-                                <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
+                                <a href={`/store/${project.id}`} ><OneProjectCard name={project.title} price={project.price} /></a>
                             </Col>
                         ))}
 
