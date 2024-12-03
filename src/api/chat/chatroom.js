@@ -12,8 +12,8 @@ export const showChatrooms = async () => {
     return response.data;
 }
 
-export const joinChatroom = async (id) => {
-    const response = await apiClient.post(`/chats/${id}`);
+export const joinChatroom = async (id, email) => {
+    const response = await apiClient.post(`/chats/${id}?memberMail=${email}`);
     return response.data;
 }
 

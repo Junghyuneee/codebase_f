@@ -33,6 +33,13 @@ function MessageForm({stompClient}) {
         setContent("");
     }
 
+    const onKeyDown = async (e) =>{
+        if(e.key === 'Enter' && e.shiftKey){
+            e.preventDefault();
+            await handleSubmit(e);
+        }
+    }
+
     const handleSubmit = async () => {
         if (!content) {
             setErrors(prev => prev.concat('Type contents first'));
@@ -45,7 +52,10 @@ function MessageForm({stompClient}) {
         <div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Control ref={contentRef} as="textarea" disabled={!(chatRoom && chatRoom?.id)} rows={3} value={content}
+                    <Form.Control ref={contentRef}
+                                  as="textarea"
+                                  disabled={!(chatRoom && chatRoom?.id)} rows={3} value={content}
+                                  onKeyDown={onKeyDown}
                                   onChange={(e) => setContent(e.target.value)}/>
                 </Form.Group>
             </Form>
