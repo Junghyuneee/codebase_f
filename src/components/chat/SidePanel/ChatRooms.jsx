@@ -2,7 +2,6 @@ import {FaCircle, FaCommentDots, FaPlus} from 'react-icons/fa';
 import {Modal, Button, Form} from "react-bootstrap";
 import {useContext, useEffect, useRef, useState} from "react";
 import {ChatRoomContext, ChatRoomDispatchContext,} from "@/pages/chat/ChatPage.jsx";
-import {joinChatroom} from "@/api/chat/chatroom.js";
 
 const ChatRooms = () => {
 
@@ -42,7 +41,6 @@ const ChatRooms = () => {
                 <li key={room.id}
                     className="p-2 align-items-center m-0 d-flex align-items-center justify-content-between"
                     onClick={() => {
-                        joinChatroom(room.id, activeChatRoomId);
                         room.hasNewMessage=false
                         setActiveChatRoomId(room.id);
                         onSelect(room);

@@ -6,6 +6,7 @@ import {ChatRoomContext, ChatRoomDispatchContext} from "@/pages/chat/ChatPage.js
 import {Stomp} from "@stomp/stompjs";
 import {getAccessToken} from "@/api/auth/getset.js";
 import {getMessages} from "@/api/chat/message.js";
+import {exitChatroom} from "@/api/chat/chatroom.js";
 
 const MainPanel = () => {
 
@@ -67,6 +68,7 @@ const MainPanel = () => {
         return () => {
             if (subscriptionRef.current) {
                 console.log('Cleaning up subscription for chat room:', chatRoom?.id);
+                exitChatroom(chatRoom?.id);
                 subscriptionRef.current.unsubscribe();
                 setMessages([]);
             }
@@ -76,7 +78,7 @@ const MainPanel = () => {
     useEffect(() => {
         if (pendingUpdates.size > 0) {
             const timeoutId = setTimeout(() => {
-                pendingUpdates.delete(chatRoom.id);
+                pendingUpdates.delete(chatRoom?.id);
                 onUpdate(pendingUpdates);
             }, 100);
             return () => {
@@ -85,7 +87,7 @@ const MainPanel = () => {
                 setPendingUpdates(pendingUpdates);
             };
         }
-    }, [onUpdate, pendingUpdates]);
+    }, [chatRoom, onUpdate, pendingUpdates]);
 
     // 새로운 메시지 발생 시 스크롤 아래로 고정
     useEffect(() => {

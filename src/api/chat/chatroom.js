@@ -12,12 +12,16 @@ export const showChatrooms = async () => {
     return response.data;
 }
 
-export const joinChatroom = async (new_id, current_id = "") =>{
-    const response = await apiClient.post(`/chats/${new_id}${current_id?`?currentChatroomId=${current_id}`:""}`);
+export const joinChatroom = async (id) => {
+    const response = await apiClient.post(`/chats/${id}`);
     return response.data;
 }
 
-export const leaveChatroom = async (id) =>{
+export const leaveChatroom = async (id) => {
     const response = await apiClient.delete(`/chats/${id}`);
     return response.data;
+}
+
+export const exitChatroom = (id) => {
+    apiClient.get(`/chats/exit/${id}`);
 }
