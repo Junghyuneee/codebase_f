@@ -1,13 +1,15 @@
-import {FaPlus} from 'react-icons/fa';
+import {FaCircle, FaCommentDots, FaPlus} from 'react-icons/fa';
 import {Modal, Button, Form} from "react-bootstrap";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {ChatRoomContext, ChatRoomDispatchContext,} from "@/pages/chat/ChatPage.jsx";
+import {joinChatroom} from "@/api/chat/chatroom.js";
 
 const ChatRooms = () => {
 
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState("");
     const [activeChatRoomId, setActiveChatRoomId] = useState("");
+    const createChatroomRef = useRef(null);
 
     const chatRooms = useContext(ChatRoomContext).chatRoomList;
     const {onCreate, onSelect} = useContext(ChatRoomDispatchContext);
@@ -15,6 +17,12 @@ const ChatRooms = () => {
     const handleClose = () => {
         setShow(false);
     }
+
+    useEffect(() => {
+        if(show){
+            createChatroomRef.current.focus();
+        }
+    }, [show]);
 
     const handleShow = () => {
         setShow(true);
@@ -32,13 +40,18 @@ const ChatRooms = () => {
         chatRooms.length > 0 && (
             chatRooms.map((room) => (
                 <li key={room.id}
+                    className="p-2 align-items-center m-0 d-flex align-items-center justify-content-between"
                     onClick={() => {
+                        joinChatroom(room.id, activeChatRoomId);
+                        room.hasNewMessage=false
                         setActiveChatRoomId(room.id);
                         onSelect(room);
                     }}
                     style={{cursor: 'pointer', backgroundColor: room.id === activeChatRoomId && "#FFFFFF45"}}
                 >
-                    # {room.title}
+                    <div className="d-flex align-items-center" style={{gap:'.5rem'}}><h4 className="text-white m-0">{room.title} </h4>
+                        ({room.memberCount})</div>
+                    {room.hasNewMessage && <FaCircle className="text-red"/>}
                 </li>
             ))
         )
@@ -46,19 +59,19 @@ const ChatRooms = () => {
 
     return (
         <div>
-            <div style={{
-                position: 'relative', width: '100%',
-                display: 'flex', alignItems: 'center',
+            <div className="justify-content-between px-2" style={{
+                width: '100%',                display: 'flex', alignItems: 'center',
                 textAlign: "center"
             }}>
-                채팅방 {''} ( {chatRooms.length} )
+                <div className="d-flex align-items-center" style={{gap:'.5rem'}}><h2 className="text-white align-items-center">
+                    <FaCommentDots/>
+                </h2> &nbsp; {''} ( {chatRooms.length} )</div>
                 <FaPlus style={{
-                    position: 'absolute',
-                    right: 0, cursor: 'pointer'
+                     cursor: 'pointer'
                 }} onClick={handleShow}/>
 
             </div>
-
+            <hr className="border-white"/>
             <ul style={{listStyleType: 'none', padding: 0}}>
                 {renderChatrooms(chatRooms)}
             </ul>
@@ -73,6 +86,7 @@ const ChatRooms = () => {
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>방 이름</Form.Label>
                             <Form.Control
+                                ref={createChatroomRef}
                                 onChange={(e) => setTitle(e.target.value)}
                                 type="text"
                                 placeholder="채팅방 이름"/>

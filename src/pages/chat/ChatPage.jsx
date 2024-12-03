@@ -10,6 +10,21 @@ const chatRoomListReducer = (state, action) => {
             return action.data;
         case 'CREATE':
             return [...state, action.data];
+        case 'UPDATE': {
+            const stateMap = new Map(state.map(it =>
+                [it.id, it]));
+            const pending = action.data;
+            console.log(pending);
+            pending.forEach(it => {
+                if(stateMap.has(it)) {
+                    stateMap.get(it).hasNewMessage = true;
+                }
+            })
+
+            console.log(Array.from(stateMap.values()));
+
+            return Array.from(stateMap.values());
+        }
         case 'DELETE':
             return state.filter((item) => item.id !== action.data);
         default:
@@ -49,6 +64,10 @@ const ChatPage = () => {
         chatRoomListDispatch({type: 'CREATE', data: response});
     }
 
+    const onUpdate = (chatroomList) => {
+        chatRoomListDispatch({type: 'UPDATE', data: chatroomList});
+    }
+
     const onDelete = async (id) => {
         const response = await leaveChatroom(id);
         if (response) {
@@ -69,7 +88,7 @@ const ChatPage = () => {
         <>
             <DemoNavbar/>
             <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
-                <ChatRoomDispatchContext.Provider value={{onCreate, onDelete, onSelect, onLeave}}>
+                <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
                     <div style={{display: 'flex'}}>
                         <div style={{width: '300px'}}>
                             <SidePanel/>

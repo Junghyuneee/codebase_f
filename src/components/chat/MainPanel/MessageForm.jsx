@@ -1,4 +1,4 @@
-import {useContext, useEffect,  useState} from 'react'
+import {useContext, useEffect, useRef, useState} from 'react'
 import {Col, Form,  Row} from "react-bootstrap"
 import {getAccessToken, } from "@/api/auth/getset.js";
 import PropTypes from "prop-types";
@@ -11,9 +11,12 @@ function MessageForm({stompClient}) {
     const [content, setContent] = useState("");
     const [errors, setErrors] = useState([]);
     const chatRoom = useContext(ChatRoomContext).currentChatRoom;
+    const contentRef = useRef(null);
+
 
     useEffect(() => {
         setContent("");
+        contentRef.current.focus();
     }, [chatRoom])
 
     const sendMessage = () => {
@@ -42,7 +45,7 @@ function MessageForm({stompClient}) {
         <div>
             <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Control as="textarea" disabled={!(chatRoom && chatRoom?.id)} rows={3} value={content}
+                    <Form.Control ref={contentRef} as="textarea" disabled={!(chatRoom && chatRoom?.id)} rows={3} value={content}
                                   onChange={(e) => setContent(e.target.value)}/>
                 </Form.Group>
             </Form>
