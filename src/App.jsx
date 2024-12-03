@@ -35,7 +35,7 @@ function App() {
             <Route path="/admin/*" exact element={<Admin/>}/>
 
             <Route path="/team" exact element={<Team/>}/>
-            <Route path="/teamdetail" exact element={<Teamdetail/>}/>
+            <Route path="/teamdetail/:id" exact element={<Teamdetail/>}/>
             <Route path="/review/*" exact element={<Review/>}/>
             <Route path="/oauth" element={<OauthCallbackPage/>}/>
             <Route path="/post/*" element={<Post/>}/>
