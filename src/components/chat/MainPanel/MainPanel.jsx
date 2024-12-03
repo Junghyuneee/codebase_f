@@ -13,6 +13,7 @@ const MainPanel = () => {
     const [messages, setMessages] = useState([]);
     const stompClient = useRef(null);
     const subscriptionRef = useRef(null);
+    const messageEndRef = useRef(null);
 
     useEffect(() => {
 
@@ -63,6 +64,13 @@ const MainPanel = () => {
         }
     }, [chatRoom]);
 
+    // 새로운 메시지 발생 시 스크롤 아래로 고정
+    useEffect(()=>{
+        if(messageEndRef.current){
+            messageEndRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        }
+    }, [messages])
+
     const renderMessages = (messages) => (
         messages.length > 0 &&
         messages.map(message =>
@@ -77,7 +85,7 @@ const MainPanel = () => {
             {chatRoom && <MessageHeader/>}
             <div style={{
                 width: '100%',
-                height: '450px',
+                height: '30rem',
                 border: '.2rem solid #ececec',
                 borderRadius: '4px',
                 padding: '1rem',
@@ -89,6 +97,7 @@ const MainPanel = () => {
                 {/*    :*/}
                 {renderMessages(messages)}
                 {/*}*/}
+                <div  ref={messageEndRef}></div>
             </div>
             <MessageForm
                 stompClient={stompClient}

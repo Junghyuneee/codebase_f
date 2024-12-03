@@ -12,7 +12,7 @@ function Message({message}) {
 
     const isMessageMine = (message) => {
         if (getEmail()) {
-            return getEmail() === message.sender
+            return getEmail() === message.senderMail
         }
     }
 
@@ -47,6 +47,7 @@ Message.propTypes = {
         timestamp: PropTypes.string,
         message: PropTypes.string,
         sender: PropTypes.string,
+        senderMail: PropTypes.string,
     })
 }
 
