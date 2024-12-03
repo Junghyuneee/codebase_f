@@ -2,7 +2,7 @@
 김은지
 2024 11 08
 */
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { Row, Col } from "reactstrap";
 import Chart from "chart.js/auto";
 import axios from "axios"
@@ -40,7 +40,7 @@ const VisitorChart = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/weekly-visitors')
+        axios.get('http://localhost:8080/dashboard/weekly-visitors')
             .then(response => {
                 setData(response.data);
             })

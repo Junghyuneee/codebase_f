@@ -2,7 +2,6 @@
 김은지
 2024 11 08
 */
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import AdminNavBar from "./AdminNavBar.jsx";
@@ -21,11 +20,7 @@ function Admin() {
                     <Route path="/dashboard" element={<DashboardContent />} />
                     <Route path="/membermanagement" element={<MemberManagement />} />
                     <Route path="/questions" element={<QuestionsManagement />} />
-                    <Route path="/complaints" element={
-
-                            <ReportManagement />
-
-                    } />
+                    <Route path="/reports" element={<ReportManagement />} />
                 </Routes>
             </main>
         </div>

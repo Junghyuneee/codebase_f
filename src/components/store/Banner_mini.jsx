@@ -2,7 +2,8 @@
 2024 11 15
 배다원*/
 import React from 'react';
-import { Link } from "react-router-dom";
+
+import {useNavigate, Link } from "react-router-dom";
 import {
     UncontrolledCollapse,
     DropdownMenu,
@@ -20,8 +21,11 @@ import {
 } from "reactstrap";
 
 import img from "../../assets/img/brand/argon-react.png";
+import {postSignOut} from "@/api/auth/auth.js";
+
 
 function Banner_mini() {
+    const navigate = useNavigate();
     return (
         <>
 
@@ -76,14 +80,16 @@ function Banner_mini() {
                                         테스트페이지
                                     </DropdownItem>
                                     <DropdownItem
-                                        href="/store/iotest"
+                                        
+                                        onClick={() => navigate("/login")}
                                         
                                     >
-                                        데이터테스터
+                                        로그인
                                     </DropdownItem>
                                     <DropdownItem divider />
                                     <DropdownItem
-                                        href="/login"
+                                        
+                                        onClick={postSignOut}
                                         
                                     >
                                         로그아웃
