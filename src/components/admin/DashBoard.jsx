@@ -23,7 +23,7 @@ function DashBoardContent() {
                     </Row>
                     <Row>
                         <Col className="mb-4 col-6">
-                            <PopularPostsChart />
+                            <PopularProjectsChart />
                         </Col>
                         <Col className="mb-4 col-6">
                             <PopularPostsChart />
@@ -104,7 +104,7 @@ const VisitorChart = () => {
     );
 };
 
-const PopularPostsChart = () => {
+const PopularProjectsChart = () => {
     const chartRef = useRef(null);  // Canvas 요소를 참조할 ref
     const [data, setData] = useState([]);
 
@@ -245,6 +245,82 @@ const NewMemberChart = () => {
         <div className="container mb-3">
             <h2>신규 회원 수 차트</h2>
             <canvas ref={chartRef} width="400" height="200"></canvas>
+        </div>
+    );
+};
+
+const PopularPostsChart = () => {
+    const chartRef = useRef(null);  // Canvas 요소를 참조할 ref
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/dashboard/popular/post')
+            .then(response => {
+                setData(response.data);
+            })
+            .catch(error => {
+                console.error('인기 자유게시글 데이터 에러', error);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (data.length > 0 && chartRef.current) {
+            const ctx = chartRef.current.getContext('2d');  // Canvas 컨텍스트 가져오기
+
+            // 기존 차트 정리
+            if (chartRef.current.chartInstance) {
+                chartRef.current.chartInstance.destroy();
+            }
+
+            // 차트 생성
+            chartRef.current.chartInstance = new Chart(ctx, {
+                type: 'bar',  // 가로 막대형 차트
+                data: {
+                    labels: data.map(item => item.title),
+                    datasets: [{
+                        label: '인기 자유게시글',
+                        data: data.map(item => item.hits),
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',  // 막대 색상
+                        borderColor: 'rgba(75, 192, 192, 1)',  // 막대 테두리 색상
+                        borderWidth: 1,  // 테두리 두께
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: { // 차트 옵션
+                    responsive: true,  // 화면 크기에 맞춰 차트 크기 자동 조정
+                    maintainAspectRatio: true, // 필요할 경우 비율을 유지하지 않도록 설정
+                    scales: {
+                        x: {
+                            beginAtZero: true,  // X축에서 0부터 시작
+                            title: {
+                                display: true,
+                                text: '제목'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '조회수'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 컴포넌트 언마운트 시 차트 정리
+            return () => {
+                if (chartRef.current && chartRef.current.chartInstance) {
+                    chartRef.current.chartInstance.destroy();
+                }
+            };
+        }
+    }, [data]);
+
+    return (
+        <div className="container mb-3">
+            <h2>인기 자유게시글 차트</h2>
+            <canvas ref={chartRef} width="400" height="250"></canvas>
         </div>
     );
 };
