@@ -35,6 +35,12 @@ const ChatRooms = () => {
         }
     }
 
+    const onKeyDown = async (e) => {
+        if (e.key === "Enter") {
+            await handleSubmit(e);
+        }
+    }
+
     const renderChatrooms = (chatRooms) => (
         chatRooms.length > 0 && (
             chatRooms.map((room) => (
@@ -85,6 +91,7 @@ const ChatRooms = () => {
                             <Form.Label>방 이름</Form.Label>
                             <Form.Control
                                 ref={createChatroomRef}
+                                onKeyDown={onKeyDown}
                                 onChange={(e) => setTitle(e.target.value)}
                                 type="text"
                                 placeholder="채팅방 이름"/>
