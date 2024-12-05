@@ -96,6 +96,7 @@ const PostList = () => {
                 <Card.Text>
                   <span>주제: {post.topic}</span><br />
                   <span>등록일: {new Date(post.createDate).toLocaleString('ko-KR')}</span><br />
+                  <span>태그: {post.tags}</span><br />
                   <span>좋아요 수: {post.likeCount}</span><br />
                   <span>조회수: {post.views}</span><br />
                 </Card.Text>
