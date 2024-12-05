@@ -24,7 +24,7 @@ import {
 import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
 import '../../assets/css/argon-design-system-react.css'
-
+import '../../components/team/team.css'
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
@@ -46,11 +46,23 @@ function Team() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, options } = e.target;
+    if (type === 'select-multiple') {
+      const selectedOptions = [...options]
+        .filter(option => option.selected)
+        .map(option => option.value);
+      
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: selectedOptions
+      }));
+    } else {
+      // 기존 input 처리
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -255,19 +267,45 @@ function Team() {
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="pjcategory">카테고리</Label>
-                <Input
-                  type="select"
-                  name="pjcategory"
-                  id="pjcategory"
-                  value={formData.pjcategory}
-                  onChange={handleChange}
-                >
-                  <option value="">카테고리 선택</option>
-                  <option value="Java">Java</option>
-                  <option value="Python">Python</option>
-                  <option value="React">React</option>
-                </Input>
+                <Label className="h5 mb-3">카테고리 선택</Label>
+                <div className="d-flex flex-wrap">
+                  {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js'].map((category) => (
+                    <div key={category} className="custom-category-checkbox mb-3 mr-3">
+                      <Input
+                        type="checkbox"
+                        id={category}
+                        name="pjcategory"
+                        value={category}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData(prev => {
+                            const currentCategories = prev.pjcategory ? prev.pjcategory.split(',') : [];
+                            let newCategories;
+                            
+                            if (e.target.checked) {
+                              newCategories = [...currentCategories, value];
+                            } else {
+                              newCategories = currentCategories.filter(cat => cat !== value);
+                            }
+                            
+                            return {
+                              ...prev,
+                              pjcategory: newCategories.join(',')
+                            };
+                          });
+                        }}
+                      />
+                      <Label 
+                        className="btn btn-outline-primary rounded-pill px-3 py-2" 
+                        check 
+                        for={category}
+                      >
+                        <i className="ni ni-check-bold mr-2 opacity-0"></i>
+                        {category}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </FormGroup>
               <Button color="primary" type="submit">
                 프로젝트 생성
