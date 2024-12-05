@@ -104,25 +104,33 @@ function Team() {
   
 
   const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
+  const [currentPage, setCurrentPage] = useState(0);  // 페이지 상태 추가
+  const [totalPages, setTotalPages] = useState(0);    // 전체 페이지 수 상태 추가
 
   // 데이터 가져오기
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/projectteams'); // Spring Boot API 호출
-      setProjects(response.data); // 상태에 데이터 저장
+      const response = await axios.get('/api/projectteams', {
+        params: {
+          page: currentPage,
+          size: 6  // 한 페이지당 보여줄 항목 수
+        }
+      });
+      setProjects(response.data.content);          // 페이지 데이터
+      setTotalPages(response.data.totalPages);     // 전체 페이지 수
     } catch (error) {
-      if (error.response) {
-        // 서버에서 반환한 오류 응답 처리
-        console.error('Failed to fetch projects:', error.response.status, error.response.data);
-      } else if (error.request) {
-        // 요청은 보내졌지만 응답을 받지 못한 경우
-        console.error('No response from server:', error.request);
-      } else {
-        // 요청 설정 중 발생한 러
-        console.error('Error setting up request:', error.message);
-      }
+      console.error('Failed to fetch projects:', error);
     }
   };
+
+  // 페이지 변경 핸들러 추가
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [currentPage]);  // currentPage가 변경될 때마다 데이터 다시 가져오기
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -134,10 +142,6 @@ function Team() {
     }
   };
   
-
-  useEffect(() => {
-    fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
-  }, []);
 
   useEffect(() => {
     const getLoggedInUser = () => {
@@ -235,7 +239,12 @@ function Team() {
           </section>
         </div>
 
-        <TeamSection/>
+        <TeamSection 
+          projects={projects}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
         {/* Modal for Team Creation */}
         <Modal isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>새 프로젝트 생성</ModalHeader>
