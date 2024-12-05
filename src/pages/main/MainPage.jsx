@@ -13,6 +13,7 @@ const MainPage = () => {
 			<Button onClick={() => navigate('/chat')}>Chat</Button>
 			<Button onClick={postSignOut}>Logout</Button>
 			<Button onClick={() => navigate('/review')}>Review</Button>
+			<Button onClick={() => navigate('/post')}>Post</Button>
 			<VisitorIp />
 		</div>
 	);
