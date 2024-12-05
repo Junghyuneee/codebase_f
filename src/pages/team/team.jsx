@@ -25,6 +25,8 @@ import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
 import '../../assets/css/argon-design-system-react.css'
 import '../../components/team/team.css'
+import { getMemberId } from "../../api/auth/getset.js";
+
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
@@ -33,7 +35,8 @@ function Team() {
     pjtowner: '',
     pjtimg: '',
     pjtdescription: '',
-    pjcategory: ''
+    pjcategory: '',
+    memberId: ''
   });
 
   useEffect(() => {
@@ -74,6 +77,7 @@ function Team() {
       pjtowner: formData.pjtowner,
       pjtdescription: formData.pjtdescription,
       pjcategory: formData.pjcategory,
+      memberId: formData.memberId
     }));
     data.append("file", formData.pjtimg);
   
@@ -114,7 +118,7 @@ function Team() {
         // 요청은 보내졌지만 응답을 받지 못한 경우
         console.error('No response from server:', error.request);
       } else {
-        // 요청 설정 중 발생한 에러
+        // 요청 설정 중 발생한 러
         console.error('Error setting up request:', error.message);
       }
     }
@@ -133,6 +137,20 @@ function Team() {
 
   useEffect(() => {
     fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
+  }, []);
+
+  useEffect(() => {
+    const getLoggedInUser = () => {
+      const memberId = getMemberId(); // getset.js에서 import 필요
+      if (memberId) {
+        setFormData(prev => ({
+          ...prev,
+          memberId: memberId
+        }));
+      }
+    };
+
+    getLoggedInUser();
   }, []);
 
   return (
