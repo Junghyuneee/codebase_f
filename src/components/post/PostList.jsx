@@ -31,7 +31,7 @@ const PostList = () => {
       const dateComparison = new Date(b.created_at) - new Date(a.created_at);
       switch (sortOption) {
         case '최신순': return dateComparison;
-        case '추천순': return b.likes - a.likes;
+        case '추천순': return b.likeCount - a.likeCount;
         case '조회순': return b.views - a.views;
         default: return 0;
       }
@@ -89,7 +89,7 @@ const PostList = () => {
                 <Card.Text>
                   <span>주제: {post.topic}</span><br /> {/* 토픽 추가 */}
                   <span>등록일: {new Date(post.created_at).toLocaleString()}</span><br />
-                  <span>좋아요 수: {post.likes}</span><br />
+                  <span>좋아요 수: {post.likeCount}</span><br />
                   <span>조회수: {post.views}</span><br />
                   <span>본문: {post.content}</span> {/* 본문 내용 추가 */}
                 </Card.Text>
