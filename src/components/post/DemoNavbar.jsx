@@ -48,7 +48,7 @@ const DemoNavbar = () => {
 		<>
 			<header className="header-global">
 				<Navbar
-					className="navbar-main navbar-transparent navbar-light headroom bg-primary"
+					className="navbar-main navbar-transparent navbar-light headroom"
 					expand="lg"
 					id="navbar-main"
 				>
