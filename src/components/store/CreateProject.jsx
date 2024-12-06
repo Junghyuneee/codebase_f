@@ -1,6 +1,6 @@
 /*cart*/
 import React, { useEffect, useState, useRef, Outlet } from "react";
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 // nodejs library that concatenates classes
 import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
 // reactstrap components
@@ -86,8 +86,9 @@ function ProjectForm() {
 
     if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
       postData('/api/store/add', formData);
-      navigate("/store");
+
       alert("게시되었습니다.");
+      navigate("/store");
     }
     else {
       //확인창에서 취소

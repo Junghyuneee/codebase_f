@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { getData } from './storeAPI';
+import { getData, postData } from './storeAPI';
+import { getAccessToken } from "@/api/auth/getset.js";
 
 import {
     Badge,
@@ -36,6 +37,9 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 import Banner from "./Banner.jsx";
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
+
+
+
 export function ProjectCard(project) {
 
     return (
@@ -59,7 +63,7 @@ export function ProjectCard(project) {
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
-                                제작자 : asdf
+                                제작자 : {project.username}
                             </div>
 
                         </div>
@@ -72,7 +76,45 @@ export function ProjectCard(project) {
     );
 }
 
+function existCart(id) {
+    const data = getData(`/cart/ciexist/${id}`);
+    console.log("asdfasdfas", data);
+    if (data == "") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+
+
 function ProjectExplain(project) {
+
+    const [inCart, setInCart] = useState(false);
+
+    
+    // 상태를 토글하는 함수
+    const toggleCart = () => {
+        setInCart(!inCart); // 현재 상태를 반대로 변경
+    };
+
+   
+
+    function addCartItem(project) {
+
+        let formData = new FormData();
+        formData.append("title", project.title);
+        formData.append("price", project.price);
+        formData.append("project_id", project.id);
+    
+        postData(`/cart/add`, formData);
+        toggleCart();
+    
+    }
+
+
+
     return (<>
         <div class="section">
 
@@ -81,10 +123,11 @@ function ProjectExplain(project) {
                     <h3 className='text-center'>
                         {project.title}
 
+
                     </h3>
                     <div className="text-center h6 font-weight-300">
                         <i className="ni location_pin mr-2" />
-                        제작자 : asdf
+                        제작자 : {project.username}
                     </div>
                     <div className="h6 mt-4">
                         <i className="ni business_briefcase-24 mr-2" />
