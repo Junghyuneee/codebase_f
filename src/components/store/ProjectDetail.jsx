@@ -149,6 +149,51 @@ function ProjectExplain(project) {
                         <Row className='mb-2'>
                             <Col>
                                 <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
+                                {/* {existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
+
+                                    </h2>
+                                }
+                                {!existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 장바구니</Button>
+
+                                    </h2>
+                                } */}
+
+
+{inCart ? (
+        <h2>
+          <Button
+            size="lg"
+            color="success"
+            onClick={() => {
+              toggleCart();
+              console.log(`Removed project ${project.id} from cart`);
+            }}
+            outline
+            block
+          >
+            <i className="ni ni-cart" /> 담았음
+          </Button>
+        </h2>
+      ) : (
+        <h2>
+          <Button
+            size="lg"
+            color="success"
+            onClick={() => {
+              toggleCart();
+              console.log(`Added project ${project.id} to cart`);
+            }}
+            outline
+            block
+          >
+            <i className="ni ni-cart" /> 장바구니
+          </Button>
+        </h2>
+      )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
                                 <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
@@ -201,8 +246,13 @@ function ProjectDetail(project) {
     );
 }
 
-function Page() {
 
+
+
+
+function Page() {
+    const [project, setProject] = useState(null); // 데이터 상태
+   
     // 현재 페이지의 URL을 가져옵니다.
     const currentUrl = window.location.href;
 
@@ -215,9 +265,15 @@ function Page() {
 
     //const project = getProject(parseInt(id, 10));
     id = parseInt(id, 10);
-    const project = getData(`/api/store/${id}`);
+    //const project = getData(`/api/store/${id}`);
+    setProject(getData(`/api/store/${id}`));
 
     console.log("project : ", project);
+
+    const token = getAccessToken();
+    console.log("token: ", token);
+
+    existCart(id);
 
     return (
         <>
