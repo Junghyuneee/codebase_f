@@ -40,6 +40,7 @@ function TeamSection() {
       setTeams(Array.isArray(data) ? data : [data]);
     } catch (error) {
       console.error("Error fetching teams:", error);
+      alert("팀 데이터를 불러오는데 실패했습니다.");
     }
   };
 
@@ -114,11 +115,11 @@ function TeamSection() {
                       </div>
                       <div className="mt-3">
                         <Button
-                          className="mr-2"
+                          className="mt-2"
                           color="primary"
-                          onClick={() => navigateToTeamdetail(team.pjt_id)}
+                          onClick={() => toggleModal(team)}
                         >
-                          자세히보기
+                          자세히 보기
                         </Button>
                         <Button
                           color="danger"
@@ -164,6 +165,21 @@ function TeamSection() {
           </Button>
         </ModalFooter>
       </Modal>
+
+      {/* 페이지네이션 UI 추가 */}
+      {teams.length > 0 && (
+        <Container className="mt-4">
+          <Pagination className="d-flex justify-content-center">
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i} active={currentPage === i + 1}>
+                <PaginationLink onClick={() => handlePageChange(i + 1)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </Pagination>
+        </Container>
+      )}
     </section>
   );
 }
