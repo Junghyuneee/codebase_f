@@ -1,8 +1,9 @@
 import {createContext, useEffect, useReducer} from "react";
-import DemoNavbar from "@/components/review/DemoNavbar.jsx";
+import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import SidePanel from "@/components/chat/SidePanel/SidePanel.jsx";
 import MainPanel from "@/components/chat/MainPanel/MainPanel.jsx";
 import {createChatroom, leaveChatroom, showChatrooms} from "@/api/chat/chatroom.js";
+import {Container} from "react-bootstrap";
 
 const chatRoomListReducer = (state, action) => {
     switch (action.type) {
@@ -16,7 +17,7 @@ const chatRoomListReducer = (state, action) => {
             const pending = action.data;
             console.log(pending);
             pending.forEach(it => {
-                if(stateMap.has(it)) {
+                if (stateMap.has(it)) {
                     stateMap.get(it).hasNewMessage = true;
                 }
             })
@@ -86,19 +87,32 @@ const ChatPage = () => {
 
     return (
         <>
-            <DemoNavbar/>
-            <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
-                <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
-                    <div style={{display: 'flex'}}>
-                        <div style={{width: '300px'}}>
-                            <SidePanel/>
-                        </div>
-                        <div style={{width: '100%'}}>
-                            <MainPanel/>
-                        </div>
-                    </div>
-                </ChatRoomDispatchContext.Provider>
-            </ChatRoomContext.Provider></>
+            <NavigationBar/>
+            <section className={"section section-lg section-shaped my-0"}>
+                <div className="shape shape-style-1 shape-default">
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                </div>
+                <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
+                    <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
+                        <Container>
+                            <div style={{display: 'flex'}}>
+                                <div style={{width: '300px'}}>
+                                    <SidePanel/>
+                                </div>
+                                <div style={{width: '100%'}} className={"bg-white rounded-right"} >
+                                    <MainPanel/>
+                                </div>
+                            </div>
+                        </Container>
+                    </ChatRoomDispatchContext.Provider>
+                </ChatRoomContext.Provider></section>
+        </>
     )
 }
 

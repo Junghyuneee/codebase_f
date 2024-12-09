@@ -16,7 +16,7 @@ import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {googleLoginHandler, kakaoLoginHandler, postSignIn} from "@/api/auth/auth.js";
-import {getAccessToken} from "@/api/auth/getset.js";
+import isAuthenticated from "@/utils/isAuthenticated.js";
 
 const LoginModal = () => {
   let navigate = useNavigate();
@@ -24,7 +24,7 @@ const LoginModal = () => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (getAccessToken()) {
+    if (isAuthenticated()) {
       navigate("/", {replace: true});
     }
   }, []);
@@ -137,7 +137,7 @@ const LoginModal = () => {
                 <Col xs="6">
                   <a
                     className="text-light"
-                    href="#pablo"
+                    href="#"
                     onClick={(e) => e.preventDefault()}
                   >
                     <small>Forgot password?</small>

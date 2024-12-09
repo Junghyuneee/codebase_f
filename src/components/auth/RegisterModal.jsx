@@ -15,7 +15,7 @@ import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
 import Postcode from "./DaumAddress.jsx";
-import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "../../api/auth/auth.js";
+import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "@/api/auth/auth.js";
 import { useLocation } from "react-router-dom";
 
 const RegisterModal = () => {
@@ -49,8 +49,6 @@ const RegisterModal = () => {
       window.location.replace("/");
     }
   }
-
-
 
   return (
     <main>
