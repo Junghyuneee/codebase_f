@@ -81,7 +81,7 @@ export function ProjectCard({ project }) {
 
 
 
-function ProjectExplain({project}) {
+function ProjectExplain({ project }) {
 
     const [inCart, setInCart] = useState(false);
 
@@ -92,6 +92,19 @@ function ProjectExplain({project}) {
     };
 
 
+    useEffect(() => {
+        console.log(inCart);
+    }, [inCart]);
+
+
+    const { data, loading, error } = useFetch(`/cart/ciexist/${project.id}`);
+
+    useEffect(() => {
+        if(data){
+            console.log(data);
+            setInCart(true);
+        }
+    }, [data]);
 
     function addCartItem(project) {
 
@@ -155,37 +168,37 @@ function ProjectExplain({project}) {
                                 } */}
 
 
-                                {/*inCart ? (
-        <h2>
-          <Button
-            size="lg"
-            color="success"
-            onClick={() => {
-              toggleCart();
-              console.log(`Removed project ${project.id} from cart`);
-            }}
-            outline
-            block
-          >
-            <i className="ni ni-cart" /> 담았음
-          </Button>
-        </h2>
-      ) : (
-        <h2>
-          <Button
-            size="lg"
-            color="success"
-            onClick={() => {
-              toggleCart();
-              console.log(`Added project ${project.id} to cart`);
-            }}
-            outline
-            block
-          >
-            <i className="ni ni-cart" /> 장바구니
-          </Button>
-        </h2>
-      )*/}
+                                {inCart ? (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Removed project ${project.id} from cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 담았음
+                                        </Button>
+                                    </h2>
+                                ) : (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Added project ${project.id} to cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 장바구니
+                                        </Button>
+                                    </h2>
+                                )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
                                 <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
@@ -223,7 +236,7 @@ function ProjectExplain({project}) {
     );
 }
 
-function ProjectDetail({project}) {
+function ProjectDetail({ project }) {
 
     return (
         <>
