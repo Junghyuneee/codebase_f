@@ -97,9 +97,10 @@ function ProjectCards() {
 
   useEffect(() => {
     console.log("정렬변경");
-    let sortedProjects = [];
+    
     
     if (Array.isArray(initprojects)) {// 배열이면(값이 안들어왔을때는 아래코드 동작하지 않음)
+      let sortedProjects = [];
        sortedProjects = [...initprojects].sort((a, b) => {
         console.log("sortOption : ", sortOption);
         switch (sortOption) {
@@ -113,9 +114,10 @@ function ProjectCards() {
             return 0;
         }
       });
+      setProjects(sortedProjects);
     }
-    setProjects(sortedProjects);
-  }, [sortOption]); // data가 변경될 때마다 실행
+    
+  }, [sortOption, initprojects]); 
 
  
 
