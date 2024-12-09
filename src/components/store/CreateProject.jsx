@@ -10,11 +10,13 @@ import { postData } from './storeAPI';
 import apiClient from "@/api/apiClient";
 // reactstrap components
 import {
+  Label,
   Badge,
   Button,
   Card,
   CardBody,
   CardImg,
+  Form,
   FormGroup,
   Input,
   InputGroupAddon,
@@ -31,27 +33,53 @@ import Banner_mini from "./Banner_mini";
 function ProjectForm() {
 
   const [title, setTitle] = useState('');
-	const [content, setContent] = useState('');
+  const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
-  const [price ,setPrice] = useState(0);
-	const navigate = useNavigate();
+  const [price, setPrice] = useState('');
+  const [free, setFree] = useState(false);
+  const navigate = useNavigate();
 
+
+  //price 유효성
+  useEffect(() => {
+    let fix = price.toString();
+    fix = fix.replace(/^0|\D/g, ""); //맨앞 0이랑 숫자 아닌 문자 삭제
+    setPrice(fix);
+    document.getElementById("price").value = fix;
+    console.log("price 확인: ", price);
+  }, [price]); // (onchange 이벤트 중)
+
+
+  useEffect(() => {
+    console.log("free 확인: ", free);
+    if (free) {
+      document.getElementById("price").disabled = true;
+      setPrice(0);//0
+
+    } else {
+      document.getElementById("price").disabled = false;
+      setPrice(0);
+    }
+
+
+  }, [free]); // (onchange 이벤트 중)
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // 선택된 파일 가져오기
     setFile(selectedFile); // 상태 업데이트
-  };  
+  };
 
 
-  function valid(){
+  function valid() {
     if (!title.trim() || !content.trim()) {
-			alert('제목과 내용을 모두 입력해주세요.');
-			return false;
-		}
+      alert('제목과 내용을 모두 입력해주세요.');
+      return false;
+    }
+  
     return true;
   }
- 
-  function filevalid(){
+
+  function filevalid() {
     if (file) {
       console.log('업로드할 파일:', file);
       // 파일을 서버에 업로드하는 로직 추가
@@ -66,20 +94,26 @@ function ProjectForm() {
 
   }
 
-  function submit(event){
 
-    if(!valid()){
+  function submit(event) {
+
+    if (!valid()) {
       return;
     }
-    if(!filevalid()){
+    if (!filevalid()) {
       return;
     }
-    
-    
+
+    let realPrice = 0;
+    if (price != '') {
+      realPrice = parseInt(price);
+    }
+    const myprice = document.getElementById("price").value;
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('price', price);
+    formData.append('price', realPrice);
     formData.append('file', file);
     console.log(formData);
 
@@ -107,7 +141,7 @@ function ProjectForm() {
               <CardBody className="p-lg-5">
                 <h4 className="mb-1">프로젝트 등록신청서</h4>
                 <p className="mt-0">프로젝트 등록신청서를 작성해주세요.</p>
-                <FormGroup>
+                <div className="mb-4">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -120,23 +154,8 @@ function ProjectForm() {
                       onChange={(e) => setTitle(e.target.value)}
                     />
                   </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-email-83" />
-                        <span>&nbsp;&nbsp;&nbsp;프로젝트.zip</span>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input 
-                    type="file" 
-                    onChange={handleFileChange}
-              
-                    />
-                    {/*accept=".zip"*/}
-                    
-                  </InputGroup>
+                </div>
+                <div className="mb-4">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -145,25 +164,77 @@ function ProjectForm() {
                     </InputGroupAddon>
                     <Input
                       placeholder="가격"
-                      type="number"
+                      type="text"
                       onChange={(e) => setPrice(e.target.value)}
+                      id="price"
+                      min="0"
                     />
+                    <FormGroup
+                      check
+                      inline
+                      className="pl-2"
+                    >
+                      <Input type="checkbox" id="free" onChange={(e) => setFree(e.target.checked)} />
+                      <Label check>
+                        무료배포
+                      </Label>
+                    </FormGroup>
                   </InputGroup>
-                </FormGroup>
-                <FormGroup className="mb-4">
+                </div>
+
+                <div className="mb-4">
                   <Input
                     className="form-control-alternative"
-                    cols="80"
+                    cols="40"
                     name="content"
                     placeholder="프로젝트 설명"
                     onChange={(e) => setContent(e.target.value)}
-                    rows="20"
+                    rows="10"
                     type="textarea"
                   />
-                </FormGroup>
+                </div>
+
+
+                <InputGroup className="input-group-alternative">
+
+                  
+                  
+
+                </InputGroup>
+
+                <Row xs="2 pb-4">
+                  <Col className="">
+                    프로젝트 파일
+                  </Col>
+                  <Col className="">
+                    상세 이미지
+                  </Col>
+                </Row>
+
+                <Row xs="2 pb-4">
+                  <Col className="">
+                  <Input
+                    type="file"
+                    onChange={handleFileChange}
+
+                  />
+                  </Col>
+                  <Col className="">
+                  {/* <Input
+                    type="file"
+                    onChange={handleFileChange}
+
+                  /> */}
+                  {/*accept=".zip"*/}
+                  </Col>
+                </Row>
+                
+                
+                <div>미리보기 영역</div>
+
                 <div>
                   <Button
-                    onClick={(e)=>submit(e)}
+                    onClick={(e) => submit(e)}
                     block
                     className="btn-round"
                     color="default"
@@ -191,6 +262,8 @@ function Page() {
         <Banner_mini />
         <Container>{ProjectForm()}</Container>
       </main>
+
+
     </>
   );
 }
