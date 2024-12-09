@@ -5,14 +5,11 @@ import {
   CardBody,
   FormGroup,
   Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
   InputGroup,
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from "react-bootstrap";
 
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
@@ -102,23 +99,19 @@ const LoginModal = () => {
                   <Form role="form">
                     <FormGroup className="mb-3">
                       <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                          <InputGroup.Text>
                             <i className="ni ni-email-83" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Email" type="email" value={email}
+                          </InputGroup.Text>
+                        <Form.Control placeholder="Email" type="email" value={email}
                           onChange={(e) => setEmail(e.target.value)} />
                       </InputGroup>
                     </FormGroup>
                     <FormGroup>
                       <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                          <InputGroup.Text>
                             <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
+                          </InputGroup.Text>
+                        <Form.Control
                           placeholder="Password"
                           type="password"
                           autoComplete="off"

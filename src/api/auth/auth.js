@@ -24,6 +24,12 @@ export async function postOAuthSignUp(email, username, address, postcode, tel) {
 
 export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
+
+    if (!response.data.accessToken || response.data.accessToken === "Invalid password") {
+        localStorage.clear();
+        return false;
+    }
+
     // Save the access token after logging in
     // console.log(response);
     setAccessToken('Bearer ' + response.data.accessToken);
@@ -31,14 +37,11 @@ export async function postSignIn(email, password) {
     setName(response.data.username);
     setProjectCount(response.data.project_count);
     setMemberId(response.data.member_id);
-    if(getAccessToken() === "Invalid password") {
-        localStorage.clear();
-        return false;
-    }
+
     return true;
 }
 
-export async function postSignOut(){
+export async function postSignOut() {
     localStorage.clear();
 
     const response = await apiClient.post("/auth/signout");

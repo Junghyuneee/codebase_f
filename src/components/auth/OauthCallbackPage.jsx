@@ -7,15 +7,15 @@ const OauthCallbackPage = () => {
 
     useEffect(() => {
         const handleOauthRedirect = async () => {
-            const urlParmas = new URLSearchParams(window.location.search);
-            const token = 'Bearer '+ decodeURIComponent(urlParmas.get("token"));
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = 'Bearer '+ decodeURIComponent(urlParams.get("token"));
 
             if (token) {
                 setAccessToken(token);
-                setEmail(decodeURIComponent(urlParmas.get("email")));
-                setName(decodeURIComponent(urlParmas.get("name")));
-                setMemberId(urlParmas.get("memberId"));
-                setProjectCount(urlParmas.get("projectId"));
+                setEmail(decodeURIComponent(urlParams.get("email")));
+                setName(decodeURIComponent(urlParams.get("name")));
+                setMemberId(urlParams.get("memberId"));
+                setProjectCount(urlParams.get("projectId"));
                 navigate("/", {replace: true});
             }
         }
