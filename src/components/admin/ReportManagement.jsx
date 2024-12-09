@@ -7,8 +7,20 @@ import {useState, useEffect} from 'react';
 import '/src/components/admin/Admin.css';
 import {useSearchParams} from "react-router-dom";
 import axios from "axios";
+import ReportDetailModal from "@/components/admin/ReportDetailModal.jsx";
 
 const ReportManagement = () => {
+    const [activeReportId, setActiveReportId] = useState(null); // 현재 활성화된 reportId 관리
+
+    const [isReportDetailModalOpen, setIsReportDetailModalOpen] = useState(false);
+    const openReportDetailModal = (reportId) => { // 모달 열기 함수
+        if(!isReportDetailModalOpen) {
+            setActiveReportId(reportId);
+        }
+    }
+    const closeReportDetailModal = () => { setActiveReportId(null); } // 모달 닫기 함수
+
+
     const [reports, setReports] = useState([]);
     const [searchParams] = useSearchParams(); // url에서 파라미터 가져오기
     const rawCategory = searchParams.get("category"); // 파라미터에서 category 뽑아내기
@@ -94,7 +106,19 @@ const ReportManagement = () => {
                                 ? "자유게시판 댓글"
                                 : "리뷰"}
                             </td>
-                            <td className="border-left">{report.categoryTitle}</td>
+                            <td className="border-left">
+                                <span onClick={() => openReportDetailModal(report.reportId)}>
+                                    {report.categoryTitle}
+                                </span>
+                            </td>
+                            {activeReportId === report.reportId && ( // 활성화된 reportId에만 모달 표시
+                                <ReportDetailModal
+                                    isReportDetailModalOpen={activeReportId === report.reportId}
+                                    reportId={report.reportId}
+                                    categoryTitle={report.categoryTitle}
+                                    closeReportDetailModal={closeReportDetailModal} // 닫기 함수 전달
+                                />
+                            )}
                             <td className="border-left">{report.count}</td>
                             <td className="border-left">
                                 {report.completed === true
