@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { getData, postData } from './storeAPI';
+import { postData, useFetch } from './storeAPI';
 import { getAccessToken } from "@/api/auth/getset.js";
 
 import {
@@ -40,7 +40,9 @@ import ReportModal from "@/components/admin/ReportModal.jsx";
 
 
 
-export function ProjectCard(project) {
+export function ProjectCard({ project }) {
+
+
 
     return (
 
@@ -55,9 +57,9 @@ export function ProjectCard(project) {
                             top
                         />
 
-
                         <div className="text-center mt-5 mb-5">
                             <h3>
+
                                 {project.title}
 
                             </h3>
@@ -76,30 +78,20 @@ export function ProjectCard(project) {
     );
 }
 
-function existCart(id) {
-    const data = getData(`/cart/ciexist/${id}`);
-    console.log("asdfasdfas", data);
-    if (data == "") {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
 
 
 
-function ProjectExplain(project) {
+function ProjectExplain({project}) {
 
     const [inCart, setInCart] = useState(false);
 
-    
+
     // 상태를 토글하는 함수
     const toggleCart = () => {
         setInCart(!inCart); // 현재 상태를 반대로 변경
     };
 
-   
+
 
     function addCartItem(project) {
 
@@ -107,10 +99,10 @@ function ProjectExplain(project) {
         formData.append("title", project.title);
         formData.append("price", project.price);
         formData.append("project_id", project.id);
-    
+
         postData(`/cart/add`, formData);
         toggleCart();
-    
+
     }
 
 
@@ -121,7 +113,7 @@ function ProjectExplain(project) {
             <Card className='card-profile shadow'>
                 <div className=" mt-5">
                     <h3 className='text-center'>
-                        {project.title}
+                        {/*project.title*/}
 
 
                     </h3>
@@ -163,7 +155,7 @@ function ProjectExplain(project) {
                                 } */}
 
 
-{inCart ? (
+                                {/*inCart ? (
         <h2>
           <Button
             size="lg"
@@ -193,7 +185,7 @@ function ProjectExplain(project) {
             <i className="ni ni-cart" /> 장바구니
           </Button>
         </h2>
-      )}
+      )*/}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
                                 <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
@@ -205,7 +197,7 @@ function ProjectExplain(project) {
                                 <Button color='default' outline block><i className="ni ni-chat-round" /> 채팅</Button>
                             </Col>
                             <Col style={{ padding: '0' }}>
-                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰쓰기</Button>
+                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
                             <Col>
                                 <ReportModal
@@ -231,7 +223,7 @@ function ProjectExplain(project) {
     );
 }
 
-function ProjectDetail(project) {
+function ProjectDetail({project}) {
 
     return (
         <>
@@ -248,32 +240,49 @@ function ProjectDetail(project) {
 
 
 
+function existCart(id) {
+    //const data = getData(`/cart/ciexist/${id}`);
+    console.log("asdfasdfas", data);
+    if (data == "") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
 
 
 function Page() {
-    const [project, setProject] = useState(null); // 데이터 상태
-   
+
+    const [project, setProject] = useState({}); // 데이터 상태
+
     // 현재 페이지의 URL을 가져옵니다.
     const currentUrl = window.location.href;
 
     // URL 객체를 생성합니다.
     const url = new URL(currentUrl).pathname;
-    //console.log(url);
     let id = url.replace("/store/", "");
-    console.log("id ", id);
+    //console.log("id ", id);
 
-
-    //const project = getProject(parseInt(id, 10));
     id = parseInt(id, 10);
-    //const project = getData(`/api/store/${id}`);
-    setProject(getData(`/api/store/${id}`));
 
-    console.log("project : ", project);
 
-    const token = getAccessToken();
-    console.log("token: ", token);
+    const { data, loading, error } = useFetch(`/api/store/${id}`);
+    useEffect(() => {
 
-    existCart(id);
+        if (data) {
+            setProject(data);
+        }
+    }, [data]); // data가 변경될 때마다 실행
+
+    useEffect(() => {
+        //console.log("아 제ㅂㄹ ", project.id);
+    }, [project]);
+
+    //const token = getAccessToken();
+    //console.log("token: ", token);
+
+
 
     return (
         <>
@@ -289,20 +298,29 @@ function Page() {
 
                     <Row>
                         <Col lg="7">
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectCard project={project} />}
 
-                            {ProjectCard(project)}
+
 
 
                         </Col>
                         <Col lg="5">
 
-                            {ProjectExplain(project)}
+                            {/* {ProjectExplain(project)} */}
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectExplain project={project} />}
 
                         </Col>
                     </Row>
                 </Container>
 
-                {ProjectDetail(project)}
+                {/* {ProjectDetail(project)} */}
+                {loading && <p>Loading...</p>}
+                {!loading &&
+                    <ProjectDetail project={project} />}
 
             </main>
 
