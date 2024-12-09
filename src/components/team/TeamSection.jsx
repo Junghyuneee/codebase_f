@@ -13,6 +13,9 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
@@ -22,6 +25,8 @@ function TeamSection() {
   const [teams, setTeams] = useState([]); // 초기 상태 빈 배열
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const teamsPerPage = 6;
 
   const navigate = useNavigate();
 
@@ -35,6 +40,7 @@ function TeamSection() {
       setTeams(Array.isArray(data) ? data : [data]);
     } catch (error) {
       console.error("Error fetching teams:", error);
+      alert("팀 데이터를 불러오는데 실패했습니다.");
     }
   };
 
@@ -68,36 +74,46 @@ function TeamSection() {
     navigate(`/teamdetail/${id}`);
   };
 
+  // 현재 페이지의 팀 데이터 계산
+  const indexOfLastTeam = currentPage * teamsPerPage;
+  const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
+  const currentTeams = teams.slice(indexOfFirstTeam, indexOfLastTeam);
+
+  // 총 페이지 수 계산
+  const totalPages = Math.ceil(teams.length / teamsPerPage);
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <section className="section section-lg pt-lg-0">
+    <section className="section section-lg pt-lg-0 mt--200">
       <Container>
-        <Row className="justify-content-center mt--100 mb-5">
+        <Row className="justify-content-center">
           <Col lg="12">
-            <Row className="row-grid">
-              {teams.length > 0 ? (
-                teams.map((team, index) => (
-                  <Col lg="4" key={index}>
-                    <Card className="card-lift--hover shadow border-0">
-                      <CardImg
-                        alt={team.pjtname || "프로젝트 이미지"}
-                        src={
-                          team.pjtimg
-                            ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`
-                            : defaultImage
-                        }
-                        top
-                      />
-                      <CardBody className="py-5">
-                        <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
-                        <p className="description mt-3">{team.pjtdescription}</p>
-                        <div>
-                          {Array.isArray(team.pjtcategory) &&
-                            team.pjtcategory.map((badge, i) => (
-                              <Badge color="primary" pill className="mr-1" key={i}>
-                                {badge}
-                              </Badge>
-                            ))}
-                        </div>
+            <Row className="row-grid" style={{ gap: '2rem 0' }}>
+              {currentTeams.map((team, index) => (
+                <Col lg="4" md="6" className="px-4" key={index}>
+                  <Card className="card-lift--hover shadow border-0">
+                    <CardImg
+                      alt={team.pjtname || "프로젝트 이미지"}
+                      src={
+                        team.pjtimg
+                          ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`
+                          : defaultImage
+                      }
+                      top
+                    />
+                    <CardBody className="py-5">
+                      <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
+                      <p className="description mt-3">{team.pjtdescription}</p>
+                      <div>
+                        <Badge color="primary" pill className="mr-1">
+                          {team.pjcategory}
+                        </Badge>
+                      </div>
+                      <div className="mt-3">
                         <Button
                           className="mt-2"
                           color="primary"
@@ -106,19 +122,16 @@ function TeamSection() {
                           자세히 보기
                         </Button>
                         <Button
-                          className="mt-2"
                           color="danger"
                           onClick={() => deleteTeam(team.pjt_id)}
                         >
                           삭제
                         </Button>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                ))
-              ) : (
-                <p>팀 정보를 불러오는 중입니다...</p>
-              )}
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </Col>
         </Row>
@@ -152,6 +165,21 @@ function TeamSection() {
           </Button>
         </ModalFooter>
       </Modal>
+
+      {/* 페이지네이션 UI 추가 */}
+      {teams.length > 0 && (
+        <Container className="mt-4">
+          <Pagination className="d-flex justify-content-center">
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i} active={currentPage === i + 1}>
+                <PaginationLink onClick={() => handlePageChange(i + 1)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </Pagination>
+        </Container>
+      )}
     </section>
   );
 }
