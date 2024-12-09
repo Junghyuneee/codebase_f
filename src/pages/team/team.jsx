@@ -24,6 +24,8 @@ import {
 import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
 import '../../assets/css/argon-design-system-react.css'
+import '../../components/team/team.css'
+import { getMemberId } from "../../api/auth/getset.js";
 
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -33,7 +35,8 @@ function Team() {
     pjtowner: '',
     pjtimg: '',
     pjtdescription: '',
-    pjcategory: ''
+    pjcategory: '',
+    memberId: ''
   });
 
   useEffect(() => {
@@ -46,11 +49,23 @@ function Team() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, options } = e.target;
+    if (type === 'select-multiple') {
+      const selectedOptions = [...options]
+        .filter(option => option.selected)
+        .map(option => option.value);
+      
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: selectedOptions
+      }));
+    } else {
+      // 기존 input 처리
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -62,6 +77,7 @@ function Team() {
       pjtowner: formData.pjtowner,
       pjtdescription: formData.pjtdescription,
       pjcategory: formData.pjcategory,
+      memberId: formData.memberId
     }));
     data.append("file", formData.pjtimg);
   
@@ -88,25 +104,33 @@ function Team() {
   
 
   const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
+  const [currentPage, setCurrentPage] = useState(0);  // 페이지 상태 추가
+  const [totalPages, setTotalPages] = useState(0);    // 전체 페이지 수 상태 추가
 
   // 데이터 가져오기
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/projectteams'); // Spring Boot API 호출
-      setProjects(response.data); // 상태에 데이터 저장
+      const response = await axios.get('/api/projectteams', {
+        params: {
+          page: currentPage,
+          size: 6  // 한 페이지당 보여줄 항목 수
+        }
+      });
+      setProjects(response.data.content);          // 페이지 데이터
+      setTotalPages(response.data.totalPages);     // 전체 페이지 수
     } catch (error) {
-      if (error.response) {
-        // 서버에서 반환한 오류 응답 처리
-        console.error('Failed to fetch projects:', error.response.status, error.response.data);
-      } else if (error.request) {
-        // 요청은 보내졌지만 응답을 받지 못한 경우
-        console.error('No response from server:', error.request);
-      } else {
-        // 요청 설정 중 발생한 에러
-        console.error('Error setting up request:', error.message);
-      }
+      console.error('Failed to fetch projects:', error);
     }
   };
+
+  // 페이지 변경 핸들러 추가
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [currentPage]);  // currentPage가 변경될 때마다 데이터 다시 가져오기
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -120,7 +144,17 @@ function Team() {
   
 
   useEffect(() => {
-    fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
+    const getLoggedInUser = () => {
+      const memberId = getMemberId(); // getset.js에서 import 필요
+      if (memberId) {
+        setFormData(prev => ({
+          ...prev,
+          memberId: memberId
+        }));
+      }
+    };
+
+    getLoggedInUser();
   }, []);
 
   return (
@@ -205,7 +239,12 @@ function Team() {
           </section>
         </div>
 
-        <TeamSection/>
+        <TeamSection 
+          projects={projects}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
         {/* Modal for Team Creation */}
         <Modal isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>새 프로젝트 생성</ModalHeader>
@@ -255,19 +294,45 @@ function Team() {
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="pjcategory">카테고리</Label>
-                <Input
-                  type="select"
-                  name="pjcategory"
-                  id="pjcategory"
-                  value={formData.pjcategory}
-                  onChange={handleChange}
-                >
-                  <option value="">카테고리 선택</option>
-                  <option value="Java">Java</option>
-                  <option value="Python">Python</option>
-                  <option value="React">React</option>
-                </Input>
+                <Label className="h5 mb-3">카테고리 선택</Label>
+                <div className="d-flex flex-wrap">
+                  {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js'].map((category) => (
+                    <div key={category} className="custom-category-checkbox mb-3 mr-3">
+                      <Input
+                        type="checkbox"
+                        id={category}
+                        name="pjcategory"
+                        value={category}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData(prev => {
+                            const currentCategories = prev.pjcategory ? prev.pjcategory.split(',') : [];
+                            let newCategories;
+                            
+                            if (e.target.checked) {
+                              newCategories = [...currentCategories, value];
+                            } else {
+                              newCategories = currentCategories.filter(cat => cat !== value);
+                            }
+                            
+                            return {
+                              ...prev,
+                              pjcategory: newCategories.join(',')
+                            };
+                          });
+                        }}
+                      />
+                      <Label 
+                        className="btn btn-outline-primary rounded-pill px-3 py-2" 
+                        check 
+                        for={category}
+                      >
+                        <i className="ni ni-check-bold mr-2 opacity-0"></i>
+                        {category}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </FormGroup>
               <Button color="primary" type="submit">
                 프로젝트 생성
