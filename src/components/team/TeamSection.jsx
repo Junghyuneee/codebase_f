@@ -21,33 +21,15 @@ import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
 
 
-function TeamSection() {
-  const [teams, setTeams] = useState([]); // 초기 상태 빈 배열
+function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const teamsPerPage = 6;
-
   const navigate = useNavigate();
 
-  // 팀 데이터 가져오기
-  const fetchTeams = async () => {
-    try {
-      const response = await axios.get("/api/projectteams");
-      const data = response.data;
-
-      // 데이터가 배열인지 확인
-      setTeams(Array.isArray(data) ? data : [data]);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-      alert("팀 데이터를 불러오는데 실패했습니다.");
-    }
-  };
-
-  // 컴포넌트 로드 시 데이터 가져오기
+  // 모버깅을 위한 콘솔 로그 추가
   useEffect(() => {
-    fetchTeams();
-  }, []);
+    console.log('TeamSection Props:', { projects, currentPage, totalPages });
+  }, [projects, currentPage, totalPages]);
 
   // 모달 열기/닫기
   const toggleModal = (team) => {
@@ -57,10 +39,9 @@ function TeamSection() {
 
   // 팀 삭제
   const deleteTeam = async (id) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return; // 삭제 확인
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       await axios.delete(`/api/projectteams/${id}`);
-      setTeams((prevTeams) => prevTeams.filter((team) => team.id !== id)); // 상태 업데이트
       alert("팀이 삭제되었습니다!");
       location.reload(true);
     } catch (error) {
@@ -69,32 +50,14 @@ function TeamSection() {
     }
   };
 
-  // 팀 상세 페이지 이동
-  const navigateToTeamdetail = (id) => {
-    navigate(`/teamdetail/${id}`);
-  };
-
-  // 현재 페이지의 팀 데이터 계산
-  const indexOfLastTeam = currentPage * teamsPerPage;
-  const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
-  const currentTeams = teams.slice(indexOfFirstTeam, indexOfLastTeam);
-
-  // 총 페이지 수 계산
-  const totalPages = Math.ceil(teams.length / teamsPerPage);
-
-  // 페이지 변경 핸들러
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   return (
     <section className="section section-lg pt-lg-0 mt--200">
       <Container>
         <Row className="justify-content-center">
           <Col lg="12">
             <Row className="row-grid" style={{ gap: '2rem 0' }}>
-              {currentTeams.map((team, index) => (
-                <Col lg="4" md="6" className="px-4" key={index}>
+              {Array.isArray(projects) && projects.map((team, index) => (
+                <Col lg="4" md="6" className="px-4" key={team.pjt_id || index}>
                   <Card className="card-lift--hover shadow border-0">
                     <CardImg
                       alt={team.pjtname || "프로젝트 이미지"}
@@ -137,6 +100,21 @@ function TeamSection() {
         </Row>
       </Container>
 
+      {/* 페이지네이션 */}
+      {totalPages > 1 && (
+        <Container className="mt-4">
+          <Pagination className="d-flex justify-content-center">
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i} active={currentPage === i + 1}>
+                <PaginationLink onClick={() => onPageChange(i + 1)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </Pagination>
+        </Container>
+      )}
+
       {/* Modal */}
       <Modal isOpen={modal} toggle={() => toggleModal(null)}>
         <ModalHeader toggle={() => toggleModal(null)}>
@@ -156,7 +134,7 @@ function TeamSection() {
         <ModalFooter>
           <Button
             color="primary"
-            onClick={() => navigateToTeamdetail(selectedTeam?.pjt_id)}
+            onClick={() => navigate(`/teamdetail/${selectedTeam?.pjt_id}`)}
           >
             팀원 되기
           </Button>
@@ -165,21 +143,6 @@ function TeamSection() {
           </Button>
         </ModalFooter>
       </Modal>
-
-      {/* 페이지네이션 UI 추가 */}
-      {teams.length > 0 && (
-        <Container className="mt-4">
-          <Pagination className="d-flex justify-content-center">
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i} active={currentPage === i + 1}>
-                <PaginationLink onClick={() => handlePageChange(i + 1)}>
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </Pagination>
-        </Container>
-      )}
     </section>
   );
 }

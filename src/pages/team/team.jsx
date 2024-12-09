@@ -38,6 +38,10 @@ function Team() {
     pjcategory: '',
     memberId: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -103,34 +107,40 @@ function Team() {
   
   
 
-  const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
-  const [currentPage, setCurrentPage] = useState(0);  // 페이지 상태 추가
-  const [totalPages, setTotalPages] = useState(0);    // 전체 페이지 수 상태 추가
+  // 검색된 프로젝트 필터링
+  const filteredProjects = projects?.filter(project => 
+    project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   // 데이터 가져오기
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/projectteams', {
-        params: {
-          page: currentPage,
-          size: 6  // 한 페이지당 보여줄 항목 수
-        }
-      });
-      setProjects(response.data.content);          // 페이지 데이터
-      setTotalPages(response.data.totalPages);     // 전체 페이지 수
+      const response = await axios.get('/api/projectteams');  // 페이지네이션 파라미터 일단 제거
+      console.log('API Response:', response.data); // 응답 데이터 확인
+      if (Array.isArray(response.data)) {
+        setProjects(response.data);
+        setTotalPages(Math.ceil(response.data.length / 6));
+      } else if (response.data.content) {
+        setProjects(response.data.content);
+        setTotalPages(response.data.totalPages);
+      }
     } catch (error) {
       console.error('Failed to fetch projects:', error);
     }
   };
 
-  // 페이지 변경 핸들러 추가
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  // 현재 페이지에 표시할 프로젝트
+  const getCurrentPageProjects = () => {
+    const startIndex = currentPage * 6;
+    const endIndex = startIndex + 6;
+    return filteredProjects.slice(startIndex, endIndex);
   };
 
   useEffect(() => {
     fetchProjects();
-  }, [currentPage]);  // currentPage가 변경될 때마다 데이터 다시 가져오기
+  }, []); // currentPage 의존성 제거
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -156,6 +166,15 @@ function Team() {
 
     getLoggedInUser();
   }, []);
+
+  // 검색어 변경 핸들러 추가
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page - 1);
+  };
 
   return (
     <>
@@ -226,8 +245,10 @@ function Team() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="Search"
+                        placeholder="프로젝트나 기술 스택을 검색해보세요"
                         type="text"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         onFocus={() => setSearchFocused(true)}
                         onBlur={() => setSearchFocused(false)}
                       />
@@ -240,8 +261,8 @@ function Team() {
         </div>
 
         <TeamSection 
-          projects={projects}
-          currentPage={currentPage}
+          projects={getCurrentPageProjects()}
+          currentPage={currentPage + 1}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
