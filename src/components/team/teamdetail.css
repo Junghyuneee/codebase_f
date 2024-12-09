@@ -42,7 +42,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden; /* 이미지가 넘칠 경우 숨김 */
   }
+  
+  .project-photo img {
+    max-width: 100%; /* 가로 크기를 부모 컨테이너에 맞춤 */
+    max-height: 100%; /* 세로 크기를 부모 컨테이너에 맞춤 */
+    object-fit: contain; /* 이미지의 비율을 유지하면서 컨테이너에 맞춤 */
+  }
+  
   
   .hashtags {
     margin-top: 10px;
@@ -71,5 +79,13 @@
   
   .team-list li {
     margin-bottom: 5px;
+  }
+  
+  .category-tag {
+    background-color: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    font-size: 14px;
   }
   

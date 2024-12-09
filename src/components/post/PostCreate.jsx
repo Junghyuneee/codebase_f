@@ -9,20 +9,39 @@ const PostCreate = () => {
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
+  const [author, setAuthor] = useState(''); // author 상태 추가
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // 이전 에러 메시지 초기화
-    try {
-      if (!topic || !title || !content) {
-        setError('모든 필드를 채워주세요.');
-        return;
-      }
 
-      await PostService.createPost({ topic, title, tags: tags.split(','), content });
-      navigate('/post'); // 게시물 목록 페이지로 이동
+    // 입력값 확인
+    if (!topic || !title || !content || !author) {
+      setError('모든 필드를 채워주세요.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/api/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic,
+          title,
+          tags: tags.split(',').map(tag => tag.trim()), // 태그를 쉼표로 구분하여 배열로 변환
+          content,
+          author, // author 값을 포함
+        }),
+      });
+
+      if (response.ok) {
+        navigate('/post'); // 게시물 목록 페이지로 이동
+      } else {
+        const errorData = await response.json();
+        setError('게시물 등록 실패: ' + errorData.message);
+      }
     } catch (err) {
       setError('게시물 작성 중 오류가 발생했습니다: ' + err.message);
       console.error(err);
@@ -35,7 +54,7 @@ const PostCreate = () => {
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="topic">
-          <Form.Label>토픽</Form.Label>
+          <Form.Label>주제</Form.Label>
           <Form.Control
             type="text"
             value={topic}
@@ -50,6 +69,16 @@ const PostCreate = () => {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
+            className="mb-3"
+          />
+        </Form.Group>
+        <Form.Group controlId="author">
+          <Form.Label>작성자</Form.Label>
+          <Form.Control
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
             required
             className="mb-3"
           />

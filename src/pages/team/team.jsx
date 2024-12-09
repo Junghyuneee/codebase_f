@@ -21,8 +21,11 @@ import {
   FormGroup,
   Label
 } from "reactstrap";
-import DemoNavbar from "./Navbar.jsx";
-import TeamSection from "./TeamSection.jsx";
+import Navbar from "../../components/team/Navbar.jsx";
+import TeamSection from "../../components/team/TeamSection.jsx";
+import '../../assets/css/argon-design-system-react.css'
+import '../../components/team/team.css'
+import { getMemberId } from "../../api/auth/getset.js";
 
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -32,8 +35,13 @@ function Team() {
     pjtowner: '',
     pjtimg: '',
     pjtdescription: '',
-    pjcategory: ''
+    pjcategory: '',
+    memberId: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -45,58 +53,134 @@ function Team() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, options } = e.target;
+    if (type === 'select-multiple') {
+      const selectedOptions = [...options]
+        .filter(option => option.selected)
+        .map(option => option.value);
+      
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: selectedOptions
+      }));
+    } else {
+      // 기존 input 처리
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
+    const data = new FormData();
+    data.append("projectTeam", JSON.stringify({
+      pjtname: formData.pjtname,
+      pjtowner: formData.pjtowner,
+      pjtdescription: formData.pjtdescription,
+      pjcategory: formData.pjcategory,
+      memberId: formData.memberId
+    }));
+    data.append("file", formData.pjtimg);
+  
+    // FormData 확인용 로그
+    for (let pair of data.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+  
     try {
-      const response = await axios.post('/api/projectteams', formData); // Backend API 호출
+      const response = await axios.post('/api/projectteams', data);
       if (response.status === 200) {
         alert('프로젝트가 성공적으로 생성되었습니다!');
-        toggle(); // 모달 닫기
-        // 필요한 경우, 상태 초기화 또는 리스트 갱신 로직 추가
+        toggle();
       }
     } catch (error) {
       console.error('프로젝트 생성 중 오류 발생:', error);
-      alert('프로젝트 생성에 실패했습니다. 다시 시도해주세요.');
     }
   };
+  
+  
+  
+  
+  
+  
 
-  const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
+  // 검색된 프로젝트 필터링
+  const filteredProjects = projects?.filter(project => 
+    project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   // 데이터 가져오기
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/projectteams'); // Spring Boot API 호출
-      setProjects(response.data); // 상태에 데이터 저장
-    } catch (error) {
-      if (error.response) {
-        // 서버에서 반환한 오류 응답 처리
-        console.error('Failed to fetch projects:', error.response.status, error.response.data);
-      } else if (error.request) {
-        // 요청은 보내졌지만 응답을 받지 못한 경우
-        console.error('No response from server:', error.request);
-      } else {
-        // 요청 설정 중 발생한 에러
-        console.error('Error setting up request:', error.message);
+      const response = await axios.get('/api/projectteams');  // 페이지네이션 파라미터 일단 제거
+      console.log('API Response:', response.data); // 응답 데이터 확인
+      if (Array.isArray(response.data)) {
+        setProjects(response.data);
+        setTotalPages(Math.ceil(response.data.length / 6));
+      } else if (response.data.content) {
+        setProjects(response.data.content);
+        setTotalPages(response.data.totalPages);
       }
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
     }
   };
 
+  // 현재 페이지에 표시할 프로젝트
+  const getCurrentPageProjects = () => {
+    const startIndex = currentPage * 6;
+    const endIndex = startIndex + 6;
+    return filteredProjects.slice(startIndex, endIndex);
+  };
+
   useEffect(() => {
-    fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
+    fetchProjects();
+  }, []); // currentPage 의존성 제거
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        pjtimg: file, // 파일 객체 저장
+      }));
+    }
+  };
+  
+
+  useEffect(() => {
+    const getLoggedInUser = () => {
+      const memberId = getMemberId(); // getset.js에서 import 필요
+      if (memberId) {
+        setFormData(prev => ({
+          ...prev,
+          memberId: memberId
+        }));
+      }
+    };
+
+    getLoggedInUser();
   }, []);
+
+  // 검색어 변경 핸들러 추가
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page - 1);
+  };
 
   return (
     <>
-      <DemoNavbar />
+      <Navbar/>
       <main>
+      
         <div className="position-relative">
           {/* Hero Section */}
           <section className="section section-lg section-shaped pb-250">
@@ -161,8 +245,10 @@ function Team() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        placeholder="Search"
+                        placeholder="프로젝트나 기술 스택을 검색해보세요"
                         type="text"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         onFocus={() => setSearchFocused(true)}
                         onBlur={() => setSearchFocused(false)}
                       />
@@ -174,7 +260,12 @@ function Team() {
           </section>
         </div>
 
-        <TeamSection/>
+        <TeamSection 
+          projects={getCurrentPageProjects()}
+          currentPage={currentPage + 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
         {/* Modal for Team Creation */}
         <Modal isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>새 프로젝트 생성</ModalHeader>
@@ -205,11 +296,11 @@ function Team() {
               <FormGroup>
                 <Label for="pjtimg">이미지</Label>
                 <Input
-                  type="text"
+                  type="file"
                   name="pjtimg"
                   id="pjtimg"
-                  value={formData.pjtimg}
-                  onChange={handleChange}
+                  accept="image/*"
+                  onChange={handleFileChange}
                 />
               </FormGroup>
               <FormGroup>
@@ -224,14 +315,45 @@ function Team() {
                 />
               </FormGroup>
               <FormGroup>
-                <Label for="pjcategory">카테고리</Label>
-                <Input
-                  type="text"
-                  name="pjcategory"
-                  id="pjcategory"
-                  value={formData.pjcategory}
-                  onChange={handleChange}
-                />
+                <Label className="h5 mb-3">카테고리 선택</Label>
+                <div className="d-flex flex-wrap">
+                  {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js'].map((category) => (
+                    <div key={category} className="custom-category-checkbox mb-3 mr-3">
+                      <Input
+                        type="checkbox"
+                        id={category}
+                        name="pjcategory"
+                        value={category}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData(prev => {
+                            const currentCategories = prev.pjcategory ? prev.pjcategory.split(',') : [];
+                            let newCategories;
+                            
+                            if (e.target.checked) {
+                              newCategories = [...currentCategories, value];
+                            } else {
+                              newCategories = currentCategories.filter(cat => cat !== value);
+                            }
+                            
+                            return {
+                              ...prev,
+                              pjcategory: newCategories.join(',')
+                            };
+                          });
+                        }}
+                      />
+                      <Label 
+                        className="btn btn-outline-primary rounded-pill px-3 py-2" 
+                        check 
+                        for={category}
+                      >
+                        <i className="ni ni-check-bold mr-2 opacity-0"></i>
+                        {category}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </FormGroup>
               <Button color="primary" type="submit">
                 프로젝트 생성

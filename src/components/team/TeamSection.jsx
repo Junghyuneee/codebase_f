@@ -13,33 +13,23 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
+import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
 
-function TeamSection() {
-  const [teams, setTeams] = useState([]); // 초기 상태 빈 배열
+
+function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
-
   const navigate = useNavigate();
 
-  // 팀 데이터 가져오기
-  const fetchTeams = async () => {
-    try {
-      const response = await axios.get("/api/projectteams");
-      const data = response.data;
-
-      // 데이터가 배열인지 확인
-      setTeams(Array.isArray(data) ? data : [data]);
-    } catch (error) {
-      console.error("Error fetching teams:", error);
-    }
-  };
-
-  // 컴포넌트 로드 시 데이터 가져오기
+  // 모버깅을 위한 콘솔 로그 추가
   useEffect(() => {
-    fetchTeams();
-  }, []);
+    console.log('TeamSection Props:', { projects, currentPage, totalPages });
+  }, [projects, currentPage, totalPages]);
 
   // 모달 열기/닫기
   const toggleModal = (team) => {
@@ -49,10 +39,9 @@ function TeamSection() {
 
   // 팀 삭제
   const deleteTeam = async (id) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return; // 삭제 확인
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
       await axios.delete(`/api/projectteams/${id}`);
-      setTeams((prevTeams) => prevTeams.filter((team) => team.id !== id)); // 상태 업데이트
       alert("팀이 삭제되었습니다!");
       location.reload(true);
     } catch (error) {
@@ -61,37 +50,33 @@ function TeamSection() {
     }
   };
 
-  // 팀 상세 페이지 이동
-  const navigateToTeamdetail = () => {
-    navigate("/teamdetail");
-  };
-
   return (
-    <section className="section section-lg pt-lg-0">
+    <section className="section section-lg pt-lg-0 mt--200">
       <Container>
-        <Row className="justify-content-center mt--100 mb-5">
+        <Row className="justify-content-center">
           <Col lg="12">
-            <Row className="row-grid">
-              {teams.length > 0 ? (
-                teams.map((team, index) => (
-                  <Col lg="4" key={index}>
-                    <Card className="card-lift--hover shadow border-0">
-                      <CardImg
-                        alt={team.pjtname || "프로젝트 이미지"}
-                        src={team.pjtimg || "../../../template/src/assets/img/theme/img-1-1200x1000.jpg"}
-                        top
-                      />
-                      <CardBody className="py-5">
-                        <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
-                        <p className="description mt-3">{team.pjtdescription}</p>
-                        <div>
-                          {Array.isArray(team.pjtcategory) &&
-                            team.pjtcategory.map((badge, i) => (
-                              <Badge color="primary" pill className="mr-1" key={i}>
-                                {badge}
-                              </Badge>
-                            ))}
-                        </div>
+            <Row className="row-grid" style={{ gap: '2rem 0' }}>
+              {Array.isArray(projects) && projects.map((team, index) => (
+                <Col lg="4" md="6" className="px-4" key={team.pjt_id || index}>
+                  <Card className="card-lift--hover shadow border-0">
+                    <CardImg
+                      alt={team.pjtname || "프로젝트 이미지"}
+                      src={
+                        team.pjtimg
+                          ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`
+                          : defaultImage
+                      }
+                      top
+                    />
+                    <CardBody className="py-5">
+                      <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
+                      <p className="description mt-3">{team.pjtdescription}</p>
+                      <div>
+                        <Badge color="primary" pill className="mr-1">
+                          {team.pjcategory}
+                        </Badge>
+                      </div>
+                      <div className="mt-3">
                         <Button
                           className="mt-2"
                           color="primary"
@@ -100,23 +85,35 @@ function TeamSection() {
                           자세히 보기
                         </Button>
                         <Button
-                          className="mt-2"
                           color="danger"
                           onClick={() => deleteTeam(team.pjt_id)}
                         >
                           삭제
                         </Button>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                ))
-              ) : (
-                <p>팀 정보를 불러오는 중입니다...</p>
-              )}
+                      </div>
+                    </CardBody>
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </Col>
         </Row>
       </Container>
+
+      {/* 페이지네이션 */}
+      {totalPages > 1 && (
+        <Container className="mt-4">
+          <Pagination className="d-flex justify-content-center">
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i} active={currentPage === i + 1}>
+                <PaginationLink onClick={() => onPageChange(i + 1)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </Pagination>
+        </Container>
+      )}
 
       {/* Modal */}
       <Modal isOpen={modal} toggle={() => toggleModal(null)}>
@@ -135,7 +132,10 @@ function TeamSection() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={navigateToTeamdetail}>
+          <Button
+            color="primary"
+            onClick={() => navigate(`/teamdetail/${selectedTeam?.pjt_id}`)}
+          >
             팀원 되기
           </Button>
           <Button color="secondary" onClick={() => toggleModal(null)}>

@@ -1,14 +1,5 @@
 import apiClient from "@/api/apiClient.js";
-
-// let accessToken = "";
-
-export function setAccessToken(token) {
-    localStorage.setItem('accessToken', token); // Update the token
-}
-
-export function getAccessToken() {
-    return localStorage.getItem('accessToken'); // Retrieve the token
-}
+import {getAccessToken, setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
 
 export async function postSignUp(username, password, email, address, postcode, tel) {
     return await apiClient.post('/auth/signup', {
@@ -34,7 +25,12 @@ export async function postOAuthSignUp(email, username, address, postcode, tel) {
 export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
     // Save the access token after logging in
-    setAccessToken(response.data.accessToken);
+    // console.log(response);
+    setAccessToken('Bearer ' + response.data.accessToken);
+    setEmail(response.data.email);
+    setName(response.data.username);
+    setProjectCount(response.data.project_count);
+    setMemberId(response.data.member_id);
     if(getAccessToken() === "Invalid password") {
         localStorage.clear();
         return false;

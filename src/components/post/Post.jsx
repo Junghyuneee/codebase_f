@@ -1,7 +1,11 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Container, Row, Col } from 'reactstrap';
+import { Row, Col, Container } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import DemoNavbar from "./DemoNavbar.jsx"; // Navbar 임포트
+import Headroom from 'headroom.js'; // Headroom 임포트
+import PostHeader from "./PostHeader"; // PostHeader 임포트
+import SimpleFooter from "./SimpleFooter";
 
 // Lazy loading components
 const PostList = lazy(() => import('./PostList'));
@@ -17,64 +21,54 @@ const Loading = () => (
 );
 
 const Post = () => {
-  return (
-    <div
-      style={{
-        backgroundColor: '#f0f4f8',
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        padding: '20px',
-        position: 'relative', // 물방울 모양을 위해 상대적 위치 설정
-      }}
-    >
-      <main
-        style={{
-          width: '100%',
-          maxWidth: '1200px',
-          padding: '40px 20px', // 패딩 조정
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          backgroundColor: '#fff',
-          borderRadius: '10px',
-          position: 'relative', // 물방울 모양을 위해 상대적 위치 설정
-        }}
-      >
-        {/* 물방울 모양 추가 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-50px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100px',
-            height: '100px',
-            backgroundColor: '#007bff',
-            borderRadius: '50%',
-            filter: 'blur(20px)',
-            zIndex: -1,
-          }}
-        />
+  const [collapseClasses, setCollapseClasses] = useState('');
 
-        <section>
-          <Container className="pt-lg-7">
-            <Row className="justify-content-center">
-              <Col lg="10">
-                <h1 className="text-center mb-4"></h1>
-                <Suspense fallback={<Loading />}>
-                  <Routes>
-                    <Route path="/" element={<PostList />} />
-                    <Route path="new" element={<PostCreate />} />
-                    <Route path=":id" element={<PostDetail />} />
-                    <Route path=":id/edit" element={<PostEdit />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Suspense>
-              </Col>
-            </Row>
-          </Container>
-        </section>
-      </main>
+  useEffect(() => {
+    const navbarMain = document.getElementById('navbar-main');
+    if (navbarMain) {
+      const headroom = new Headroom(navbarMain, {
+        tolerance: 5,
+        offset: 205,
+        classes: {
+          initial: "headroom",
+          pinned: "headroom--pinned",
+          unpinned: "headroom--unpinned"
+        }
+      });
+      headroom.init();
+    }
+  }, []);
+
+  const onExiting = () => setCollapseClasses('collapsing-out');
+  const onExited = () => setCollapseClasses('');
+
+  return (
+    <div>
+      <header className="header-global">
+        <DemoNavbar
+          collapseClasses={collapseClasses}
+          onExiting={onExiting}
+          onExited={onExited}
+        />
+      </header>
+      <PostHeader />
+      <Container className="section">
+        <Row className="justify-content-center">
+          <Col lg="10">
+            <h1 className="text-center mb-4">CODEBASE</h1>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<PostList />} />
+                <Route path="new" element={<PostCreate />} />
+                <Route path=":id" element={<PostDetail />} />
+                <Route path=":id/edit" element={<PostEdit />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </Col>
+        </Row>
+      </Container>
+      <SimpleFooter />
     </div>
   );
 };
