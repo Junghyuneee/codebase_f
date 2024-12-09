@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient.js";
-import {getAccessToken, setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
+import { setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
 
 export async function postSignUp(username, password, email, address, postcode, tel) {
     return await apiClient.post('/auth/signup', {
@@ -31,7 +31,6 @@ export async function postSignIn(email, password) {
     }
 
     // Save the access token after logging in
-    // console.log(response);
     setAccessToken('Bearer ' + response.data.accessToken);
     setEmail(response.data.email);
     setName(response.data.username);
@@ -42,9 +41,9 @@ export async function postSignIn(email, password) {
 }
 
 export async function postSignOut() {
+    const response = await apiClient.post("/auth/signout");
     localStorage.clear();
 
-    const response = await apiClient.post("/auth/signout");
     console.log(response);
 }
 
