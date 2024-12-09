@@ -1,6 +1,6 @@
 /*cart*/
 import React, { useEffect, useState, useRef, Outlet } from "react";
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 // nodejs library that concatenates classes
 import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
 // reactstrap components
@@ -33,8 +33,21 @@ function ProjectForm() {
   const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
-  const [price ,setPrice] = useState(0);
+  const [price ,setPrice] = useState('');
 	const navigate = useNavigate();
+
+
+  //price valid
+  useEffect(() => {
+     console.log("price 확인: ", price);
+     let fix = price.toString();
+     fix = fix.replace(/^0|\D/g, ""); //맨앞 0이랑 숫자 아닌 문자 삭제
+     setPrice(fix);
+     document.getElementById("price").value = fix;
+
+  }, [price]); // (onchange 이벤트 중)
+
+
 
 
   const handleFileChange = (e) => {
@@ -48,6 +61,8 @@ function ProjectForm() {
 			alert('제목과 내용을 모두 입력해주세요.');
 			return false;
 		}
+
+
     return true;
   }
  
@@ -65,6 +80,7 @@ function ProjectForm() {
     }
 
   }
+  
 
   function submit(event){
 
@@ -75,19 +91,21 @@ function ProjectForm() {
       return;
     }
     
+    const myprice = document.getElementById("price").value;
     
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
-    formData.append('price', price);
+    formData.append('price', parseInt(price));
     formData.append('file', file);
     console.log(formData);
 
 
     if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
       postData('/api/store/add', formData);
-      navigate("/store");
+
       alert("게시되었습니다.");
+      navigate("/store");
     }
     else {
       //확인창에서 취소
@@ -106,7 +124,7 @@ function ProjectForm() {
               <CardBody className="p-lg-5">
                 <h4 className="mb-1">프로젝트 등록신청서</h4>
                 <p className="mt-0">프로젝트 등록신청서를 작성해주세요.</p>
-                <FormGroup>
+                <div className="mb-4">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -119,8 +137,37 @@ function ProjectForm() {
                       onChange={(e) => setTitle(e.target.value)}
                     />
                   </InputGroup>
-                </FormGroup>
-                <FormGroup>
+                </div>
+                <div className="mb-4">
+                <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="가격"
+                      type="text"
+                      onChange={(e) => setPrice(e.target.value)}
+                      id="price"
+                      min="0"
+                    />
+                  </InputGroup>
+                </div>
+                
+                <div className="mb-4">
+                  <Input
+                    className="form-control-alternative"
+                    cols="80"
+                    name="content"
+                    placeholder="프로젝트 설명"
+                    onChange={(e) => setContent(e.target.value)}
+                    rows="20"
+                    type="textarea"
+                  />
+                </div>
+
+                
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -136,30 +183,7 @@ function ProjectForm() {
                     {/*accept=".zip"*/}
                     
                   </InputGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-user-run" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="가격"
-                      type="number"
-                      onChange={(e) => setPrice(e.target.value)}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup className="mb-4">
-                  <Input
-                    className="form-control-alternative"
-                    cols="80"
-                    name="content"
-                    placeholder="프로젝트 설명"
-                    onChange={(e) => setContent(e.target.value)}
-                    rows="20"
-                    type="textarea"
-                  />
-                </FormGroup>
+               
                 <div>
                   <Button
                     onClick={(e)=>submit(e)}
