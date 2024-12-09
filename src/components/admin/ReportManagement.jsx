@@ -74,10 +74,9 @@ const ReportManagement = () => {
                 <thead>
                     <tr>
                         <th className="column-1">번호</th>
-                        <th className="column-1">이름</th>
                         <th className="column-1">카테고리</th>
                         <th className="column-3">게시글 제목</th>
-                        <th className="column-3">신고 내용</th>
+                        <th className="column-3">신고 수</th>
                         <th className="column-1">처리 여부</th>
                         <th className="column-1">처리</th>
                     </tr>
@@ -86,22 +85,21 @@ const ReportManagement = () => {
                     {reports.map((report) => (
                         <tr key={report.reportId}>
                             <td>{report.reportId}</td>
-                            <td className="border-left">{report.memberName}</td>
                             <td className="border-left">
                                 {report.category === 0
                                 ? "프로젝트"
-                                :report.category === 1
+                                : report.category === 1
                                 ? "자유게시판"
-                                :report.category === 2
+                                : report.category === 2
                                 ? "자유게시판 댓글"
                                 : "리뷰"}
                             </td>
                             <td className="border-left">{report.categoryTitle}</td>
-                            <td className="border-left">{report.content}</td>
+                            <td className="border-left">{report.count}</td>
                             <td className="border-left">
                                 {report.completed === true
-                                ? "O"
-                                : "X"}
+                                    ? "O"
+                                    : "X"}
                             </td>
                             <td className="border-left">
                                 <button onClick={(e) => e.preventDefault()}>처리</button>
