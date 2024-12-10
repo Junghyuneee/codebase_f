@@ -1,6 +1,6 @@
-import React, { lazy, Suspense, useState, useEffect } from 'react';
+import  { lazy, Suspense, useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Row, Col, Container } from 'reactstrap';
+import { Row, Col, Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DemoNavbar from "./DemoNavbar.jsx"; // Navbar 임포트
 import Headroom from 'headroom.js'; // Headroom 임포트
