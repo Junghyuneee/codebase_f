@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Container, Form, Alert, Row, Col, Card } from 'react-bootstrap';
+import { Button, Container, Form, Alert,  Card } from "react-bootstrap";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
 import './PostDetail.css';
