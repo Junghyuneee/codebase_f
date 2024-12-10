@@ -14,7 +14,6 @@ import {
 } from 'reactstrap';
 
 import {
-    NavbarBrand,
     Navbar,
     Nav,
     Container,
@@ -57,9 +56,12 @@ const NavigationBar = () => {
                     id="navbar-main"
                 >
                     <Container>
-                        <NavbarBrand className="mr-lg-5" to="/" tag={Link}>
+                        <Navbar.Brand
+                            style={{cursor:"pointer"}} className="mr-lg-5"
+                            onClick={()=>{navigate("/")}}
+                        >
                             <img alt="..." src={logoWhite}/>
-                        </NavbarBrand>
+                        </Navbar.Brand>
                         <button className="navbar-toggler" id="navbar_global">
                             <span className="navbar-toggler-icon"/>
                         </button>
