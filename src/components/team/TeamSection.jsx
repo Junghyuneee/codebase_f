@@ -116,20 +116,40 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
       )}
 
       {/* Modal */}
-      <Modal isOpen={modal} toggle={() => toggleModal(null)}>
+      <Modal isOpen={modal} toggle={() => toggleModal(null)} size="lg">
         <ModalHeader toggle={() => toggleModal(null)}>
           {selectedTeam?.pjtname || "팀 정보"}
         </ModalHeader>
         <ModalBody>
-          <p>{selectedTeam?.pjtdescription || "팀 설명이 없습니다."}</p>
-          <div>
-            {Array.isArray(selectedTeam?.pjtcategory) &&
-              selectedTeam.pjtcategory.map((badge, index) => (
-                <Badge color="primary" pill className="mr-1" key={index}>
-                  {badge}
-                </Badge>
-              ))}
-          </div>
+          <Row>
+            <Col md="4">
+              <img
+                src={
+                  selectedTeam?.pjtimg
+                    ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${selectedTeam.pjtimg}`
+                    : defaultImage
+                }
+                alt={selectedTeam?.pjtname}
+                style={{ width: '100%', borderRadius: '8px' }}
+              />
+            </Col>
+            <Col md="8">
+              <h5>프로젝트 설명</h5>
+              <p>{selectedTeam?.pjtdescription || "팀 설명이 없습니다."}</p>
+            </Col>
+          </Row>
+          <Row className="mt-4">
+            <Col>
+              <h5>사용 기술</h5>
+              <div>
+                {selectedTeam?.pjcategory?.split(',').map((tech, index) => (
+                  <Badge color="primary" pill className="mr-2 mb-2" key={index}>
+                    {tech.trim()}
+                  </Badge>
+                )) || "등록된 기술이 없습니다."}
+              </div>
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
           <Button
