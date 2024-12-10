@@ -24,14 +24,14 @@ apiClient.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (error.response) {
+        if (error.response && (error.response.status === 401 || error.response.status === 500)) {
             try {
                 console.log("Refreshing token...");
                 const refreshResponse = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`+"/auth/refresh", {}, {
                     withCredentials: true, // Ensure the refresh token (cookie) is sent
                 });
                 const newToken = refreshResponse.data.accessToken;
-                setAccessToken(newToken); // Update token
+                setAccessToken(`Bearer ${newToken}`); // Update token
                 // Retry the original request with the new token
                 error.config.headers.Authorization = `Bearer ${newToken}`;
                 return apiClient(error.config);
