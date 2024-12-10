@@ -36,7 +36,7 @@ const PostList = () => {
         case '오래된순':
           return createdateA - createdateB;
         case '추천순':
-          return b.likeCount - a.likeCount;
+          return b.likes - a.likes; // 수정된 부분
         case '조회순':
           return b.views - a.views;
         default:
@@ -115,8 +115,8 @@ const PostList = () => {
                 <Card.Text>
                   <span>주제: {post.topic}</span><br />
                   <span>등록일: {new Date(post.createDate).toLocaleString('ko-KR')}</span><br />
-                  <span>태그: {post.tags}</span><br />
-                  <span>좋아요 수: {post.likeCount}</span><br />
+                  <span>태그: {post.tags ? post.tags.join(', ') : '없음'}</span><br />
+                  <span>좋아요 수: {post.likes}</span><br /> {/* 수정된 부분 */}
                   <span>조회수: {post.views}</span><br />
                 </Card.Text>
                 <Link to={`/post/${post.id}`} onClick={() => handleViewIncrease(post.id)}>
