@@ -80,14 +80,46 @@ export function ProjectCard({ project }) {
 
 
 
+function existCart(id) {
+    //const data = getData(`/cart/ciexist/${id}`);
+    console.log("asdfasdfas", data);
+    if (data == "") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
 
 function ProjectExplain({ project }) {
 
     const [inCart, setInCart] = useState(false);
 
 
+    function addCartItem(project) {
+
+        let formData = new FormData();
+        formData.append("title", project.title);
+        formData.append("price", project.price);
+        formData.append("project_id", project.id);
+    
+        postData(`/cart/add`, formData);
+
+    }
+    function deleteCartItem(project) {
+        postData(`/cart/delete/${project.id}`,);
+    }
     // 상태를 토글하는 함수
     const toggleCart = () => {
+        if(inCart){
+            //DB 삭제요청
+            deleteCartItem(project);
+
+        }
+        else{
+            addCartItem(project);
+        }
+
         setInCart(!inCart); // 현재 상태를 반대로 변경
     };
 
@@ -101,22 +133,12 @@ function ProjectExplain({ project }) {
 
     useEffect(() => {
         if(data){
-            console.log(data);
+            console.log("카트에 존재함");
             setInCart(true);
         }
     }, [data]);
 
-    function addCartItem(project) {
-
-        let formData = new FormData();
-        formData.append("title", project.title);
-        formData.append("price", project.price);
-        formData.append("project_id", project.id);
-
-        postData(`/cart/add`, formData);
-        toggleCart();
-
-    }
+    
 
 
 
@@ -153,7 +175,7 @@ function ProjectExplain({ project }) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-                                <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
+                            
                                 {/* {existCart(project.id) &&
                                     <h2>
                                         <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
@@ -167,6 +189,38 @@ function ProjectExplain({ project }) {
                                     </h2>
                                 } */}
 
+                                {/* inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                }
+                                {!inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                */}
 
                                 {inCart ? (
                                     <h2>
@@ -253,16 +307,6 @@ function ProjectDetail({ project }) {
 
 
 
-function existCart(id) {
-    //const data = getData(`/cart/ciexist/${id}`);
-    console.log("asdfasdfas", data);
-    if (data == "") {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
 
 
 function Page() {
