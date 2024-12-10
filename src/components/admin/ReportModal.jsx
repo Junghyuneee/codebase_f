@@ -37,7 +37,7 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
                 memberId: memberId,
-                memberName: memberName,
+                //memberName: memberName,
                 content: selectedContent
                 // 전송할 데이터를 JSON 형식으로 작성
             });

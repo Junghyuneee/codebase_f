@@ -146,7 +146,7 @@ const PostDetail = () => {
                 category={1}
                 categoryId={id}
                 categoryTitle={post.title}
-                memberId={0}
+                memberId={1006}
                 memberName={""}
               />
             </div>
