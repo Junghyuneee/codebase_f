@@ -12,16 +12,35 @@ import {
   InputGroup,
   Container,
   Row,
-  Col
+  Col,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
 import TeamCreationModal from "../../components/team/TeamCreationModal.jsx";
 import { getMemberId } from "../../api/auth/getset.js";
 
+// CATEGORIES 배열 추가
+const CATEGORIES = [
+  'React',
+  'JavaScript',
+  'Python',
+  'Java',
+  'Spring',
+  'Node.js',
+  'Vue.js',
+  'Angular',
+  'TypeScript',
+  'PHP'
+];
+
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [formData, setFormData] = useState({
     pjtname: '',
     pjtowner: '',
@@ -34,6 +53,7 @@ function Team() {
   const [projects, setProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -85,11 +105,22 @@ function Team() {
     }
   };
 
-  const filteredProjects = projects?.filter(project => 
-    project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredProjects = projects?.filter(project => {
+    const matchesSearch = 
+      project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const projectCategories = project?.pjcategory?.split(',').map(cat => cat.trim()) || [];
+    
+    const matchesCategories = 
+      selectedCategories.length === 0 ||
+      selectedCategories.some(category => 
+        projectCategories.includes(category)
+      );
+
+    return matchesSearch && matchesCategories;
+  }) || [];
 
   const fetchProjects = async () => {
     try {
@@ -125,6 +156,18 @@ function Team() {
   const handlePageChange = (page) => {
     setCurrentPage(page - 1);
   };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(cat => cat !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
+  };
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <>
@@ -186,21 +229,49 @@ function Team() {
               <section className="mt-4">
                 <Row>
                   <Col lg="10">
-                    <InputGroup className="mb-4">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-zoom-split-in" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="프로젝트나 기술 스택을 검색해보세요"
-                        type="text"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                      />
-                    </InputGroup>
+                    <div className="d-flex">
+                      <InputGroup className="mb-4 mr-2">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-zoom-split-in" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder="프로젝트나 기술 스택을 검색해보세요"
+                          type="text"
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                          onFocus={() => setSearchFocused(true)}
+                          onBlur={() => setSearchFocused(false)}
+                        />
+                      </InputGroup>                      
+                    </div>
+                  </Col>
+                  <Col lg="2">
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret color="primary">
+                          {selectedCategories.length > 0 
+                            ? `기술 스택 (${selectedCategories.length})`
+                            : '기술 스택'}
+                        </DropdownToggle>
+                        <DropdownMenu>
+                          {CATEGORIES.map((category) => (
+                            <DropdownItem 
+                              key={category}
+                              onClick={() => handleCategorySelect(category)}
+                              className="d-flex align-items-center"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedCategories.includes(category)}
+                                onChange={() => {}}
+                                className="mr-2"
+                              />
+                              {category}
+                            </DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
                   </Col>
                 </Row>
               </section>
@@ -213,6 +284,8 @@ function Team() {
           currentPage={currentPage + 1}
           totalPages={totalPages}
           onPageChange={handlePageChange}
+          selectedCategories={selectedCategories}
+          onCategorySelect={handleCategorySelect}
         />
         <TeamCreationModal 
           isOpen={modal}
