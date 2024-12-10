@@ -7,8 +7,9 @@ import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "rea
 import {FormCheck} from "react-bootstrap";
 import {FaExclamationTriangle} from "react-icons/fa";
 import axios from "axios";
+import {getMemberId} from "@/api/auth/getset.js";
 
-const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName, style}) => {
+const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) => {
 
     const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 정의
 
@@ -36,8 +37,8 @@ const ReportModal = ({category, categoryId, categoryTitle, memberId, memberName,
                 category: category,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
-                memberId: memberId,
-                memberName: memberName,
+                memberId: getMemberId(),
+                // memberName: memberName,
                 content: selectedContent
                 // 전송할 데이터를 JSON 형식으로 작성
             });

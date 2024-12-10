@@ -271,7 +271,7 @@ function ProjectExplain({ project }) {
                                     category={0}
                                     categoryId={project.id}
                                     categoryTitle={project.title}
-                                    memberId={0}
+                                    //memberId={0}//은즤..이거봐쥬.... 이거필요해?? 난 상관없엉
                                     memberName={""}
                                     style={{
                                         width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
