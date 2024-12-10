@@ -102,10 +102,10 @@ const ChatPage = () => {
                     <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
                         <Container>
                             <div style={{display: 'flex'}}>
-                                <div style={{width: '300px'}}>
+                                <div style={{width: '30%'}} className="min-vh-50">
                                     <SidePanel/>
                                 </div>
-                                <div style={{width: '100%'}} className={"bg-white rounded-right"} >
+                                <div style={{width: '70%'}} className={"bg-white rounded-right py-3"} >
                                     <MainPanel/>
                                 </div>
                             </div>

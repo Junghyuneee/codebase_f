@@ -6,11 +6,10 @@ const SidePanel = () => {
             style={{
                 backgroundColor: 'dimgray',
                 padding: '2rem',
-                minHeight: '100vh',
                 color: 'white',
                 minWidth: '275px',
             }}
-            className={"rounded-5 rounded-left"}
+            className={"rounded-5 rounded-left h-100"}
         >
             <ChatRooms/>
         </div>
