@@ -27,14 +27,14 @@ apiClient.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             try {
                 console.log("Refreshing token...");
-                // const refreshResponse = await axios.post("/auth/refresh", {}, {
-                //     withCredentials: true, // Ensure the refresh token (cookie) is sent
-                // });
-                // const newToken = refreshResponse.data.accessToken;
-                // setAccessToken(newToken); // Update token
-                // // Retry the original request with the new token
-                // error.config.headers.Authorization = `Bearer ${newToken}`;
-                // return apiClient(error.config);
+                const refreshResponse = await axios.post("/auth/refresh", {}, {
+                    withCredentials: true, // Ensure the refresh token (cookie) is sent
+                });
+                const newToken = refreshResponse.data.accessToken;
+                setAccessToken(newToken); // Update token
+                // Retry the original request with the new token
+                error.config.headers.Authorization = `Bearer ${newToken}`;
+                return apiClient(error.config);
             } catch (refreshError) {
                 console.error("Failed to refresh token:", refreshError);
                 // Optional: Log out the user or redirect to login
