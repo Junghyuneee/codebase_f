@@ -124,7 +124,6 @@ function ProjectExplain(project) {
                                     category={0}
                                     categoryId={project.id}
                                     categoryTitle={project.name}
-                                    memberId={0}
                                     memberName={""}
                                     style={{
                                         width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
