@@ -29,7 +29,7 @@ function Banner_mini() {
     return (
         <>
 
-            <Navbar className="navbar-dark bg-info" expand="lg">
+            <Navbar className="navbar-dark bg-info pt-7" expand="lg">
                 <Container>
                     <NavbarBrand href="/store">
                         CODEBASE
