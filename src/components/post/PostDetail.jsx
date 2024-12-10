@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Card, Container, Form, Alert } from 'react-bootstrap';
+import { Button, Container, Form, Alert, Row, Col, Card } from 'react-bootstrap';
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
+import './PostDetail.css';
 
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [likes, setLikes] = useState(0); // 좋아요 카운트
+  const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
+  const [viewCount, setViewCount] = useState(0);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const [likeCount, setLikeCount] = useState(0);
-  const [dislikeCount, setDislikeCount] = useState(0);
-  const [viewCount, setViewCount] = useState(0); // 조회수 상태 추가
-
-  const [hasLiked, setHasLiked] = useState(false);
-  const [hasDisliked, setHasDisliked] = useState(false);
-
   const [editCommentIndex, setEditCommentIndex] = useState(null);
 
   useEffect(() => {
@@ -27,13 +26,16 @@ const PostDetail = () => {
         if (!response.ok) throw new Error('게시물 가져오기 실패');
         const data = await response.json();
         setPost(data);
-        setLikeCount(data.likeCount); // 좋아요 카운트 설정
-        setDislikeCount(data.dislikeCount); // 싫어요 카운트 설정
-        setViewCount(data.views); // 조회수 설정
+        setLikes(data.likes || 0);
+        setDislikes(data.dislikes || 0);
+        setViewCount(data.views || 0);
+        setLoading(false);
       } catch (err) {
-        console.error(err.message);
+        setError(err.message);
+        setLoading(false);
       }
     };
+
     fetchPost();
   }, [id]);
 
@@ -42,9 +44,11 @@ const PostDetail = () => {
       try {
         const response = await fetch(`http://localhost:8080/api/post/delete/${id}`, { method: 'DELETE' });
         if (!response.ok) throw new Error('게시물 삭제 실패');
+        alert('게시물이 삭제되었습니다.');
         navigate('/post');
       } catch (err) {
         console.error(err.message);
+        alert('게시물 삭제 중 오류가 발생했습니다.');
       }
     }
   };
@@ -76,45 +80,45 @@ const PostDetail = () => {
     }
   };
 
+  // 좋아요 버튼 클릭 핸들러
   const handleLike = async () => {
-    if (hasLiked) return; // 이미 좋아요를 눌렀다면 처리하지 않음
     try {
-      const response = await fetch(`http://localhost:8080/api/post/${id}/like`, { method: 'PUT' });
-      if (!response.ok) throw new Error('좋아요 처리 실패');
-      const updatedPost = await response.json();
-      setLikeCount(updatedPost.likeCount);
-      setDislikeCount(updatedPost.dislikeCount);
-      setHasLiked(true);
-      if (hasDisliked) {
-        setDislikeCount(prevCount => prevCount - 1);
-        setHasDisliked(false);
+      const response = await fetch(
+        `http://localhost:8080/api/post/like/${id}`,
+        {
+          method: 'POST',
+        }
+      );
+      if (response.ok) {
+        setLikes(likes + 1);
       }
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error('좋아요 요청 중 오류 발생: ', error);
     }
   };
 
+  // 싫어요 버튼 클릭 핸들러
   const handleDislike = async () => {
-    if (hasDisliked) return; // 이미 싫어요를 눌렀다면 처리하지 않음
     try {
-      const response = await fetch(`http://localhost:8080/api/post/${id}/dislike`, { method: 'PUT' });
-      if (!response.ok) throw new Error('싫어요 처리 실패');
-      const updatedPost = await response.json();
-      setLikeCount(updatedPost.likeCount);
-      setDislikeCount(updatedPost.dislikeCount);
-      setHasDisliked(true);
-      if (hasLiked) {
-        setLikeCount(prevCount => prevCount - 1);
-        setHasLiked(false);
+      const response = await fetch(
+        `http://localhost:8080/api/post/dislike/${id}`,
+        {
+          method: 'POST',
+        }
+      );
+      if (response.ok) {
+        setDislikes(dislikes + 1);
       }
-    } catch (err) {
-      console.error(err.message);
+    } catch (error) {
+      console.error('싫어요 요청 중 오류 발생: ', error);
     }
   };
 
   return (
     <Container className="post-detail-container mt-4">
-      {post ? (
+      {loading && <Alert variant="info">리뷰 정보를 불러오는 중...</Alert>}
+      {error && <Alert variant="danger">{error}</Alert>}
+      {post && (
         <Card className="mb-4 shadow-sm">
           <Card.Body>
             <Card.Subtitle className="mb-2 text-muted">{post.author}</Card.Subtitle>
@@ -127,14 +131,17 @@ const PostDetail = () => {
                 <Button variant="danger" onClick={handleDelete}>삭제</Button>
               </div>
             </div>
+            <div className="mt-2">
+              <small className="text-muted">등록일: {new Date(post.createDate).toLocaleString()}</small>
+            </div>
             <div className="mt-3">
-              <Button variant="link" onClick={handleLike} disabled={hasLiked}>
-                <FaThumbsUp /> {likeCount}
+              <Button variant="link" onClick={handleLike}>
+                <FaThumbsUp /> {likes}
               </Button>
-              <Button variant="link" onClick={handleDislike} disabled={hasDisliked}>
-                <FaThumbsDown /> {dislikeCount}
+              <Button variant="link" onClick={handleDislike}>
+                <FaThumbsDown /> {dislikes}
               </Button>
-              <span className="ml-2">조회수: {viewCount}</span> {/* 조회수 표시 */}
+              <span className="ml-2">조회수: {viewCount}</span>
               <ReportModal
                 category={1}
                 categoryId={id}
@@ -144,8 +151,6 @@ const PostDetail = () => {
             </div>
           </Card.Body>
         </Card>
-      ) : (
-        <Alert variant="danger">게시물을 로드하는 중입니다...</Alert>
       )}
 
       <Form onSubmit={handleCommentSubmit} className="mb-4">
