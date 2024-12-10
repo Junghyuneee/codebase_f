@@ -14,6 +14,7 @@ const MainPage = () => {
 			<Button onClick={postSignOut}>Logout</Button>
 			<Button onClick={() => navigate('/review')}>Review</Button>
 			<Button onClick={() => navigate('/post')}>Post</Button>
+			<Button onClick={() => navigate('/store')}>store</Button>
 			<Button onClick={() => navigate('/admin')}>Admin</Button>
 			<VisitorIp />
 		</div>
