@@ -7,49 +7,44 @@ import ReportModal from "@/components/admin/ReportModal.jsx";
 const PostDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [post, setPost] = useState(null);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [likeCount, setLikeCount] = useState(0);
   const [dislikeCount, setDislikeCount] = useState(0);
+  const [viewCount, setViewCount] = useState(0); // 조회수 상태 추가
+
   const [hasLiked, setHasLiked] = useState(false);
   const [hasDisliked, setHasDisliked] = useState(false);
-  const [editCommentIndex, setEditCommentIndex] = useState(null);
-  const [error, setError] = useState(null); // 에러 상태 추가
 
-  const API_BASE_URL = 'http://localhost:8080/api/post';
+  const [editCommentIndex, setEditCommentIndex] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/detail/${id}`);
+        const response = await fetch(`http://localhost:8080/api/post/detail/${id}`);
         if (!response.ok) throw new Error('게시물 가져오기 실패');
         const data = await response.json();
         setPost(data);
-        setLikeCount(data.likeCount);
-        setDislikeCount(data.dislikeCount);
-        
-        // 조회수 증가 API 호출
-        await fetch(`${API_BASE_URL}/${id}/views`, { method: 'PUT' });
+        setLikeCount(data.likeCount); // 좋아요 카운트 설정
+        setDislikeCount(data.dislikeCount); // 싫어요 카운트 설정
+        setViewCount(data.views); // 조회수 설정
       } catch (err) {
         console.error(err.message);
-        setError(err.message); // 에러 상태 업데이트
       }
     };
-
     fetchPost();
   }, [id]);
 
   const handleDelete = async () => {
     if (window.confirm("정말로 이 게시물을 삭제하시겠습니까?")) {
       try {
-        const response = await fetch(`${API_BASE_URL}/delete/${id}`, { method: 'DELETE' });
+        const response = await fetch(`http://localhost:8080/api/post/delete/${id}`, { method: 'DELETE' });
         if (!response.ok) throw new Error('게시물 삭제 실패');
         navigate('/post');
       } catch (err) {
         console.error(err.message);
-        setError(err.message); // 에러 상태 업데이트
       }
     }
   };
@@ -82,9 +77,9 @@ const PostDetail = () => {
   };
 
   const handleLike = async () => {
-    if (hasLiked) return;
+    if (hasLiked) return; // 이미 좋아요를 눌렀다면 처리하지 않음
     try {
-      const response = await fetch(`${API_BASE_URL}/${id}/like`, { method: 'PUT' });
+      const response = await fetch(`http://localhost:8080/api/post/${id}/like`, { method: 'PUT' });
       if (!response.ok) throw new Error('좋아요 처리 실패');
       const updatedPost = await response.json();
       setLikeCount(updatedPost.likeCount);
@@ -96,14 +91,13 @@ const PostDetail = () => {
       }
     } catch (err) {
       console.error(err.message);
-      setError(err.message); // 에러 상태 업데이트
     }
   };
 
   const handleDislike = async () => {
-    if (hasDisliked) return;
+    if (hasDisliked) return; // 이미 싫어요를 눌렀다면 처리하지 않음
     try {
-      const response = await fetch(`${API_BASE_URL}/${id}/dislike`, { method: 'PUT' });
+      const response = await fetch(`http://localhost:8080/api/post/${id}/dislike`, { method: 'PUT' });
       if (!response.ok) throw new Error('싫어요 처리 실패');
       const updatedPost = await response.json();
       setLikeCount(updatedPost.likeCount);
@@ -115,13 +109,11 @@ const PostDetail = () => {
       }
     } catch (err) {
       console.error(err.message);
-      setError(err.message); // 에러 상태 업데이트
     }
   };
 
   return (
     <Container className="post-detail-container mt-4">
-      {error && <Alert variant="danger">{error}</Alert>} {/* 에러 메시지 표시 */}
       {post ? (
         <Card className="mb-4 shadow-sm">
           <Card.Body>
@@ -142,6 +134,7 @@ const PostDetail = () => {
               <Button variant="link" onClick={handleDislike} disabled={hasDisliked}>
                 <FaThumbsDown /> {dislikeCount}
               </Button>
+              <span className="ml-2">조회수: {viewCount}</span> {/* 조회수 표시 */}
               <ReportModal
                 category={1}
                 categoryId={id}
