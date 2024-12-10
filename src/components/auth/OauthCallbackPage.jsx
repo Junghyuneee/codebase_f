@@ -6,22 +6,21 @@ const OauthCallbackPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-            const handleOauthRedirect = async () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const token = 'Bearer ' + decodeURIComponent(urlParams.get("token"));
+        const handleOauthRedirect = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get("token");
 
-                if (token) {
-                    setAccessToken(token);
-                    setEmail(decodeURIComponent(urlParams.get("email")));
-                    setName(decodeURIComponent(urlParams.get("name")));
-                    setMemberId(urlParams.get("memberId"));
-                    setProjectCount(urlParams.get("project_count"));
-                    navigate("/", {replace: true});
-                }
+            if (token) {
+                setAccessToken('Bearer '+ decodeURIComponent(token));
+                setEmail(decodeURIComponent(urlParams.get("email")));
+                setName(decodeURIComponent(urlParams.get("name")));
+                setMemberId(urlParams.get("memberId"));
+                setProjectCount(urlParams.get("project_count"));
+                navigate("/", {replace: true});
             }
-            handleOauthRedirect();
-        }, // eslint-disable-next-line react-hooks/exhaustive-deps
-        []);
+        }
+        handleOauthRedirect();
+    }, [navigate]);
     return (
         <div>
             Loading...
