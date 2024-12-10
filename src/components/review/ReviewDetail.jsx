@@ -21,6 +21,8 @@ const ReviewDetail = () => {
 	const [error, setError] = useState(null); // 오류 상태
 	const [likes, setLikes] = useState(0); // 좋아요 카운트
 	const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
+	const [comments, setComments] = useState([]); // 댓글 목록
+	const [newComment, setNewComment] = useState(''); // 새 댓글 내용
 	const navigate = useNavigate(); // useNavigate로 리다이렉션 처리
 
 	// 페이지가 로드되었을 때 해당 리뷰를 가져옴
@@ -44,7 +46,44 @@ const ReviewDetail = () => {
 		};
 
 		fetchReviewDetail();
+		//fetchComments();
 	}, [id]);
+
+	// 댓글 가져오기
+	useEffect(() => {
+		const fetchComments = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/review/comment/${id}`
+				);
+				const data = await response.json();
+				setComments(data.comments || []); // comments 배열 설정
+			} catch (error) {
+				console.error('댓글 정보를 가져오는 중 오류가 발생했습니다:', error);
+			}
+		};
+		fetchComments();
+	}, [id]);
+
+	// 댓글 추가
+	const handleAddComment = async () => {
+		if (!newComment.trim()) {
+			alert('댓글 내용을 입력해주세요.');
+			return;
+		}
+
+		try {
+			await fetch(`http://localhost:8080/api/review/comment/add`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ reviewId: id, content: newComment }),
+			});
+			setNewComment('');
+			//fetchComments(); // 댓글 목록 갱신
+		} catch (error) {
+			console.error('댓글 추가 중 오류가 발생했습니다:', error);
+		}
+	};
 
 	// 삭제 함수
 	const handleDelete = async () => {
@@ -104,6 +143,8 @@ const ReviewDetail = () => {
 			console.error('싫어요 요청 중 오류 발생: ', error);
 		}
 	};
+
+	if (error) return <div>{error}</div>;
 
 	return (
 		<>
@@ -196,6 +237,43 @@ const ReviewDetail = () => {
 									</>
 								)}
 							</Col>
+						</div>
+
+						<div>
+							<h4>댓글</h4>
+							{comments.length > 0 ? (
+								comments.map((comment) => (
+									<div key={comment.id}>
+										<p>{comment.content}</p>
+									</div>
+								))
+							) : (
+								<p>댓글이 없습니다.</p>
+							)}
+						</div>
+						{/*댓글 목록*/}
+						<div className="mt-4">
+							<h4>댓글</h4>
+							{comments.map((comment) => (
+								<div key={comment.id}>
+									<p>{comment.content}</p>
+									<small>
+										{new Date(comment.createdDate).toLocaleString()}
+									</small>
+								</div>
+							))}
+						</div>
+						{/*댓글 추가*/}
+						<div className="mt-3">
+							<input
+								type="text"
+								value={newComment}
+								onChange={(e) => setNewComment(e.target.value)}
+								placeholder="댓글을 입력하세요"
+							></input>
+							<Button color="primary" size="sm" onClick={handleAddComment}>
+								댓글 추가
+							</Button>
 						</div>
 					</Container>
 				</section>
