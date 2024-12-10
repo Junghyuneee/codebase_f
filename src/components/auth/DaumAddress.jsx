@@ -1,15 +1,11 @@
-import React, { Dispatch, SetStateAction } from 'react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { Address } from "react-daum-postcode/lib/loadPostcode";
 import { Button } from "reactstrap";
+import PropTypes from "prop-types";
 
-export default function Postcode({ setAddress, setPostCode }: {
-    setAddress: Dispatch<SetStateAction<string>>,
-    setPostCode?: Dispatch<SetStateAction<string>>
-}) {
+export default function Postcode({ setAddress, setPostCode }) {
     const open = useDaumPostcodePopup('https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js');
 
-    const handleComplete = (data: Address) => {
+    const handleComplete = (data) => {
         let fullAddress = data.address;
         let extraAddress = '';
 
@@ -39,3 +35,8 @@ export default function Postcode({ setAddress, setPostCode }: {
         </Button>
     );
 };
+
+Postcode.propTypes = {
+    setAddress: PropTypes.func.isRequired,
+    setPostCode: PropTypes.func.isRequired,
+}
