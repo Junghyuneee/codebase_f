@@ -1,10 +1,26 @@
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
+import {useEffect, useState} from "react";
+import {getMember} from "@/api/auth/member.js";
+import {useNavigate, useParams} from "react-router-dom";
+import {getEmail} from "@/api/auth/getset.js";
 
 const Profile = () => {
 
+    const { id } = useParams();
+    const [member, setMember] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchMembers = async () => {
+            const response = await getMember(id);
+            setMember(response);
+        }
+        fetchMembers();
+    }, []);
+
     return (
-        <>
+        (member ? <>
             <NavigationBar/>
             <main className="profile-page">
                 <section className="section-profile-cover section-shaped my-0">
@@ -56,15 +72,15 @@ const Profile = () => {
                                         lg="4"
                                     >
                                         <div className="card-profile-actions py-4 mt-lg-0">
-                                            <Button
+                                            {member.email === getEmail() && <Button
                                                 className="mr-4"
                                                 color="info"
                                                 href="#pablo"
-                                                onClick={(e) => e.preventDefault()}
+                                                onClick={(e) => navigate("/changeinfo")}
                                                 size="sm"
                                             >
-                                                Connect
-                                            </Button>
+                                                정보수정
+                                            </Button>}
                                             <Button
                                                 className="float-right"
                                                 color="default"
@@ -95,41 +111,31 @@ const Profile = () => {
                                 </Row>
                                 <div className="text-center mt-5">
                                     <h3>
-                                        Jessica Jones{" "}
-                                        <span className="font-weight-light">, 27</span>
+                                        {member.name}
                                     </h3>
                                     <div className="h6 font-weight-300">
                                         <i className="ni location_pin mr-2"/>
-                                        Bucharest, Romania
+                                        {member.email}
                                     </div>
                                     <div className="h6 mt-4">
                                         <i className="ni business_briefcase-24 mr-2"/>
-                                        Solution Manager - Creative Tim Officer
+                                        {member.addr}
                                     </div>
                                     <div>
                                         <i className="ni education_hat mr-2"/>
-                                        University of Computer Science
+                                        프로젝트 생성 남은 횟수: {member.projectCount}
                                     </div>
-                                </div>
-                                <div className="mt-5 py-5 border-top text-center">
-                                    <Row className="justify-content-center">
-                                        <Col lg="9">
-                                            <p>
-                                                An artist of considerable range, Ryan — the name taken
-                                                by Melbourne-raised, Brooklyn-based Nick Murphy —
-                                                writes, performs and records all of his own music,
-                                                giving it a warm, intimate feel with a solid groove
-                                                structure. An artist of considerable range.
-                                            </p>
-                                        </Col>
-                                    </Row>
                                 </div>
                             </div>
                         </Card>
                     </Container>
                 </section>
             </main>
-        </>
+        </>:
+                <div>
+                    Loading
+                </div>
+        )
     )
 }
 
