@@ -19,6 +19,8 @@ const ReviewDetail = () => {
 	const [review, setReview] = useState(null); // 리뷰 데이터
 	const [loading, setLoading] = useState(true); // 로딩 상태
 	const [error, setError] = useState(null); // 오류 상태
+	const [likes, setLikes] = useState(0); // 좋아요 카운트
+	const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
 	const navigate = useNavigate(); // useNavigate로 리다이렉션 처리
 
 	// 페이지가 로드되었을 때 해당 리뷰를 가져옴
@@ -32,6 +34,8 @@ const ReviewDetail = () => {
 				console.log(data); //응답 데이터 출력
 
 				setReview(data);
+				setLikes(data.likes || 0); // 초기 좋아요 수 설정
+				setDislikes(data.dislikes || 0); // 초기 싫어요 수 설정
 				setLoading(false);
 			} catch (error) {
 				setError('리뷰 정보를 가져오는 중 오류가 발생했습니다.');
@@ -64,6 +68,40 @@ const ReviewDetail = () => {
 		} catch (error) {
 			console.error('삭제 요청 중 오류 발생: ', error);
 			alert('리뷰 삭제 중 오류가 발생했습니다.');
+		}
+	};
+
+	// 좋아요 버튼 클릭 핸들러
+	const handleLike = async () => {
+		try {
+			const response = await fetch(
+				`http://localhost:8080/api/review/like/${id}`,
+				{
+					method: 'POST',
+				}
+			);
+			if (response.ok) {
+				setLikes(likes + 1);
+			}
+		} catch (error) {
+			console.error('좋아요 요청 중 오류 발생: ', error);
+		}
+	};
+
+	// 싫어요 버튼 클릭 핸들러
+	const handleDislike = async () => {
+		try {
+			const response = await fetch(
+				`http://localhost:8080/api/review/dislike/${id}`,
+				{
+					method: 'POST',
+				}
+			);
+			if (response.ok) {
+				setDislikes(dislikes + 1);
+			}
+		} catch (error) {
+			console.error('싫어요 요청 중 오류 발생: ', error);
 		}
 	};
 
@@ -137,9 +175,21 @@ const ReviewDetail = () => {
 													</small>
 												</Col>
 											</Row>
-											<Row className=" py-5">
+											<Row className="py-5">
 												<Col className="text-lg-left">
 													<strong>{review.content}</strong>
+												</Col>
+											</Row>
+
+											{/*좋아요와 싫어요 버튼 및 카운트 표시*/}
+											<Row className="mt-4">
+												<Col>
+													<Button color="success" onClick={handleLike}>
+														👍 좋아요 {likes}
+													</Button>
+													<Button color="danger" onClick={handleDislike}>
+														👎 싫어요 {dislikes}
+													</Button>
 												</Col>
 											</Row>
 										</div>
