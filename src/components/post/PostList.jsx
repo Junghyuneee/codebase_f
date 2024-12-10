@@ -25,16 +25,16 @@ const PostList = () => {
     fetchPosts();
   }, []);
 
-  // 정렬 로직 수정
+  // 정렬 로직
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => {
       const createdateA = new Date(a.createDate);
       const createdateB = new Date(b.createDate);
       switch (sortOption) {
         case '최신순':
-          return createdateB - createdateA; // 최신순: 최근이 먼저
+          return createdateB - createdateA;
         case '오래된순':
-          return createdateA - createdateB; // 오래된 순서: 오래된 것이 먼저
+          return createdateA - createdateB;
         case '추천순':
           return b.likeCount - a.likeCount;
         case '조회순':
@@ -55,6 +55,25 @@ const PostList = () => {
 
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
   const currentPosts = filteredPosts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+
+  // 조회수 증가 핸들러
+  const handleViewIncrease = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/post/increaseViews/${id}`, {
+        method: 'PUT',
+      });
+      if (!response.ok) throw new Error('조회수 증가 실패');
+      
+      // 조회수 업데이트
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === id ? { ...post, views: post.views + 1 } : post
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   return (
     <Container className="mt-4">
@@ -100,7 +119,7 @@ const PostList = () => {
                   <span>좋아요 수: {post.likeCount}</span><br />
                   <span>조회수: {post.views}</span><br />
                 </Card.Text>
-                <Link to={`/post/${post.id}`}>
+                <Link to={`/post/${post.id}`} onClick={() => handleViewIncrease(post.id)}>
                   <Button variant="info">상세보기</Button>
                 </Link>
               </Card.Body>
