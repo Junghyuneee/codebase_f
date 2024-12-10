@@ -27,7 +27,7 @@ const ReportManagement = () => {
     // 페이징
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const pageSize = 2;
+    const pageSize = 1;
     
     const [searchParams] = useSearchParams(); // url에서 파라미터 가져오기
     const rawCategory = searchParams.get("category"); // 파라미터에서 category 뽑아내기
