@@ -42,13 +42,12 @@ export async function postSignIn(email, password) {
 
 export async function postSignOut() {
     await apiClient.post("/auth/signout")
-        .then((response) => {
+        .then(() => {
             localStorage.clear();
-            console.log(response);
+            window.location.replace("/");
         })
-        .catch((response) => {
+        .catch(() => {
             localStorage.clear();
-            console.log(response);
             window.location.replace("/");
         });
 }

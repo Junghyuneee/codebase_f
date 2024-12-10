@@ -24,10 +24,10 @@ apiClient.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response) {
             try {
                 console.log("Refreshing token...");
-                const refreshResponse = await axios.post("/auth/refresh", {}, {
+                const refreshResponse = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`+"/auth/refresh", {}, {
                     withCredentials: true, // Ensure the refresh token (cookie) is sent
                 });
                 const newToken = refreshResponse.data.accessToken;
@@ -37,7 +37,8 @@ apiClient.interceptors.response.use(
                 return apiClient(error.config);
             } catch (refreshError) {
                 console.error("Failed to refresh token:", refreshError);
-                // Optional: Log out the user or redirect to login
+                localStorage.clear();
+                window.location.replace("/login")
             }
         }
         return Promise.reject(error);

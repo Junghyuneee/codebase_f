@@ -15,12 +15,12 @@ const OauthCallbackPage = () => {
                 setEmail(decodeURIComponent(urlParams.get("email")));
                 setName(decodeURIComponent(urlParams.get("name")));
                 setMemberId(urlParams.get("memberId"));
-                setProjectCount(urlParams.get("projectId"));
+                setProjectCount(urlParams.get("project_count"));
                 navigate("/", {replace: true});
             }
         }
         handleOauthRedirect();
-    }, [navigate]);
+    }, []);
     return (
         <div>
             Loading...

@@ -32,7 +32,7 @@ const LoginModal = () => {
   const handleSignin = async () => {
     const response = await postSignIn(email, password);
     if(response){
-      window.location.replace("/");
+      navigate("/", {replace: true});
     }else{
       alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
     }
