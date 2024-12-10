@@ -27,7 +27,7 @@ const ReportManagement = () => {
     // 페이징
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-    const pageSize = 1;
+    const pageSize = 2;
     
     const [searchParams] = useSearchParams(); // url에서 파라미터 가져오기
     const rawCategory = searchParams.get("category"); // 파라미터에서 category 뽑아내기
@@ -86,6 +86,15 @@ const ReportManagement = () => {
         }
     };
 
+    const processReport = (reportId) => {
+        const userResponse = confirm("신고 처리를 진행하시겠습니까?");
+
+        if(userResponse) {
+            const response = axios.post(`http://localhost:8080/reports/process/${reportId}`);
+            alert("'" + response.data.title + "'" + response.data.message)
+        }
+    }
+
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>{error}</p>;
 
@@ -111,9 +120,9 @@ const ReportManagement = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {reports.map((report) => (
+                {reports.map((report, index) => (
                     <tr key={report.reportId}>
-                        <td>{report.reportId}</td>
+                        <td>{(currentPage-1) * pageSize + index + 1}</td>
                         <td className="border-left">
                             {report.category === 0
                                 ? "프로젝트"
@@ -124,7 +133,8 @@ const ReportManagement = () => {
                                         : "리뷰"}
                         </td>
                         <td className="border-left">
-                                <span onClick={() => openReportDetailModal(report.reportId)}>
+                                <span onClick={() => openReportDetailModal(report.reportId)}
+                                style={{ cursor: "pointer" }}>
                                     {report.categoryTitle}
                                 </span>
                         </td>
@@ -143,7 +153,15 @@ const ReportManagement = () => {
                                 : "X"}
                         </td>
                         <td className="border-left">
-                            <button onClick={(e) => e.preventDefault()}>처리</button>
+                            {report.completed !== true
+                                ? <button
+                                    onClick={() => processReport(report.reportId)}
+                                >처리</button>
+                                : <button
+                                    style={{ background: '#d3d3d3', cursor: 'default'}}
+                                    onClick={() => e.preventDefault()}
+                                >처리</button>
+                            }
                         </td>
                     </tr>
                 ))}
