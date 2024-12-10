@@ -146,7 +146,6 @@ const PostDetail = () => {
                 category={1}
                 categoryId={id}
                 categoryTitle={post.title}
-                memberId={1006}
                 memberName={""}
               />
             </div>
@@ -174,10 +173,9 @@ const PostDetail = () => {
               <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
               <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
               <ReportModal
-                category={1}
+                category={2}
                 categoryId={id}
                 categoryTitle={post.title}
-                memberId={0}
                 memberName={""}
               />
             </div>
