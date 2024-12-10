@@ -17,7 +17,7 @@ const Profile = () => {
             setMember(response);
         }
         fetchMembers();
-    }, []);
+    }, [id]);
 
     return (
         (member ? <>
@@ -75,8 +75,7 @@ const Profile = () => {
                                             {member.email === getEmail() && <Button
                                                 className="mr-4"
                                                 color="info"
-                                                href="#pablo"
-                                                onClick={(e) => navigate("/changeinfo")}
+                                                onClick={() => navigate("/changeinfo")}
                                                 size="sm"
                                             >
                                                 정보수정
@@ -84,7 +83,6 @@ const Profile = () => {
                                             <Button
                                                 className="float-right"
                                                 color="default"
-                                                href="#pablo"
                                                 onClick={(e) => e.preventDefault()}
                                                 size="sm"
                                             >

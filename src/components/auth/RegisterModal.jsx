@@ -11,8 +11,8 @@ import {
   Col,
 } from "react-bootstrap";
 
-import GoogleLogo from "../../assets/img/icons/common/google.svg";
-import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
+import GoogleLogo from "@/assets/img/icons/common/google.svg";
+import KakaoLogo from "@/assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
 import Postcode from "./DaumAddress.jsx";
 import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "@/api/auth/auth.js";

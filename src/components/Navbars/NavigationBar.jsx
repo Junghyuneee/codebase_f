@@ -115,13 +115,19 @@ const NavigationBar = () => {
                             </Nav>
                             <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto" navbar>
                                 {isLogin ?
-                                    <Nav.Item>
+                                    <><Nav.Item>
+                                        <Nav.Link className={"nav-link-icon pointer"}
+                                                  onClick={()=>navigate("/profile")}>
+                                            마이페이지
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                        <Nav.Item>
                                         <Nav.Link className={"nav-link-icon pointer"}
                                                   onClick={postSignOut}
                                         >
                                             로그아웃
                                         </Nav.Link>
-                                    </Nav.Item> :
+                                    </Nav.Item></> :
                                     <>
                                         <Nav.Item>
                                             <Nav.Link className={"nav-link-icon pointer"}
