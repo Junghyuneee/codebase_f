@@ -96,7 +96,7 @@ const ChatPage = () => {
         } else {
             console.warn('WebSocket is not connected, cannot subscribe to new messages.');
         }
-    }, [stompClient.current]);
+    },         [stompClient.current]);// eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (pendingUpdates.size > 0) {
