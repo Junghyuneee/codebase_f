@@ -13,32 +13,58 @@ import {
   Container,
   Row,
   Col,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Form,
-  FormGroup,
-  Label
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import Navbar from "../../components/team/Navbar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
-import '../../assets/css/argon-design-system-react.css'
+import TeamCreationModal from "../../components/team/TeamCreationModal.jsx";
+import { getMemberId } from "../../api/auth/getset.js";
+
+// CATEGORIES 배열 추가
+const CATEGORIES = [
+  'React',
+  'JavaScript',
+  'Python',
+  'Java',
+  'Spring',
+  'Node.js',
+  'Vue.js',
+  'Angular',
+  'TypeScript',
+  'PHP'
+];
 
 function Team() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [formData, setFormData] = useState({
     pjtname: '',
     pjtowner: '',
     pjtimg: '',
     pjtdescription: '',
-    pjcategory: ''
+    pjcategory: '',
+    memberId: ''
   });
+  const [searchTerm, setSearchTerm] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
+    
+    fetchProjects();
+    
+    const memberId = getMemberId();
+    if (memberId) {
+      setFormData(prev => ({ ...prev, memberId }));
+    }
   }, []);
 
   const toggle = () => {
@@ -46,10 +72,11 @@ function Team() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
+    const { name, value, type, files } = e.target;
+    
+    setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: type === 'file' ? files[0] : value
     }));
   };
 
@@ -62,50 +89,54 @@ function Team() {
       pjtowner: formData.pjtowner,
       pjtdescription: formData.pjtdescription,
       pjcategory: formData.pjcategory,
+      memberId: formData.memberId
     }));
     data.append("file", formData.pjtimg);
-  
-    // FormData 확인용 로그
-    for (let pair of data.entries()) {
-      console.log(`${pair[0]}: ${pair[1]}`);
-    }
   
     try {
       const response = await axios.post('/api/projectteams', data);
       if (response.status === 200) {
         alert('프로젝트가 성공적으로 생성되었습니다!');
         toggle();
+        fetchProjects();
       }
     } catch (error) {
       console.error('프로젝트 생성 중 오류 발생:', error);
     }
   };
-  
-  
-  
-  
-  
-  
 
-  const [projects, setProjects] = useState([]); // 프로젝트 데이터를 저장할 상태
+  const filteredProjects = projects?.filter(project => {
+    const matchesSearch = 
+      project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const projectCategories = project?.pjcategory?.split(',').map(cat => cat.trim()) || [];
+    
+    const matchesCategories = 
+      selectedCategories.length === 0 ||
+      selectedCategories.some(category => 
+        projectCategories.includes(category)
+      );
 
-  // 데이터 가져오기
+    return matchesSearch && matchesCategories;
+  }) || [];
+
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('/api/projectteams'); // Spring Boot API 호출
-      setProjects(response.data); // 상태에 데이터 저장
+      const response = await axios.get('/api/projectteams');
+      const projectData = Array.isArray(response.data) ? response.data : response.data.content;
+      setProjects(projectData);
+      setTotalPages(Math.ceil(projectData.length / 6));
     } catch (error) {
-      if (error.response) {
-        // 서버에서 반환한 오류 응답 처리
-        console.error('Failed to fetch projects:', error.response.status, error.response.data);
-      } else if (error.request) {
-        // 요청은 보내졌지만 응답을 받지 못한 경우
-        console.error('No response from server:', error.request);
-      } else {
-        // 요청 설정 중 발생한 에러
-        console.error('Error setting up request:', error.message);
-      }
+      console.error('Failed to fetch projects:', error);
     }
+  };
+
+  const getCurrentPageProjects = () => {
+    const startIndex = currentPage * 6;
+    const endIndex = startIndex + 6;
+    return filteredProjects.slice(startIndex, endIndex);
   };
 
   const handleFileChange = (e) => {
@@ -113,23 +144,36 @@ function Team() {
     if (file) {
       setFormData((prevData) => ({
         ...prevData,
-        pjtimg: file, // 파일 객체 저장
+        pjtimg: file,
       }));
     }
   };
-  
 
-  useEffect(() => {
-    fetchProjects(); // 컴포넌트 로드 시 데이터 가져오기
-  }, []);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page - 1);
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(cat => cat !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
+  };
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <>
       <Navbar/>
       <main>
-      
         <div className="position-relative">
-          {/* Hero Section */}
           <section className="section section-lg section-shaped pb-250">
             <div className="shape shape-style-1 shape-default">
               {[...Array(9)].map((_, index) => (
@@ -149,16 +193,16 @@ function Team() {
                     <div className="d-flex justify-content-end">
                       <Button className="btn-icon mb-3 mb-sm-0" color="info" onClick={toggle}>
                           <span className="btn-inner--icon mr-1">
-                            <i className="fa fa-code" />
+                            <i className="fa fa-plus-circle" />
                           </span>
-                          <span className="btn-inner--text">팀 등록하기</span>
+                          <span className="btn-inner--text">프로젝트 등록하기</span>
                       </Button>
                       <Button
                           className="btn-white btn-icon mb-3 mb-sm-0 ml-1"
                           color="default"
                         >
-                          <span className="btn-inner--icon mr-1">
-                            <i className="ni ni-cloud-download-95" />
+                          <span className="btn-inner--icon mr-1" >
+                            <i className="fa fa-user-plus" />
                           </span>
                           <span className="btn-inner--text">팀원으로 등록</span>
                       </Button>
@@ -185,19 +229,49 @@ function Team() {
               <section className="mt-4">
                 <Row>
                   <Col lg="10">
-                    <InputGroup className="mb-4">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-zoom-split-in" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Search"
-                        type="text"
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                      />
-                    </InputGroup>
+                    <div className="d-flex">
+                      <InputGroup className="mb-4 mr-2">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-zoom-split-in" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder="프로젝트를 검색해보세요"
+                          type="text"
+                          value={searchTerm}
+                          onChange={handleSearchChange}
+                          onFocus={() => setSearchFocused(true)}
+                          onBlur={() => setSearchFocused(false)}
+                        />
+                      </InputGroup>                      
+                    </div>
+                  </Col>
+                  <Col lg="2">
+                    <UncontrolledDropdown>
+                        <DropdownToggle caret color="primary">
+                          {selectedCategories.length > 0 
+                            ? `기술 스택 (${selectedCategories.length})`
+                            : '기술 스택'}
+                        </DropdownToggle>
+                        <DropdownMenu>
+                          {CATEGORIES.map((category) => (
+                            <DropdownItem 
+                              key={category}
+                              onClick={() => handleCategorySelect(category)}
+                              className="d-flex align-items-center"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedCategories.includes(category)}
+                                onChange={() => {}}
+                                className="mr-2"
+                              />
+                              {category}
+                            </DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
                   </Col>
                 </Row>
               </section>
@@ -205,79 +279,22 @@ function Team() {
           </section>
         </div>
 
-        <TeamSection/>
-        {/* Modal for Team Creation */}
-        <Modal isOpen={modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>새 프로젝트 생성</ModalHeader>
-          <ModalBody>
-            <Form onSubmit={handleSubmit}>
-              <FormGroup>
-                <Label for="pjtname">프로젝트 이름</Label>
-                <Input
-                  type="text"
-                  name="pjtname"
-                  id="pjtname"
-                  value={formData.pjtname}
-                  onChange={handleChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="pjtowner">프로젝트 소유자</Label>
-                <Input
-                  type="text"
-                  name="pjtowner"
-                  id="pjtowner"
-                  value={formData.pjtowner}
-                  onChange={handleChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="pjtimg">이미지</Label>
-                <Input
-                  type="file"
-                  name="pjtimg"
-                  id="pjtimg"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="pjtdescription">설명</Label>
-                <Input
-                  type="textarea"
-                  name="pjtdescription"
-                  id="pjtdescription"
-                  value={formData.pjtdescription}
-                  onChange={handleChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="pjcategory">카테고리</Label>
-                <Input
-                  type="select"
-                  name="pjcategory"
-                  id="pjcategory"
-                  value={formData.pjcategory}
-                  onChange={handleChange}
-                >
-                  <option value="">카테고리 선택</option>
-                  <option value="Java">Java</option>
-                  <option value="Python">Python</option>
-                  <option value="React">React</option>
-                </Input>
-              </FormGroup>
-              <Button color="primary" type="submit">
-                프로젝트 생성
-              </Button>{' '}
-              <Button color="secondary" onClick={toggle}>
-                취소
-              </Button>
-            </Form>
-          </ModalBody>
-        </Modal>
+        <TeamSection 
+          projects={getCurrentPageProjects()}
+          currentPage={currentPage + 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          selectedCategories={selectedCategories}
+          onCategorySelect={handleCategorySelect}
+        />
+        <TeamCreationModal 
+          isOpen={modal}
+          toggle={toggle}
+          formData={formData}
+          handleChange={handleChange}
+          handleFileChange={handleFileChange}
+          handleSubmit={handleSubmit}
+        />
       </main>
     </>
   );

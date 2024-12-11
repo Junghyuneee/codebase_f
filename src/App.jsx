@@ -1,7 +1,8 @@
-import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./assets/vendor/nucleo/css/nucleo.css";
 import "./assets/vendor/font-awesome/css/font-awesome.min.css";
-import "./assets/scss/argon-design-system-react.scss?v1.1.0";
+import "./assets/css/argon-design-system-react.css";
+import './App.css';
 
 import {Route, Routes} from "react-router-dom"
 import MainPage from "./pages/main/MainPage"
@@ -19,6 +20,8 @@ import OauthCallbackPage from "@/components/auth/OauthCallbackPage.jsx";
 import Review from './components/review/Review.jsx';
 import Post from './components/post/Post.jsx';
 import ChatPage from "@/pages/chat/ChatPage.jsx";
+import Profile from "@/pages/member/Profile.jsx";
+import ChangeInfo from "@/pages/member/ChangeInfo.jsx";
 
 
 function App() {
@@ -39,6 +42,9 @@ function App() {
             <Route path="/review/*" exact element={<Review/>}/>
             <Route path="/oauth" element={<OauthCallbackPage/>}/>
             <Route path="/post/*" element={<Post/>}/>
+
+            <Route path="/profile/:id?" element={<Profile/>}/>
+            <Route path={"/changeinfo"} element={<ChangeInfo/>}/>
 
             <Route path="/chat" element={<ChatPage/>}/>
         </Routes>

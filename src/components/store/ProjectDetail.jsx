@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { getData } from './storeAPI';
+import { postData, useFetch } from './storeAPI';
+import { getAccessToken } from "@/api/auth/getset.js";
 
 import {
     Badge,
@@ -36,7 +37,12 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 import Banner from "./Banner.jsx";
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
-export function ProjectCard(project) {
+
+
+
+export function ProjectCard({ project }) {
+
+
 
     return (
 
@@ -51,15 +57,15 @@ export function ProjectCard(project) {
                             top
                         />
 
-
                         <div className="text-center mt-5 mb-5">
                             <h3>
-                                {project.name}
+
+                                {project.title}
 
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
-                                제작자 : asdf
+                                제작자 : {project.username}
                             </div>
 
                         </div>
@@ -72,19 +78,83 @@ export function ProjectCard(project) {
     );
 }
 
-function ProjectExplain(project) {
+
+
+function existCart(id) {
+    //const data = getData(`/cart/ciexist/${id}`);
+    console.log("asdfasdfas", data);
+    if (data == "") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function ProjectExplain({ project }) {
+
+    const [inCart, setInCart] = useState(false);
+
+
+    function addCartItem(project) {
+
+        let formData = new FormData();
+        formData.append("title", project.title);
+        formData.append("price", project.price);
+        formData.append("project_id", project.id);
+    
+        postData(`/cart/add`, formData);
+
+    }
+    function deleteCartItem(project) {
+        postData(`/cart/delete/${project.id}`,);
+    }
+    // 상태를 토글하는 함수
+    const toggleCart = () => {
+        if(inCart){
+            //DB 삭제요청
+            deleteCartItem(project);
+
+        }
+        else{
+            addCartItem(project);
+        }
+
+        setInCart(!inCart); // 현재 상태를 반대로 변경
+    };
+
+
+    useEffect(() => {
+        console.log(inCart);
+    }, [inCart]);
+
+
+    const { data, loading, error } = useFetch(`/cart/ciexist/${project.id}`);
+
+    useEffect(() => {
+        if(data){
+            console.log("카트에 존재함");
+            setInCart(true);
+        }
+    }, [data]);
+
+    
+
+
+
     return (<>
         <div class="section">
 
             <Card className='card-profile shadow'>
                 <div className=" mt-5">
                     <h3 className='text-center'>
-                        {project.name}
+                        {/*project.title*/}
+
 
                     </h3>
                     <div className="text-center h6 font-weight-300">
                         <i className="ni location_pin mr-2" />
-                        제작자 : asdf
+                        제작자 : {project.username}
                     </div>
                     <div className="h6 mt-4">
                         <i className="ni business_briefcase-24 mr-2" />
@@ -105,7 +175,84 @@ function ProjectExplain(project) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-                                <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
+                            
+                                {/* {existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
+
+                                    </h2>
+                                }
+                                {!existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 장바구니</Button>
+
+                                    </h2>
+                                } */}
+
+                                {/* inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                }
+                                {!inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                */}
+
+                                {inCart ? (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Removed project ${project.id} from cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 담았음
+                                        </Button>
+                                    </h2>
+                                ) : (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Added project ${project.id} to cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 장바구니
+                                        </Button>
+                                    </h2>
+                                )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
                                 <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
@@ -117,14 +264,14 @@ function ProjectExplain(project) {
                                 <Button color='default' outline block><i className="ni ni-chat-round" /> 채팅</Button>
                             </Col>
                             <Col style={{ padding: '0' }}>
-                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰쓰기</Button>
+                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
                             <Col>
                                 <ReportModal
                                     category={0}
                                     categoryId={project.id}
-                                    categoryTitle={project.name}
-                                    memberId={0}
+                                    categoryTitle={project.title}
+                                    //memberId={0}//은즤..이거봐쥬.... 이거필요해?? 난 상관없엉
                                     memberName={""}
                                     style={{
                                         width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
@@ -143,7 +290,7 @@ function ProjectExplain(project) {
     );
 }
 
-function ProjectDetail(project) {
+function ProjectDetail({ project }) {
 
     return (
         <>
@@ -158,23 +305,41 @@ function ProjectDetail(project) {
     );
 }
 
+
+
+
+
 function Page() {
+
+    const [project, setProject] = useState({}); // 데이터 상태
 
     // 현재 페이지의 URL을 가져옵니다.
     const currentUrl = window.location.href;
 
     // URL 객체를 생성합니다.
     const url = new URL(currentUrl).pathname;
-    //console.log(url);
     let id = url.replace("/store/", "");
-    console.log("id ", id);
+    //console.log("id ", id);
 
-
-    //const project = getProject(parseInt(id, 10));
     id = parseInt(id, 10);
-    const project = getData(`/api/store/${id}`);
 
-    console.log("project : ", project);
+
+    const { data, loading, error } = useFetch(`/api/store/${id}`);
+    useEffect(() => {
+
+        if (data) {
+            setProject(data);
+        }
+    }, [data]); // data가 변경될 때마다 실행
+
+    useEffect(() => {
+        //console.log("아 제ㅂㄹ ", project.id);
+    }, [project]);
+
+    //const token = getAccessToken();
+    //console.log("token: ", token);
+
+
 
     return (
         <>
@@ -190,20 +355,29 @@ function Page() {
 
                     <Row>
                         <Col lg="7">
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectCard project={project} />}
 
-                            {ProjectCard(project)}
+
 
 
                         </Col>
                         <Col lg="5">
 
-                            {ProjectExplain(project)}
+                            {/* {ProjectExplain(project)} */}
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectExplain project={project} />}
 
                         </Col>
                     </Row>
                 </Container>
 
-                {ProjectDetail(project)}
+                {/* {ProjectDetail(project)} */}
+                {loading && <p>Loading...</p>}
+                {!loading &&
+                    <ProjectDetail project={project} />}
 
             </main>
 

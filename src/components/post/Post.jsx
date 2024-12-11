@@ -1,9 +1,11 @@
-import React, { lazy, Suspense, useState, useEffect } from 'react';
+import  { lazy, Suspense, useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import DemoNavbar from "./DemoNavbar.jsx"; // Navbar 임포트
 import Headroom from 'headroom.js'; // Headroom 임포트
+import PostHeader from "./PostHeader"; // PostHeader 임포트
+import SimpleFooter from "./SimpleFooter";
 
 // Lazy loading components
 const PostList = lazy(() => import('./PostList'));
@@ -24,18 +26,21 @@ const Post = () => {
   useEffect(() => {
     const navbarMain = document.getElementById('navbar-main');
     if (navbarMain) {
-      let headroom = new Headroom(navbarMain);
+      const headroom = new Headroom(navbarMain, {
+        tolerance: 5,
+        offset: 205,
+        classes: {
+          initial: "headroom",
+          pinned: "headroom--pinned",
+          unpinned: "headroom--unpinned"
+        }
+      });
       headroom.init();
     }
   }, []);
 
-  const onExiting = () => {
-    setCollapseClasses('collapsing-out');
-  };
-
-  const onExited = () => {
-    setCollapseClasses('');
-  };
+  const onExiting = () => setCollapseClasses('collapsing-out');
+  const onExited = () => setCollapseClasses('');
 
   return (
     <div>
@@ -46,24 +51,24 @@ const Post = () => {
           onExited={onExited}
         />
       </header>
-      <main>
-        <section>
-          <Row className="justify-content-center">
-            <Col lg="10">
-              <h1 className="text-center mb-4"></h1>
-              <Suspense fallback={<Loading />}>
-                <Routes>
-                  <Route path="/" element={<PostList />} />
-                  <Route path="new" element={<PostCreate />} />
-                  <Route path=":id" element={<PostDetail />} />
-                  <Route path=":id/edit" element={<PostEdit />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Suspense>
-            </Col>
-          </Row>
-        </section>
-      </main>
+      <PostHeader />
+      <Container className="section">
+        <Row className="justify-content-center">
+          <Col lg="10">
+            <h1 className="text-center mb-4">CODEBASE</h1>
+            <Suspense fallback={<Loading />}>
+              <Routes>
+                <Route path="/" element={<PostList />} />
+                <Route path="new" element={<PostCreate />} />
+                <Route path=":id" element={<PostDetail />} />
+                <Route path=":id/edit" element={<PostEdit />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </Col>
+        </Row>
+      </Container>
+      <SimpleFooter />
     </div>
   );
 };

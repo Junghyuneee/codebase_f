@@ -1,87 +1,118 @@
-import {useEffect, useRef, useState} from "react";
-import {Stomp} from "@stomp/stompjs";
-import {getAccessToken} from "@/api/auth/getset.js";
-import {Button, Container, Input} from "reactstrap";
-import {createChatroom, showChatrooms} from "@/api/chat/chatroom.js";
-import DemoNavbar from "@/components/review/DemoNavbar.jsx";
-import ChatList from "@/components/chat/ChatList.jsx";
+import {createContext, useEffect, useReducer} from "react";
+import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
+import SidePanel from "@/components/chat/SidePanel/SidePanel.jsx";
+import MainPanel from "@/components/chat/MainPanel/MainPanel.jsx";
+import {createChatroom, leaveChatroom, showChatrooms} from "@/api/chat/chatroom.js";
+import {Container} from "react-bootstrap";
+
+const chatRoomListReducer = (state, action) => {
+    switch (action.type) {
+        case 'INIT':
+            return action.data;
+        case 'CREATE':
+            return [...state, action.data];
+        case 'UPDATE': {
+            const stateMap = new Map(state.map(it =>
+                [it.id, it]));
+            const pending = action.data;
+            console.log(pending);
+            pending.forEach(it => {
+                if (stateMap.has(it)) {
+                    stateMap.get(it).hasNewMessage = true;
+                }
+            })
+
+            console.log(Array.from(stateMap.values()));
+
+            return Array.from(stateMap.values());
+        }
+        case 'DELETE':
+            return state.filter((item) => item.id !== action.data);
+        default:
+            return state;
+    }
+}
+
+const chatRoomReducer = (state, action) => {
+    switch (action.type) {
+        case 'LEAVE':
+            return null;
+        case 'SELECT':
+            return action.data;
+
+    }
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const ChatRoomContext = createContext();
+// eslint-disable-next-line react-refresh/only-export-components
+export const ChatRoomDispatchContext = createContext();
 
 const ChatPage = () => {
-    const stompClient = useRef(Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`));
-    const accessToken = getAccessToken();
-    const myName = "tmp";
-    const [chatRooms, setChatRooms] = useState();
-    const [selectedChatroom, setSelectedChatroom] = useState(null);
-    const [chatTitle, setChatTitle] = useState("");
-
+    const [chatRoomList, chatRoomListDispatch] = useReducer(chatRoomListReducer, []);
+    const [currentChatRoom, chatRoomDispatch] = useReducer(chatRoomReducer, null);
 
     useEffect(() => {
-        const initializeStompClient = async () => {
-            stompClient.current.connect(
-                {
-                    Authorization: `${accessToken}`,
-                },
-                () => {
-                    stompClient.current.subscribe('/sub/chats', (chatMessage) => {
-                        console.log(JSON.parse(chatMessage.body));
-                    });
-                    stompClient.current.publish({
-                        destination: 'pub/chats',
-                        body: JSON.stringify({
-                            'sender': "tmp",
-                            'message': 'connected'
-                        }),
-                    })
-                },
-                function (error, result) {
-                    alert(result);
-                }
-            );
-
+        const fetchChatRooms = async () => {
             const response = await showChatrooms();
-            setChatRooms(response);
-        };
-        initializeStompClient();
-        return () => {
-            if (stompClient) {
-                stompClient.disconnect(() => {
-                    console.log("Disconnected");
-                })
-            }
+            chatRoomListDispatch({type: 'INIT', data: response});
         }
-    }, [accessToken]);
+        fetchChatRooms();
+    }, [])
 
-    const handleCreateChatRoom = async () => {
-        if(chatTitle.length > 0) {
-            const response = await createChatroom(chatTitle);
-            console.log(response);
+    const onCreate = async (title) => {
+        const response = await createChatroom(title);
+        chatRoomListDispatch({type: 'CREATE', data: response});
+    }
+
+    const onUpdate = (chatroomList) => {
+        chatRoomListDispatch({type: 'UPDATE', data: chatroomList});
+    }
+
+    const onDelete = async (id) => {
+        const response = await leaveChatroom(id);
+        if (response) {
+            chatRoomListDispatch({type: 'DELETE', data: id})
         }
+        return response;
+    }
+
+    const onSelect = (chatroom) => {
+        chatRoomDispatch({type: 'SELECT', data: chatroom})
+    }
+
+    const onLeave = () => {
+        chatRoomDispatch({type: 'LEAVE'})
     }
 
     return (
-        <div className="w-100 bg-primary">
-            <DemoNavbar/>
-            <Container>
-                <div className="row w-100" style={{margin: '1rem'}}>
-                    {/* 1:4 비율 */}
-                    <div className="col-3">
-                        {/* 여기에는 화면의 1 부분에 해당하는 내용 */}
-                        <Input
-                            value={chatTitle}
-                            onChange={(e) => setChatTitle(e.target.value)}
-                        />
-                        <ChatList chatRooms={chatRooms} setSelectedChatroom={setSelectedChatroom}/>
-                    </div>
-                    <div className="col-9">
-                        {/* 여기에는 화면의 4 부분에 해당하는 내용 */}
-                        <Button onClick={handleCreateChatRoom}>
-                            채팅방 생성
-                        </Button>
-                    </div>
+        <>
+            <NavigationBar/>
+            <section className={"section section-lg section-shaped my-0"}>
+                <div className="shape shape-style-1 shape-default">
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
                 </div>
-            </Container>
-        </div>
-
+                <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
+                    <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
+                        <Container>
+                            <div style={{display: 'flex'}}>
+                                <div style={{width: '30%'}} className="min-vh-50">
+                                    <SidePanel/>
+                                </div>
+                                <div style={{width: '70%'}} className={"bg-white rounded-right py-3"} >
+                                    <MainPanel/>
+                                </div>
+                            </div>
+                        </Container>
+                    </ChatRoomDispatchContext.Provider>
+                </ChatRoomContext.Provider></section>
+        </>
     )
 }
 
