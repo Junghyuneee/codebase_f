@@ -237,7 +237,7 @@ function Team() {
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder="프로젝트나 기술 스택을 검색해보세요"
+                          placeholder="프로젝트를 검색해보세요"
                           type="text"
                           value={searchTerm}
                           onChange={handleSearchChange}

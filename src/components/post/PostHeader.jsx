@@ -1,5 +1,5 @@
 
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from "react-bootstrap";
 
 function PostHeader() {
 	return (
