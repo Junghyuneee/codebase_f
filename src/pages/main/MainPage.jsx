@@ -21,8 +21,7 @@ const MainPage = () => {
 		if(member){
 			navigate(`/profile/${member.name}`)
 		}
-
-	}, [member]);
+	}, [member, navigate]);
 
 	return (
 		<>
