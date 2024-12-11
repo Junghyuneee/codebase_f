@@ -9,7 +9,6 @@ const useSubscribeToChatRoom = (chatRoomId, stompClient) => {
     const subscriptionRef = useRef(null);
 
     useEffect(() => {
-        console.log(chatRoomId)
         const get = async () => {
             const response = await getMessages(chatRoomId);
             setMessages(response);
