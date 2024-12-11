@@ -1,8 +1,8 @@
 import axios from "axios";
-import {getAccessToken, setAccessToken} from "@/api/auth.js";
+import {getAccessToken, setAccessToken} from "@/api/auth/getset.js";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`,
     withCredentials: true,
     credentials: true,
 })
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(config => {
         const token = getAccessToken();
         if (token && token.startsWith("Bearer ")) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `${token}`;
         }
         return config;
     },
@@ -24,20 +24,21 @@ apiClient.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response && (error.response.status === 401 || error.response.status === 500)) {
             try {
                 console.log("Refreshing token...");
-                // const refreshResponse = await axios.post("/auth/refresh", {}, {
-                //     withCredentials: true, // Ensure the refresh token (cookie) is sent
-                // });
-                // const newToken = refreshResponse.data.accessToken;
-                // setAccessToken(newToken); // Update token
-                // // Retry the original request with the new token
-                // error.config.headers.Authorization = `Bearer ${newToken}`;
-                // return apiClient(error.config);
+                const refreshResponse = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`+"/auth/refresh", {}, {
+                    withCredentials: true, // Ensure the refresh token (cookie) is sent
+                });
+                const newToken = refreshResponse.data.accessToken;
+                setAccessToken(`Bearer ${newToken}`); // Update token
+                // Retry the original request with the new token
+                error.config.headers.Authorization = `Bearer ${newToken}`;
+                return apiClient(error.config);
             } catch (refreshError) {
                 console.error("Failed to refresh token:", refreshError);
-                // Optional: Log out the user or redirect to login
+                localStorage.clear();
+                window.location.replace("/login")
             }
         }
         return Promise.reject(error);

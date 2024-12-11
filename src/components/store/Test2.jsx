@@ -3,48 +3,32 @@
 2024 10 30
 */
 
+
 import React, { useEffect, useState, useRef, Outlet } from 'react';
-import { Link } from "react-router-dom";
-// nodejs library that concatenates classes
 
-//nav 테스트
-import Banner from "./Banner";
-import Banner_mini from "./Banner_mini";
-import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 
-import {
-    Button,
-    Card,
-    CardImg,
-    ButtonGroup,
-    CardBody,
-    FormGroup,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Container,
-    Row,
-    Col,
-    Badge,
-
-} from "reactstrap";
+import apiClient from '@/api/apiClient';
 
 
 
+function GetProject() {
+    //토큰 사용 테스트
+    const [projects, setProjects] = useState([]);
 
-function Page() {
+    useEffect(() => {
+        // 데이터 가져오기
+        apiClient.get('http://localhost:8080/api/store')
+            .then((response) => {
+                setProjects(response.data); // 응답 데이터 설정
+            })
+            .catch((error) => {
+                console.error('API 호출 에러:', error);
+            });
+    }, []);
 
-    return (
-        <>
-            <Banner />
-            <Banner_mini />
-            기본상태
-        </>
-    );
 
+    return projects;
 }
 
-export default Page;
 
 

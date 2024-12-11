@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import { postData, useFetch } from './storeAPI';
+import { getAccessToken } from "@/api/auth/getset.js";
 
 import {
     Badge,
@@ -34,8 +35,14 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 //import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
 
 import Banner from "./Banner.jsx";
+import ReportModal from "@/components/admin/ReportModal.jsx";
 
-export function ProjectCard(project) {
+
+
+
+export function ProjectCard({ project }) {
+
+
 
     return (
 
@@ -50,19 +57,19 @@ export function ProjectCard(project) {
                             top
                         />
 
-
                         <div className="text-center mt-5 mb-5">
                             <h3>
-                                {project.name}
-                                <span className="font-weight-light">, 27</span>
+
+                                {project.title}
+
                             </h3>
                             <div className="h6 font-weight-300">
                                 <i className="ni location_pin mr-2" />
-                                Bucharest, Romania
+                                제작자 : {project.username}
                             </div>
-                            
+
                         </div>
-                       
+
                     </div>
                 </Card>
             </div>
@@ -71,33 +78,96 @@ export function ProjectCard(project) {
     );
 }
 
-function ProjectExplain(project) {
+
+
+function existCart(id) {
+    //const data = getData(`/cart/ciexist/${id}`);
+    console.log("asdfasdfas", data);
+    if (data == "") {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function ProjectExplain({ project }) {
+
+    const [inCart, setInCart] = useState(false);
+
+
+    function addCartItem(project) {
+
+        let formData = new FormData();
+        formData.append("title", project.title);
+        formData.append("price", project.price);
+        formData.append("project_id", project.id);
+    
+        postData(`/cart/add`, formData);
+
+    }
+    function deleteCartItem(project) {
+        postData(`/cart/delete/${project.id}`,);
+    }
+    // 상태를 토글하는 함수
+    const toggleCart = () => {
+        if(inCart){
+            //DB 삭제요청
+            deleteCartItem(project);
+
+        }
+        else{
+            addCartItem(project);
+        }
+
+        setInCart(!inCart); // 현재 상태를 반대로 변경
+    };
+
+
+    useEffect(() => {
+        console.log(inCart);
+    }, [inCart]);
+
+
+    const { data, loading, error } = useFetch(`/cart/ciexist/${project.id}`);
+
+    useEffect(() => {
+        if(data){
+            console.log("카트에 존재함");
+            setInCart(true);
+        }
+    }, [data]);
+
+    
+
+
+
     return (<>
         <div class="section">
 
             <Card className='card-profile shadow'>
-                <div className="text-center mt-5">
-                    <h3>
-                        {project.name}
-                        <span className="font-weight-light">, 27</span>
+                <div className=" mt-5">
+                    <h3 className='text-center'>
+                        {/*project.title*/}
+
+
                     </h3>
-                    <div className="h6 font-weight-300">
+                    <div className="text-center h6 font-weight-300">
                         <i className="ni location_pin mr-2" />
-                        Bucharest, Romania
+                        제작자 : {project.username}
                     </div>
                     <div className="h6 mt-4">
                         <i className="ni business_briefcase-24 mr-2" />
-                        Solution Manager - Creative Tim Officer
+
                     </div>
-                    <div>
-                        <i className="ni education_hat mr-2" />
-                        University of Computer Science
-                    </div>
+                    <Container>
+                        <div>
+                            <i className="ni education_hat mr-2" />
+                            {project.content}상세설명의 내용이 담김 줄바꿈 2줄 설정하기
+                        </div>
+                    </Container>
                 </div>
                 <div className="mt-5 py-5 border-top ">
-                    
-
-
                     <div className='p-4'>
                         <h1 className='font-weight-bold'>
                             {project.price}원
@@ -105,7 +175,84 @@ function ProjectExplain(project) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-                                <Button size='lg' color='success' outline block> <i className="ni ni-cart" /> 장바구니</Button>
+                            
+                                {/* {existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
+
+                                    </h2>
+                                }
+                                {!existCart(project.id) &&
+                                    <h2>
+                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 장바구니</Button>
+
+                                    </h2>
+                                } */}
+
+                                {/* inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                }
+                                {!inCart &&
+                                    <h2>
+                                    <Button
+                                        size="lg"
+                                        color="success"
+                                        onClick={() => {
+                                            toggleCart();
+                                            console.log(`Removed project ${project.id} from cart`);
+                                        }}
+                                        outline
+                                        block
+                                    >
+                                        <i className="ni ni-cart" /> 담았음
+                                    </Button>
+                                </h2>
+                                */}
+
+                                {inCart ? (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Removed project ${project.id} from cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 담았음
+                                        </Button>
+                                    </h2>
+                                ) : (
+                                    <h2>
+                                        <Button
+                                            size="lg"
+                                            color="success"
+                                            onClick={() => {
+                                                toggleCart();
+                                                console.log(`Added project ${project.id} to cart`);
+                                            }}
+                                            outline
+                                            block
+                                        >
+                                            <i className="ni ni-cart" /> 장바구니
+                                        </Button>
+                                    </h2>
+                                )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
                                 <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
@@ -117,10 +264,19 @@ function ProjectExplain(project) {
                                 <Button color='default' outline block><i className="ni ni-chat-round" /> 채팅</Button>
                             </Col>
                             <Col style={{ padding: '0' }}>
-                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 찜하기</Button>
+                                <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
                             <Col>
-                                <Button color='danger' outline block><i className="ni ni-tag" /> 신고</Button>
+                                <ReportModal
+                                    category={0}
+                                    categoryId={project.id}
+                                    categoryTitle={project.title}
+                                    //memberId={0}//은즤..이거봐쥬.... 이거필요해?? 난 상관없엉
+                                    memberName={""}
+                                    style={{
+                                        width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
+                                    }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
+                                />
                             </Col>
                         </Row>
                     </div>
@@ -134,61 +290,56 @@ function ProjectExplain(project) {
     );
 }
 
-function ProjectDetail(project) {
+function ProjectDetail({ project }) {
 
     return (
         <>
             <Container>
                 <div className='section'>
                     <h1 className='font-weight-bold'>상세설명</h1>
-                    {project.content}
+                    <hr />
+                    <h3>{project.content}</h3>
                 </div>
             </Container>
         </>
     );
 }
 
-function getProject(id) {
 
 
-    const [project, setProject] = useState([]);
 
-    useEffect(() => {
-        // 데이터 가져오기
-        fetch(`http://localhost:8080/api/store/project/${id}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('데이터를 가져오는데 실패했습니다.');
-                }
 
-                return response.json();
-            })
-            .then((data) => {
-
-                setProject(data);
-
-            })
-            .catch((error) => {
-                console.error('API 호출 에러:', error);
-            });
-    }, []);
-
-    return project;
-}
 function Page() {
+
+    const [project, setProject] = useState({}); // 데이터 상태
 
     // 현재 페이지의 URL을 가져옵니다.
     const currentUrl = window.location.href;
 
     // URL 객체를 생성합니다.
     const url = new URL(currentUrl).pathname;
-    //console.log(url);
-    const id = url.replace("/store/", "");
-    console.log("id ",id);
+    let id = url.replace("/store/", "");
+    //console.log("id ", id);
+
+    id = parseInt(id, 10);
 
 
-    const project = getProject(parseInt(id, 10));
-    console.log("project : ", project);
+    const { data, loading, error } = useFetch(`/api/store/${id}`);
+    useEffect(() => {
+
+        if (data) {
+            setProject(data);
+        }
+    }, [data]); // data가 변경될 때마다 실행
+
+    useEffect(() => {
+        //console.log("아 제ㅂㄹ ", project.id);
+    }, [project]);
+
+    //const token = getAccessToken();
+    //console.log("token: ", token);
+
+
 
     return (
         <>
@@ -204,20 +355,29 @@ function Page() {
 
                     <Row>
                         <Col lg="7">
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectCard project={project} />}
 
-                            {ProjectCard(project)}
+
 
 
                         </Col>
                         <Col lg="5">
 
-                            {ProjectExplain(project)}
+                            {/* {ProjectExplain(project)} */}
+                            {loading && <p>Loading...</p>}
+                            {!loading &&
+                                <ProjectExplain project={project} />}
 
                         </Col>
                     </Row>
                 </Container>
 
-                {ProjectDetail(project)}
+                {/* {ProjectDetail(project)} */}
+                {loading && <p>Loading...</p>}
+                {!loading &&
+                    <ProjectDetail project={project} />}
 
             </main>
 

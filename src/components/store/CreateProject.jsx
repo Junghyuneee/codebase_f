@@ -1,18 +1,22 @@
 /*cart*/
 import React, { useEffect, useState, useRef, Outlet } from "react";
+import { redirect, useNavigate } from 'react-router-dom';
 // nodejs library that concatenates classes
 import Thumbnail from "../../assets/img/theme/team-3-800x800.jpg";
 // reactstrap components
 import classnames from "classnames";
 import axios from "axios";
-
+import { postData } from './storeAPI';
+import apiClient from "@/api/apiClient";
 // reactstrap components
 import {
+  Label,
   Badge,
   Button,
   Card,
   CardBody,
   CardImg,
+  Form,
   FormGroup,
   Input,
   InputGroupAddon,
@@ -27,45 +31,226 @@ import Banner from "./Banner_mini";
 import Banner_mini from "./Banner_mini";
 
 function ProjectForm() {
-  const handleSubmit = (event) => {
-    event.preventDefault(); // 기본 폼 제출 방지
 
-    const formData = {
-      name: document.getElementById("name").value,
-      age: document.getElementById("age").value,
-    };
-    console.log(formData);
-    sendToBackend(formData);
-  };
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [file, setFile] = useState(null);
+  const [price, setPrice] = useState('');
+  const [free, setFree] = useState(false);
+  const navigate = useNavigate();
 
-  const sendToBackend = async (data) => {
-    console.log(data);
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/store",
-        data
-      );
-      console.log("Response:", response.data);
-    } catch (error) {
-      console.error("Error posting data:", error);
+
+  //price 유효성
+  useEffect(() => {
+    let fix = price.toString();
+    fix = fix.replace(/^0|\D/g, ""); //맨앞 0이랑 숫자 아닌 문자 삭제
+    setPrice(fix);
+    document.getElementById("price").value = fix;
+    console.log("price 확인: ", price);
+  }, [price]); // (onchange 이벤트 중)
+
+
+  useEffect(() => {
+    console.log("free 확인: ", free);
+    if (free) {
+      document.getElementById("price").disabled = true;
+      setPrice(0);//0
+
+    } else {
+      document.getElementById("price").disabled = false;
+      setPrice(0);
     }
+
+
+  }, [free]); // (onchange 이벤트 중)
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]; // 선택된 파일 가져오기
+    setFile(selectedFile); // 상태 업데이트
   };
 
-  const clearForm = () => {
-    document.getElementById("contactForm").reset(); // 폼 초기화
+
+  function valid() {
+    if (!title.trim() || !content.trim()) {
+      alert('제목과 내용을 모두 입력해주세요.');
+      return false;
+    }
+  
+    return true;
+  }
+
+  function filevalid() {
+    if (file) {
+      console.log('업로드할 파일:', file);
+      // 파일을 서버에 업로드하는 로직 추가
+      //zip 파일 확인 코드 추가예정
+      /* accept 속성 주석친거 안으로 넣기 ㅠㅅ ㅠ*/
+      return true;
+    } else {
+      console.log('파일이 선택되지 않았습니다.');
+      alert("프로젝트 파일을 게시해주세요");
+      return false;
+    }
+
+  }
+
+
+  function submit(event) {
+
+    if (!valid()) {
+      return;
+    }
+    if (!filevalid()) {
+      return;
+    }
+
+    let realPrice = 0;
+    if (price != '') {
+      realPrice = parseInt(price);
+    }
+    const myprice = document.getElementById("price").value;
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('price', realPrice);
+    formData.append('file', file);
+    console.log(formData);
+
+
+    if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
+      postData('/api/store/add', formData);
+
+      alert("게시되었습니다.");
+      navigate("/store");
+    }
+    else {
+      //확인창에서 취소
+      return;
+    }
+
   };
+
 
   return (
     <>
-      <form id="contactForm" onSubmit={handleSubmit}>
-        <label htmlFor="name">이름:</label>
-        <input type="text" id="name" name="name" required />
+      <section className="section section-lg pt-lg-0 section-contact-us mt-7">
+        <Row className="justify-content-center">
+          <Col lg="10">
+            <Card className="bg-gradient-secondary shadow">
+              <CardBody className="p-lg-5">
+                <h4 className="mb-1">프로젝트 등록신청서</h4>
+                <p className="mt-0">프로젝트 등록신청서를 작성해주세요.</p>
+                <div className="mb-4">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="프로젝트 명"
+                      type="text"
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </InputGroup>
+                </div>
+                <div className="mb-4">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-user-run" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      placeholder="가격"
+                      type="text"
+                      onChange={(e) => setPrice(e.target.value)}
+                      id="price"
+                      min="0"
+                    />
+                    <FormGroup
+                      check
+                      inline
+                      className="pl-2"
+                    >
+                      <Input type="checkbox" id="free" onChange={(e) => setFree(e.target.checked)} />
+                      <Label check>
+                        무료배포
+                      </Label>
+                    </FormGroup>
+                  </InputGroup>
+                </div>
 
-        <label htmlFor="age">나이:</label>
-        <input type="number" id="age" name="age" required />
+                <div className="mb-4">
+                  <Input
+                    className="form-control-alternative"
+                    cols="40"
+                    name="content"
+                    placeholder="프로젝트 설명"
+                    onChange={(e) => setContent(e.target.value)}
+                    rows="10"
+                    type="textarea"
+                  />
+                </div>
 
-        <button type="submit">제출</button>
-      </form>
+
+                <InputGroup className="input-group-alternative">
+
+                  
+                  
+
+                </InputGroup>
+
+                <Row xs="2 pb-4">
+                  <Col className="">
+                    프로젝트 파일
+                  </Col>
+                  <Col className="">
+                    상세 이미지
+                  </Col>
+                </Row>
+
+                <Row xs="2 pb-4">
+                  <Col className="">
+                  <Input
+                    type="file"
+                    onChange={handleFileChange}
+
+                  />
+                  </Col>
+                  <Col className="">
+                  {/* <Input
+                    type="file"
+                    onChange={handleFileChange}
+
+                  /> */}
+                  {/*accept=".zip"*/}
+                  </Col>
+                </Row>
+                
+                
+                <div>미리보기 영역</div>
+
+                <div>
+                  <Button
+                    onClick={(e) => submit(e)}
+                    block
+                    className="btn-round"
+                    color="default"
+                    size="lg"
+                    type="button"
+                  >
+                    제 출
+                  </Button>
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+
+
+      </section>
     </>
   );
 }
@@ -75,69 +260,10 @@ function Page() {
     <>
       <main className="bg-secondary">
         <Banner_mini />
-
-        <section className="section section-lg pt-lg-0 section-contact-us mt-7">
-          <Row className="justify-content-center">
-            <Col lg="10">
-              <Card className="bg-gradient-secondary shadow">
-                <CardBody className="p-lg-5">
-                  <h4 className="mb-1">프로젝트 등록신청서</h4>
-                  <p className="mt-0">프로젝트 등록신청서를 작성해주세요.</p>
-                  <FormGroup>
-                    <InputGroup className="input-group-alternative">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-user-run" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="프로젝트 명"
-                        type="text"
-                        onFocus={(e) => this.setState({ nameFocused: true })}
-                        onBlur={(e) => this.setState({ nameFocused: false })}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                  <FormGroup>
-                    <InputGroup className="input-group-alternative">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-email-83" />
-                          <span>&nbsp;&nbsp;&nbsp;프로젝트.zip</span>
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input type="file" />
-                    </InputGroup>
-                  </FormGroup>
-                  <FormGroup className="mb-4">
-                    <Input
-                      className="form-control-alternative"
-                      cols="80"
-                      name="name"
-                      placeholder="프로젝트 설명"
-                      rows="20"
-                      type="textarea"
-                    />
-                  </FormGroup>
-                  <div>
-                    <Button
-                      block
-                      className="btn-round"
-                      color="default"
-                      size="lg"
-                      type="button"
-                    >
-                      제 출
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-
-          <Container>{ProjectForm()}</Container>
-        </section>
+        <Container>{ProjectForm()}</Container>
       </main>
+
+
     </>
   );
 }

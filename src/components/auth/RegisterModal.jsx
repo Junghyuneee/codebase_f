@@ -5,20 +5,17 @@ import {
   CardBody,
   FormGroup,
   Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
   InputGroup,
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from "react-bootstrap";
 
-import GoogleLogo from "../../assets/img/icons/common/google.svg";
-import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
+import GoogleLogo from "@/assets/img/icons/common/google.svg";
+import KakaoLogo from "@/assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
-import Postcode from "./DaumAddress";
-import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "../../api/auth";
+import Postcode from "./DaumAddress.jsx";
+import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "@/api/auth/auth.js";
 import { useLocation } from "react-router-dom";
 
 const RegisterModal = () => {
@@ -40,8 +37,8 @@ const RegisterModal = () => {
 
   useEffect(() => {
     setEmail(encodedUsername ? decodeURIComponent(encodedUsername) : "");
-    setSocial(encodedUsername ? true : false);
-  }, [])
+    setSocial(!!encodedUsername);
+  }, [encodedUsername])
 
   const handleSignUp = async () => {
     if (window.confirm('회원가입 하시겠습니까?')) {
@@ -52,8 +49,6 @@ const RegisterModal = () => {
       window.location.replace("/");
     }
   }
-
-
 
   return (
     <main>
@@ -109,24 +104,20 @@ const RegisterModal = () => {
                   <Form role="form">
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                          <InputGroup.Text>
                             <i className="ni ni-hat-3" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Name" type="text"
+                          </InputGroup.Text>
+                        <Form.Control placeholder="Name" type="text"
                           value={username}
                           onChange={(e) => setUsername(e.target.value)} />
                       </InputGroup>
                     </FormGroup>
                     <FormGroup>
                       <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                          <InputGroup.Text>
                             <i className="ni ni-email-83" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Email" type="email"
+                          </InputGroup.Text>
+                        <Form.Control placeholder="Email" type="email"
                           disabled={social}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -135,12 +126,10 @@ const RegisterModal = () => {
                     </FormGroup>
                     <FormGroup style={{ display: social && "none" }}>
                       <InputGroup className="input-group-alternative mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                          <InputGroup.Text>
                             <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
+                          </InputGroup.Text>
+                        <Form.Control
                           placeholder="Password"
                           type="password"
                           autoComplete="off"
@@ -171,7 +160,7 @@ const RegisterModal = () => {
                             <i className="ni ni-email-83" />
                           </InputGroupText>
                         </InputGroupAddon> */}
-                        <Input placeholder="Phone Number" type="text"
+                        <Form.Control placeholder="Phone Number" type="text"
                           value={tel}
                           onChange={(e) => setTel(e.target.value)}
                         />
@@ -180,7 +169,7 @@ const RegisterModal = () => {
 
                     <FormGroup>
                       <div className="d-flex mb-2" style={{ gap: '1rem' }}>
-                        <Input type="text" disabled value={postcode}
+                        <Form.Control type="text" disabled value={postcode}
                           placeholder="Postcode"
                         />
                         <Postcode setAddress={setAddress} setPostCode={setPostcode} />
@@ -192,7 +181,7 @@ const RegisterModal = () => {
                             <i className="ni ni-lock-circle-open" />
                           </InputGroupText>
                         </InputGroupAddon> */}
-                        <Input
+                        <Form.Control
                           placeholder="주소"
                           type="text"
                           autoComplete="off"
@@ -206,7 +195,7 @@ const RegisterModal = () => {
                             <i className="ni ni-lock-circle-open" />
                           </InputGroupText>
                         </InputGroupAddon> */}
-                        <Input
+                        <Form.Control
                           placeholder="상세 주소"
                           type="text"
                           autoComplete="off"
