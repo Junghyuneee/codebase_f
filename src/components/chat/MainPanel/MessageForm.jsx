@@ -45,6 +45,7 @@ function MessageForm({stompClient}) {
             setErrors(prev => prev.concat('Type contents first'));
             return;
         }
+        setErrors([]);
         sendMessage();
     }
 

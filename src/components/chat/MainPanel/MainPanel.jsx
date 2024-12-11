@@ -2,44 +2,20 @@ import {useContext, useEffect, useRef, useState} from 'react'
 import Message from "./Message.jsx"
 import MessageForm from "./MessageForm.jsx"
 import MessageHeader from "@/components/chat/MainPanel/MessageHeader.jsx";
-import {ChatRoomContext, ChatRoomDispatchContext} from "@/pages/chat/ChatPage.jsx";
-import {Stomp} from "@stomp/stompjs";
+import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
 import {getAccessToken} from "@/api/auth/getset.js";
 import {getMessages} from "@/api/chat/message.js";
 import {exitChatroom} from "@/api/chat/chatroom.js";
+import PropTypes from "prop-types";
 
-const MainPanel = () => {
+const MainPanel = ({stompClient}) => {
 
     const chatRoom = useContext(ChatRoomContext).currentChatRoom;
-    const {onUpdate} = useContext(ChatRoomDispatchContext);
     const [messages, setMessages] = useState([]);
-    const stompClient = useRef(null);
     const subscriptionRef = useRef(null);
     const messageEndRef = useRef(null);
-    const [pendingUpdates, setPendingUpdates] = useState(new Set());
 
     useEffect(() => {
-        if (!stompClient.current || !stompClient.current.connected) {
-            stompClient.current = Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`);
-            stompClient.current.connect(
-                {
-                    Authorization: getAccessToken(),
-                },
-                () => {
-                    stompClient.current.subscribe('/sub/chats/news',
-                        (chatMessage) => {
-                            setPendingUpdates((prev) => {
-                                    const updatedPending = new Set(prev);
-                                    updatedPending.add(parseInt(chatMessage.body));
-                                    return updatedPending;
-                                }
-                            );
-                        });
-                },
-                (error) => console.error('WebSocket error: ', error)
-            );
-        }
-
         const subscribeToChatRoom = async () => {
             if (chatRoom && chatRoom.id && stompClient.current.connected) {
 
@@ -55,7 +31,6 @@ const MainPanel = () => {
                 subscriptionRef.current = stompClient.current.subscribe(
                     `/sub/chats/${chatRoom.id}`,
                     (chatMessage) => {
-                        console.log('Received message:', chatMessage.body);
                         setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
                     },
                     {Authorization: `${getAccessToken()}`}
@@ -73,21 +48,7 @@ const MainPanel = () => {
                 setMessages([]);
             }
         }
-    }, [chatRoom]);
-
-    useEffect(() => {
-        if (pendingUpdates.size > 0) {
-            const timeoutId = setTimeout(() => {
-                pendingUpdates.delete(chatRoom?.id);
-                onUpdate(pendingUpdates);
-            }, 100);
-            return () => {
-                clearTimeout(timeoutId)
-                pendingUpdates.clear();
-                setPendingUpdates(pendingUpdates);
-            };
-        }
-    }, [chatRoom, onUpdate, pendingUpdates]);
+    }, [chatRoom, stompClient]);
 
     // 새로운 메시지 발생 시 스크롤 아래로 고정
     useEffect(() => {
@@ -133,6 +94,10 @@ const MainPanel = () => {
             />
         </div>
     )
+}
+
+MainPanel.propTypes={
+    stompClient: PropTypes.func.isRequired,
 }
 
 export default MainPanel;

@@ -1,9 +1,11 @@
-import {createContext, useEffect, useReducer} from "react";
+import {createContext, useCallback, useEffect, useReducer, useRef, useState} from "react";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import SidePanel from "@/components/chat/SidePanel/SidePanel.jsx";
 import MainPanel from "@/components/chat/MainPanel/MainPanel.jsx";
 import {createChatroom, leaveChatroom, showChatrooms} from "@/api/chat/chatroom.js";
 import {Container} from "react-bootstrap";
+import {Stomp} from "@stomp/stompjs";
+import {getAccessToken} from "@/api/auth/getset.js";
 
 const chatRoomListReducer = (state, action) => {
     switch (action.type) {
@@ -15,15 +17,11 @@ const chatRoomListReducer = (state, action) => {
             const stateMap = new Map(state.map(it =>
                 [it.id, it]));
             const pending = action.data;
-            console.log(pending);
             pending.forEach(it => {
                 if (stateMap.has(it)) {
                     stateMap.get(it).hasNewMessage = true;
                 }
             })
-
-            console.log(Array.from(stateMap.values()));
-
             return Array.from(stateMap.values());
         }
         case 'DELETE':
@@ -39,7 +37,6 @@ const chatRoomReducer = (state, action) => {
             return null;
         case 'SELECT':
             return action.data;
-
     }
 }
 
@@ -51,6 +48,34 @@ export const ChatRoomDispatchContext = createContext();
 const ChatPage = () => {
     const [chatRoomList, chatRoomListDispatch] = useReducer(chatRoomListReducer, []);
     const [currentChatRoom, chatRoomDispatch] = useReducer(chatRoomReducer, null);
+    const [pendingUpdates, setPendingUpdates] = useState(new Set());
+
+    const stompClient = useRef(null);
+
+    const onCreate = useCallback(async (title) => {
+        const response = await createChatroom(title);
+        chatRoomListDispatch({type: 'CREATE', data: response});
+    }, []);
+
+    const onUpdate = useCallback((chatroomList) => {
+        chatRoomListDispatch({type: 'UPDATE', data: chatroomList});
+    }, []);
+
+    const onDelete = useCallback(async (id) => {
+        const response = await leaveChatroom(id);
+        if (response) {
+            chatRoomListDispatch({type: 'DELETE', data: id})
+        }
+        return response;
+    }, []);
+
+    const onSelect = useCallback((chatroom) => {
+        chatRoomDispatch({type: 'SELECT', data: chatroom})
+    }, []);
+
+    const onLeave = useCallback(() => {
+        chatRoomDispatch({type: 'LEAVE'})
+    }, []);
 
     useEffect(() => {
         const fetchChatRooms = async () => {
@@ -58,32 +83,50 @@ const ChatPage = () => {
             chatRoomListDispatch({type: 'INIT', data: response});
         }
         fetchChatRooms();
+
+        if (!stompClient.current || !stompClient.current.connected) {
+            stompClient.current = Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`);
+            stompClient.current.connect(
+                {
+                    Authorization: getAccessToken(),
+                },
+                () => {
+                    stompClient.current.subscribe('/sub/chats/news',
+                        (chatMessage) => {
+                            setPendingUpdates((prev) => {
+                                    const updatedPending = new Set(prev);
+                                    updatedPending.add(parseInt(chatMessage.body));
+                                    return updatedPending;
+                                }
+                            );
+                        });
+                },
+                (error) => console.error('WebSocket error: ', error)
+            );
+        }
+
+        return() => {
+            if(stompClient.current){
+                console.log('Disconnect Chat Room');
+                stompClient.current.disconnect();
+            }
+        }
+
     }, [])
 
-    const onCreate = async (title) => {
-        const response = await createChatroom(title);
-        chatRoomListDispatch({type: 'CREATE', data: response});
-    }
-
-    const onUpdate = (chatroomList) => {
-        chatRoomListDispatch({type: 'UPDATE', data: chatroomList});
-    }
-
-    const onDelete = async (id) => {
-        const response = await leaveChatroom(id);
-        if (response) {
-            chatRoomListDispatch({type: 'DELETE', data: id})
+    useEffect(() => {
+        if (pendingUpdates.size > 0) {
+            const timeoutId = setTimeout(() => {
+                pendingUpdates.delete(currentChatRoom?.id);
+                onUpdate(pendingUpdates);
+            }, 100);
+            return () => {
+                clearTimeout(timeoutId)
+                pendingUpdates.clear();
+                setPendingUpdates(pendingUpdates);
+            };
         }
-        return response;
-    }
-
-    const onSelect = (chatroom) => {
-        chatRoomDispatch({type: 'SELECT', data: chatroom})
-    }
-
-    const onLeave = () => {
-        chatRoomDispatch({type: 'LEAVE'})
-    }
+    }, [currentChatRoom, onUpdate, pendingUpdates]);
 
     return (
         <>
@@ -106,7 +149,7 @@ const ChatPage = () => {
                                     <SidePanel/>
                                 </div>
                                 <div style={{width: '70%'}} className={"bg-white rounded-right py-3"} >
-                                    <MainPanel/>
+                                    <MainPanel stompClient={stompClient}/>
                                 </div>
                             </div>
                         </Container>
