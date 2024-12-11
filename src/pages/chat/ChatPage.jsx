@@ -4,8 +4,7 @@ import SidePanel from "@/components/chat/SidePanel/SidePanel.jsx";
 import MainPanel from "@/components/chat/MainPanel/MainPanel.jsx";
 import {createChatroom, leaveChatroom, showChatrooms} from "@/api/chat/chatroom.js";
 import {Container} from "react-bootstrap";
-import {Stomp} from "@stomp/stompjs";
-import {getAccessToken} from "@/api/auth/getset.js";
+import useChatConnect from "@/hooks/chat/useChatConnect.js";
 
 const chatRoomListReducer = (state, action) => {
     switch (action.type) {
@@ -49,7 +48,6 @@ const ChatPage = () => {
     const [chatRoomList, chatRoomListDispatch] = useReducer(chatRoomListReducer, []);
     const [currentChatRoom, chatRoomDispatch] = useReducer(chatRoomReducer, null);
     const [pendingUpdates, setPendingUpdates] = useState(new Set());
-
     const stompClient = useRef(null);
 
     const onCreate = useCallback(async (title) => {
@@ -77,42 +75,31 @@ const ChatPage = () => {
         chatRoomDispatch({type: 'LEAVE'})
     }, []);
 
+    const subNewMessages = useCallback(() => {
+        if (stompClient.current?.connected) {
+            stompClient.current.subscribe('/sub/chats/news', (chatMessage) => {
+                setPendingUpdates((prev) => {
+                    const updatedPending = new Set(prev);
+                    updatedPending.add(parseInt(chatMessage.body));
+                    return updatedPending;
+                });
+            });
+        } else {
+            console.warn('WebSocket is not connected, cannot subscribe to new messages.');
+        }
+    }, [stompClient]);
+
+    useChatConnect(stompClient, subNewMessages);
+
+
     useEffect(() => {
         const fetchChatRooms = async () => {
             const response = await showChatrooms();
             chatRoomListDispatch({type: 'INIT', data: response});
-        }
+        };
         fetchChatRooms();
+    }, []); // 채팅방 읽어들이기
 
-        if (!stompClient.current || !stompClient.current.connected) {
-            stompClient.current = Stomp.client(`ws://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/stomp/chats`);
-            stompClient.current.connect(
-                {
-                    Authorization: getAccessToken(),
-                },
-                () => {
-                    stompClient.current.subscribe('/sub/chats/news',
-                        (chatMessage) => {
-                            setPendingUpdates((prev) => {
-                                    const updatedPending = new Set(prev);
-                                    updatedPending.add(parseInt(chatMessage.body));
-                                    return updatedPending;
-                                }
-                            );
-                        });
-                },
-                (error) => console.error('WebSocket error: ', error)
-            );
-        }
-
-        return() => {
-            if(stompClient.current){
-                console.log('Disconnect Chat Room');
-                stompClient.current.disconnect();
-            }
-        }
-
-    }, [])
 
     useEffect(() => {
         if (pendingUpdates.size > 0) {
@@ -131,7 +118,8 @@ const ChatPage = () => {
     return (
         <>
             <NavigationBar/>
-            <section className={"section section-lg section-shaped my-0"}>
+            {stompClient.current &&
+                <section className={"section section-lg section-shaped my-0"}>
                 <div className="shape shape-style-1 shape-default">
                     <span/>
                     <span/>
@@ -148,13 +136,14 @@ const ChatPage = () => {
                                 <div style={{width: '30%'}} className="min-vh-50">
                                     <SidePanel/>
                                 </div>
-                                <div style={{width: '70%'}} className={"bg-white rounded-right py-3"} >
-                                    <MainPanel stompClient={stompClient}/>
+                                <div style={{width: '70%'}} className={"bg-white rounded-right py-3"}>
+                                    <MainPanel stompClient={stompClient.current}/>
                                 </div>
                             </div>
                         </Container>
                     </ChatRoomDispatchContext.Provider>
-                </ChatRoomContext.Provider></section>
+                </ChatRoomContext.Provider>
+            </section>}
         </>
     )
 }

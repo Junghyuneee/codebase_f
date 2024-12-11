@@ -17,7 +17,7 @@ const MainPanel = ({stompClient}) => {
 
     useEffect(() => {
         const subscribeToChatRoom = async () => {
-            if (chatRoom && chatRoom.id && stompClient.current.connected) {
+            if (chatRoom && chatRoom.id && stompClient.connected) {
 
                 const response = await getMessages(chatRoom.id);
                 setMessages(response);
@@ -28,7 +28,7 @@ const MainPanel = ({stompClient}) => {
                 }
 
                 console.log('Connected to chat room', chatRoom.id);
-                subscriptionRef.current = stompClient.current.subscribe(
+                subscriptionRef.current = stompClient.subscribe(
                     `/sub/chats/${chatRoom.id}`,
                     (chatMessage) => {
                         setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
@@ -97,7 +97,7 @@ const MainPanel = ({stompClient}) => {
 }
 
 MainPanel.propTypes={
-    stompClient: PropTypes.func.isRequired,
+    stompClient: PropTypes.func.isRequired || null,
 }
 
 export default MainPanel;

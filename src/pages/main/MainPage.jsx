@@ -3,9 +3,17 @@ import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
+import {useEffect} from "react";
+import {isSignined} from "@/api/auth/auth.js";
 
 const MainPage = () => {
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const getAuth = () => { isSignined();};
+		getAuth();
+	}, []);
+
 	return (
 		<>
 			<NavigationBar/>
