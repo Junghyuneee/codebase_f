@@ -18,10 +18,12 @@ import {
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
-import Navbar from "../../components/team/Navbar.jsx";
+import Navbar from "../../components/Navbars/NavigationBar.jsx";
 import TeamSection from "../../components/team/TeamSection.jsx";
 import TeamCreationModal from "../../components/team/TeamCreationModal.jsx";
 import { getMemberId } from "../../api/auth/getset.js";
+import { useNavigate } from 'react-router-dom';
+import isAuthenticated from "@/utils/isAuthenticated.js";
 
 // CATEGORIES 배열 추가
 const CATEGORIES = [
@@ -38,6 +40,7 @@ const CATEGORIES = [
 ];
 
 function Team() {
+  const navigate = useNavigate();
   const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -54,6 +57,7 @@ function Team() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentMemberId, setCurrentMemberId] = useState(null);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -63,6 +67,7 @@ function Team() {
     
     const memberId = getMemberId();
     if (memberId) {
+      setCurrentMemberId(memberId);
       setFormData(prev => ({ ...prev, memberId }));
     }
   }, []);
@@ -89,7 +94,8 @@ function Team() {
       pjtowner: formData.pjtowner,
       pjtdescription: formData.pjtdescription,
       pjcategory: formData.pjcategory,
-      memberId: formData.memberId
+      memberId: formData.memberId,
+      deadline: formData.deadline
     }));
     data.append("file", formData.pjtimg);
   
@@ -169,6 +175,24 @@ function Team() {
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
+  const handleProjectCreate = () => {
+    if (!isAuthenticated()) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
+      return;
+    }
+    toggle();
+  };
+
+  const handleTeamJoin = () => {
+    if (!isAuthenticated()) {
+      alert('로그인이 필요한 서비스입니다.');
+      navigate('/login');
+      return;
+    }
+    // 팀원 등록 로직 구현
+  };
+
   return (
     <>
       <Navbar/>
@@ -191,20 +215,25 @@ function Team() {
                       프로젝트 팀 구성과 협업을 위한 페이지입니다.
                     </p>
                     <div className="d-flex justify-content-end">
-                      <Button className="btn-icon mb-3 mb-sm-0" color="info" onClick={toggle}>
-                          <span className="btn-inner--icon mr-1">
-                            <i className="fa fa-plus-circle" />
-                          </span>
-                          <span className="btn-inner--text">프로젝트 등록하기</span>
+                      <Button 
+                        className="btn-icon mb-3 mb-sm-0" 
+                        color="info" 
+                        onClick={handleProjectCreate}
+                      >
+                        <span className="btn-inner--icon mr-1">
+                          <i className="fa fa-plus-circle" />
+                        </span>
+                        <span className="btn-inner--text">프로젝트 등록하기</span>
                       </Button>
                       <Button
-                          className="btn-white btn-icon mb-3 mb-sm-0 ml-1"
-                          color="default"
-                        >
-                          <span className="btn-inner--icon mr-1" >
-                            <i className="fa fa-user-plus" />
-                          </span>
-                          <span className="btn-inner--text">팀원으로 등록</span>
+                        className="btn-white btn-icon mb-3 mb-sm-0 ml-1"
+                        color="default"
+                        onClick={handleTeamJoin}
+                      >
+                        <span className="btn-inner--icon mr-1" >
+                          <i className="fa fa-user-plus" />
+                        </span>
+                        <span className="btn-inner--text">팀원으로 등록</span>
                       </Button>
                     </div>
                   </Col>
@@ -226,7 +255,7 @@ function Team() {
               </svg>
             </div>
             <Container>
-              <section className="mt-4">
+              <section className="mt-4" style={{ position: 'relative', zIndex: 100 }}>
                 <Row>
                   <Col lg="10">
                     <div className="d-flex">
@@ -254,7 +283,7 @@ function Team() {
                             ? `기술 스택 (${selectedCategories.length})`
                             : '기술 스택'}
                         </DropdownToggle>
-                        <DropdownMenu>
+                        <DropdownMenu style={{ maxHeight: '300px', overflow: 'auto' }}>
                           {CATEGORIES.map((category) => (
                             <DropdownItem 
                               key={category}
@@ -286,6 +315,7 @@ function Team() {
           onPageChange={handlePageChange}
           selectedCategories={selectedCategories}
           onCategorySelect={handleCategorySelect}
+          currentMemberId={currentMemberId}
         />
         <TeamCreationModal 
           isOpen={modal}

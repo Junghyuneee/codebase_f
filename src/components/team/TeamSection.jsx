@@ -19,9 +19,10 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
+import isAuthenticated from "@/utils/isAuthenticated.js";
 
 
-function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
+function TeamSection({ projects, currentPage, totalPages, onPageChange, currentMemberId }) {
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const navigate = useNavigate();
@@ -37,17 +38,45 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
     setModal(!modal);
   };
 
-  // 팀 삭제
-  const deleteTeam = async (id) => {
+  // 팀 삭제 함수 수정
+  const handleDelete = async (teamId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`/api/projectteams/${id}`);
+      await axios.delete(`/api/projectteams/${teamId}`);
       alert("팀이 삭제되었습니다!");
-      location.reload(true);
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting team:", error);
       alert("삭제 중 오류가 발생했습니다.");
     }
+  };
+
+  const renderDeleteButton = (projectMemberId) => {
+    // 디버깅을 위한 로그 추가
+    console.log('Current Member ID:', currentMemberId);
+    console.log('Project Member ID:', projectMemberId);
+    
+    if (!isAuthenticated()) {
+      return null;
+    }
+    
+    // 숫자로 변환하여 비교
+    if (Number(currentMemberId) === Number(projectMemberId)) {
+      return (
+        <Button 
+          color="danger" 
+          size="sm" 
+          onClick={(e) => {
+            e.stopPropagation(); // 이벤트 버블링 방지
+            handleDelete(team.pjt_id);
+          }}
+        >
+          삭제
+        </Button>
+      );
+    }
+    
+    return null;
   };
 
   return (
@@ -67,29 +96,39 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
                           : defaultImage
                       }
                       top
+                      style={{ 
+                        height: '200px',     // 높이 고정
+                        objectFit: 'cover',  // 이미지 비율 유지하면서 영역 채우기
+                        objectPosition: 'center' // 이미지 중앙 정렬
+                      }}
                     />
-                    <CardBody className="py-5">
-                      <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
-                      <p className="description mt-3">{team.pjtdescription}</p>
-                      <div>
-                        <Badge color="primary" pill className="mr-1">
-                          {team.pjcategory}
-                        </Badge>
+                    <CardBody className="py-3">
+                      <h6 className="text-primary text-uppercase mb-1">
+                        {team.pjtname}
+                      </h6>
+                      <p className="description mt-2 mb-2">
+                        {team.pjtdescription}
+                      </p>
+                      <div className="mb-2">
+                        {team.pjcategory?.split(',').map((category, index) => (
+                          <Badge 
+                            key={index}
+                            color="primary" 
+                            pill 
+                            className="mr-1 mb-1"
+                          >
+                            {category.trim()}
+                          </Badge>
+                        )) || "카테고리 없음"}
                       </div>
-                      <div className="mt-3">
+                      <div className="d-flex gap-2">
                         <Button
-                          className="mt-2"
                           color="primary"
                           onClick={() => toggleModal(team)}
                         >
                           자세히 보기
                         </Button>
-                        <Button
-                          color="danger"
-                          onClick={() => deleteTeam(team.pjt_id)}
-                        >
-                          삭제
-                        </Button>
+                        {renderDeleteButton(team.memberId)}
                       </div>
                     </CardBody>
                   </Card>
@@ -100,7 +139,7 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
         </Row>
       </Container>
 
-      {/* 페이지네이션 */}
+      {/* ���이지네이션 */}
       {totalPages > 1 && (
         <Container className="mt-4">
           <Pagination className="d-flex justify-content-center">
@@ -130,7 +169,13 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
                     : defaultImage
                 }
                 alt={selectedTeam?.pjtname}
-                style={{ width: '100%', borderRadius: '8px' }}
+                style={{ 
+                  width: '100%', 
+                  maxHeight: '300px',    // 최대 높이 제한
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  borderRadius: '8px' 
+                }}
               />
             </Col>
             <Col md="8">

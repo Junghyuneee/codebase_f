@@ -27,6 +27,7 @@ const MainPage = () => {
 						<Button onClick={() => navigate('/post')}>Post</Button>
                         <Button onClick={() => navigate('/store')}>store</Button>
                         <Button onClick={() => navigate('/admin')}>Admin</Button>
+						<Button onClick={() => navigate('/team')}>Team</Button>
 						<VisitorIp/>
 					</Container>
 					{/* SVG separator */}

@@ -57,10 +57,21 @@ function TeamCreationModal({
             />
           </FormGroup>
           <FormGroup>
+            <Label for="deadline">마감일</Label>
+            <Input
+              type="date"
+              name="deadline"
+              id="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
             <Label className="h5 mb-3">카테고리 선택</Label>
             <div className="d-flex flex-wrap">
               {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js', 'Vue.js', 'Angular', 'TypeScript', 'PHP'].map((category) => (
-                <div key={category} className="custom-category-checkbox mb-3 mr-3">
+                <div key={category} className="custom-category-checkbox mb-1 mr-1">
                   <Input
                     type="checkbox"
                     id={category}
@@ -81,11 +92,11 @@ function TeamCreationModal({
                     }}
                   />
                   <Label 
-                    className="btn btn-outline-primary rounded-pill px-3 py-2" 
+                    className="btn btn-outline-primary rounded-pill px-1 py-0"
                     check 
                     for={category}
                   >
-                    <i className="ni ni-check-bold mr-2 opacity-0"></i>
+                    <i className="ni ni-check-bold mr-0 opacity-0"></i>
                     {category}
                   </Label>
                 </div>
