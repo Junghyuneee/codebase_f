@@ -3,16 +3,26 @@ import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {isSignined} from "@/api/auth/auth.js";
+import MemberSearchModal from "@/components/auth/MemberSearchModal.jsx";
 
 const MainPage = () => {
 	const navigate = useNavigate();
+	const [show, setShow] = useState(false);
+	const [member, setMember] = useState(null);
 
 	useEffect(() => {
 		const getAuth = () => { isSignined();};
 		getAuth();
 	}, []);
+
+	useEffect(() => {
+		if(member){
+			navigate(`/profile/${member.name}`)
+		}
+
+	}, [member]);
 
 	return (
 		<>
@@ -33,8 +43,9 @@ const MainPage = () => {
 						<Button onClick={() => navigate('/chat')}>Chat</Button>
 						<Button onClick={() => navigate('/review')}>Review</Button>
 						<Button onClick={() => navigate('/post')}>Post</Button>
-                        <Button onClick={() => navigate('/store')}>store</Button>
-                        <Button onClick={() => navigate('/admin')}>Admin</Button>
+						<Button onClick={() => navigate('/store')}>store</Button>
+						<Button onClick={() => navigate('/admin')}>Admin</Button>
+						<Button onClick={()=>setShow(true)}>Search Member</Button>
 						<VisitorIp/>
 					</Container>
 					{/* SVG separator */}
@@ -54,7 +65,7 @@ const MainPage = () => {
 						</svg>
 					</div>
 				</section>
-
+				<MemberSearchModal show={show} setShow={setShow} setMember={setMember}/>
 			</main>
 		</>
 	);
