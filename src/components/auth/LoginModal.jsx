@@ -16,7 +16,7 @@ import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {googleLoginHandler, kakaoLoginHandler, postSignIn} from "@/api/auth/auth.js";
-import isAuthenticated from "@/utils/isAuthenticated.js";
+import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 
 const LoginModal = () => {
     let navigate = useNavigate();
