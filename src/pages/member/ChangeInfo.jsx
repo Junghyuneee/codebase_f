@@ -1,10 +1,38 @@
-import {Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, InputGroup, Row} from "react-bootstrap";
-import {googleLoginHandler, kakaoLoginHandler} from "@/api/auth/auth.js";
-import GoogleLogo from "@/assets/img/icons/common/google.svg";
-import KakaoLogo from "@/assets/img/icons/common/kakao_icon.png";
+import {Button, Card, CardBody,  Col, Container, Form, FormGroup, InputGroup, Row} from "react-bootstrap";
 import Postcode from "@/components/auth/DaumAddress.jsx";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {getMember} from "@/api/auth/member.js";
 
 const ChangeInfo = () => {
+
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [address, setAddress] = useState();
+    const [addressDetail, setAddressDetail] = useState("");
+    const [postcode, setPostcode] = useState();
+    const [tel, setTel] = useState();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchMembers = async () => {
+            const response = await getMember();
+            setUsername(response.name);
+            setEmail(response.email);
+            setAddress(response.address);
+            setPostcode(response.postcode);
+            setTel(response.tel);
+        }
+        fetchMembers();
+    }, []);
+
+
+    const handleSignUp = async () => {
+        if (window.confirm('회원가입 하시겠습니까?')) {
+            console.log("test");
+        }
+    }
+
     return (
         <main>
             <section className="section section-shaped section-lg">
@@ -19,43 +47,7 @@ const ChangeInfo = () => {
                     <Row className="justify-content-center">
                         <Col lg="5">
                             <Card className="bg-secondary shadow border-0">
-                                <CardHeader className="bg-white pb-5">
-                                    <div className="text-muted text-center mb-3">
-                                        <small>Sign up with</small>
-                                    </div>
-                                    <div className="text-center">
-                                        <Button
-                                            className="btn-neutral btn-icon ml-1"
-                                            color="default"
-                                            onClick={googleLoginHandler}
-                                        >
-                      <span className="btn-inner--icon mr-1">
-                        <img
-                            alt="..."
-                            src={GoogleLogo}
-                        />
-                      </span>
-                                            <span className="btn-inner--text">Google</span>
-                                        </Button>
-                                        <Button
-                                            className="btn-neutral btn-icon ml-1"
-                                            color="default"
-                                            onClick={kakaoLoginHandler}
-                                        >
-                      <span className="btn-inner--icon mr-1">
-                        <img
-                            alt="..."
-                            src={KakaoLogo}
-                        />
-                      </span>
-                                            <span className="btn-inner--text">Kakao</span>
-                                        </Button>
-                                    </div>
-                                </CardHeader>
                                 <CardBody className="px-lg-5 py-lg-5">
-                                    <div className="text-center text-muted mb-4">
-                                        <small>Or sign up with credentials</small>
-                                    </div>
                                     <Form role="form">
                                         <FormGroup>
                                             <InputGroup className="input-group-alternative mb-3">
@@ -73,48 +65,14 @@ const ChangeInfo = () => {
                                                     <i className="ni ni-email-83"/>
                                                 </InputGroup.Text>
                                                 <Form.Control placeholder="Email" type="email"
-                                                              disabled={social}
+                                                              disabled
                                                               value={email}
                                                               onChange={(e) => setEmail(e.target.value)}
                                                 />
                                             </InputGroup>
                                         </FormGroup>
-                                        <FormGroup style={{display: social && "none"}}>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroup.Text>
-                                                    <i className="ni ni-lock-circle-open"/>
-                                                </InputGroup.Text>
-                                                <Form.Control
-                                                    placeholder="Password"
-                                                    type="password"
-                                                    autoComplete="off"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                            {/*
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          placeholder="Password Confirm"
-                          type="password"
-                          autoComplete="off"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </InputGroup> */}
-                                        </FormGroup>
                                         <FormGroup>
                                             <InputGroup className="input-group-alternative mb-3">
-                                                {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-email-83" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
                                                 <Form.Control placeholder="Phone Number" type="text"
                                                               value={tel}
                                                               onChange={(e) => setTel(e.target.value)}
@@ -131,11 +89,6 @@ const ChangeInfo = () => {
                                             </div>
 
                                             <InputGroup className="input-group-alternative">
-                                                {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
                                                 <Form.Control
                                                     placeholder="주소"
                                                     type="text"
@@ -145,11 +98,6 @@ const ChangeInfo = () => {
                                                 />
                                             </InputGroup>
                                             <InputGroup className="input-group-alternative mt-2">
-                                                {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
                                                 <Form.Control
                                                     placeholder="상세 주소"
                                                     type="text"
@@ -158,42 +106,7 @@ const ChangeInfo = () => {
                                                     onChange={(e) => setAddressDetail(e.target.value)}
                                                 />
                                             </InputGroup>
-
                                         </FormGroup>
-                                        {/* <div className="text-muted font-italic">
-                      <small>
-                        password strength:{" "}
-                        <span className="text-success font-weight-700">
-                          strong
-                        </span>
-                      </small>
-                    </div> */}
-
-                                        {/* <Row className="my-4">
-                      <Col xs="12">
-                        <div className="custom-control custom-control-alternative custom-checkbox">
-                          <input
-                            className="custom-control-input"
-                            id="customCheckRegister"
-                            type="checkbox"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheckRegister"
-                          >
-                            <span>
-                              I agree with the{" "}
-                              <a
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                Privacy Policy
-                              </a>
-                            </span>
-                          </label>
-                        </div>
-                      </Col>
-                    </Row> */}
                                         <div className="text-center">
                                             <Button
                                                 className="mt-4"
@@ -201,7 +114,14 @@ const ChangeInfo = () => {
                                                 type="button"
                                                 onClick={handleSignUp}
                                             >
-                                                Create account
+                                                수정
+                                            </Button>
+                                            <Button
+                                                className="mt-4 bg-danger"
+                                                type="button"
+                                                onClick={() => navigate("/profile", {replace: true})}
+                                            >
+                                                취소
                                             </Button>
                                         </div>
                                     </Form>
