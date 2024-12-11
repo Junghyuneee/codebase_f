@@ -9,7 +9,7 @@ import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
 function MessageForm({stompClient}) {
 
     const [content, setContent] = useState("");
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState("");
     const chatRoom = useContext(ChatRoomContext).currentChatRoom;
     const contentRef = useRef(null);
 
@@ -20,7 +20,7 @@ function MessageForm({stompClient}) {
     }, [chatRoom])
 
     const sendMessage = () => {
-        stompClient.current.publish({
+        stompClient.publish({
             destination: `/pub/chats/${chatRoom.id}`,
             headers: {
                 'Authorization': getAccessToken(),
@@ -42,10 +42,10 @@ function MessageForm({stompClient}) {
 
     const handleSubmit = async () => {
         if (!content) {
-            setErrors(prev => prev.concat('Type contents first'));
+            setErrors('Type contents first');
             return;
         }
-        setErrors([]);
+        setErrors("");
         sendMessage();
     }
 
@@ -62,10 +62,10 @@ function MessageForm({stompClient}) {
             </Form>
 
             <div>
-                {errors.map(errorMsg =>
-                    <p style={{color: 'red'}} key={errorMsg}>
-                        {errorMsg}
-                    </p>)}
+                {errors.length > 0 &&
+                    <p style={{color: 'red'}}>
+                        {errors}
+                    </p>}
             </div>
 
             <Row>
@@ -99,9 +99,7 @@ function MessageForm({stompClient}) {
 
 MessageForm.propTypes = {
     stompClient: PropTypes.shape({
-        current: PropTypes.shape({
             publish: PropTypes.func.isRequired,
-        })
     })
 }
 
