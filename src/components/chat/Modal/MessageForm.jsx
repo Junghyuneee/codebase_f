@@ -1,14 +1,12 @@
-import {useContext, useEffect, useRef, useState} from 'react'
-import {Col, Form,  Row} from "react-bootstrap"
-import {getAccessToken, } from "@/api/auth/getset.js";
+import { useEffect, useRef, useState} from "react";
+import {getAccessToken} from "@/api/auth/getset.js";
+import {Col, Form, Row} from "react-bootstrap";
 import PropTypes from "prop-types";
-import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
 
-function MessageForm({stompClient}) {
+function MessageForm({stompClient, chatRoom}) {
 
     const [content, setContent] = useState("");
     const [errors, setErrors] = useState("");
-    const chatRoom = useContext(ChatRoomContext).currentChatRoom;
     const contentRef = useRef(null);
 
 
@@ -77,28 +75,18 @@ function MessageForm({stompClient}) {
                         SEND
                     </button>
                 </Col>
-                {/*<Col>*/}
-                {/*  <button*/}
-                {/*    onClick={handleImageOpenRef}*/}
-                {/*    className="message-form-button"*/}
-                {/*    style={{ width: '100%' }}*/}
-                {/*    disabled={loading?true:false}*/}
-                {/*  >*/}
-                {/*    UPLOAD*/}
-                {/*  </button>*/}
-                {/*</Col>*/}
             </Row>
-
-            {/*<input accept='image/jpeg, image/png' type='file' style={{ display: 'none' }} ref={inputOpenImageRef} onChange={handleUploadImage} />*/}
-
         </div>
     )
 }
 
 MessageForm.propTypes = {
     stompClient: PropTypes.shape({
-            publish: PropTypes.func.isRequired,
-    })
+        publish: PropTypes.func.isRequired,
+    }),
+    chatRoom: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+    }).isRequired,
 }
 
 export default MessageForm
