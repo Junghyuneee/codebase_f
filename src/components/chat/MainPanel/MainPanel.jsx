@@ -82,11 +82,7 @@ const MainPanel = ({stompClient}) => {
                 scrollbarWidth: "thin",
                 scrollbarColor:'#ccc #f9f9f9'
             }}>
-                {/*{searchTerm ?*/}
-                {/*    this.renderMessages(searchResults)*/}
-                {/*    :*/}
                 {renderMessages(messages)}
-                {/*}*/}
                 <div ref={messageEndRef}></div>
             </div>
             <MessageForm
@@ -97,7 +93,7 @@ const MainPanel = ({stompClient}) => {
 }
 
 MainPanel.propTypes={
-    stompClient: PropTypes.func.isRequired || null,
+    stompClient: PropTypes.object,
 }
 
 export default MainPanel;

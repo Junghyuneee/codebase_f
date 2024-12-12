@@ -13,14 +13,13 @@ const chatRoomListReducer = (state, action) => {
         case 'CREATE':
             return [...state, action.data];
         case 'UPDATE': {
-            const stateMap = new Map(state.map(it =>
-                [it.id, it]));
+            const stateMap = new Map(state.map(it => [it.id, it]));
             const pending = action.data;
             pending.forEach(it => {
                 if (stateMap.has(it)) {
                     stateMap.get(it).hasNewMessage = true;
                 }
-            })
+            });
             return Array.from(stateMap.values());
         }
         case 'DELETE':
@@ -91,7 +90,6 @@ const ChatPage = () => {
 
     useChatConnect(stompClient, subNewMessages);
 
-
     useEffect(() => {
         const fetchChatRooms = async () => {
             const response = await showChatrooms();
@@ -99,7 +97,6 @@ const ChatPage = () => {
         };
         fetchChatRooms();
     }, []); // 채팅방 읽어들이기
-
 
     useEffect(() => {
         if (pendingUpdates.size > 0) {
@@ -120,30 +117,31 @@ const ChatPage = () => {
             <NavigationBar/>
             {stompClient.current &&
                 <section className={"section section-lg section-shaped my-0"}>
-                <div className="shape shape-style-1 shape-default">
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
-                </div>
-                <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
-                    <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
-                        <Container>
-                            <div style={{display: 'flex'}}>
-                                <div style={{width: '30%'}} className="min-vh-50">
-                                    <SidePanel/>
+                    <div className="shape shape-style-1 shape-default">
+                        <span/>
+                        <span/>
+                        <span/>
+                        <span/>
+                        <span/>
+                        <span/>
+                        <span/>
+                    </div>
+                    <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
+                        <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
+                            <Container>
+                                <div style={{display: 'flex'}}>
+                                    <div style={{width: '30%'}} className="min-vh-50">
+                                        <SidePanel/>
+                                    </div>
+                                    <div style={{width: '70%'}} className={"bg-white rounded-right py-3"}>
+                                        <MainPanel stompClient={stompClient.current}/>
+                                    </div>
                                 </div>
-                                <div style={{width: '70%'}} className={"bg-white rounded-right py-3"}>
-                                    <MainPanel stompClient={stompClient.current}/>
-                                </div>
-                            </div>
-                        </Container>
-                    </ChatRoomDispatchContext.Provider>
-                </ChatRoomContext.Provider>
-            </section>}
+                            </Container>
+                        </ChatRoomDispatchContext.Provider>
+                    </ChatRoomContext.Provider>
+                </section>
+            }
         </>
     )
 }
