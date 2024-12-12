@@ -1,16 +1,54 @@
-import {useContext, useEffect, useRef} from 'react'
+import {useContext, useEffect, useRef, useState} from 'react'
 import Message from "./Message.jsx"
 import MessageForm from "./MessageForm.jsx"
 import MessageHeader from "@/components/chat/MainPanel/MessageHeader.jsx";
 import {ChatRoomContext} from "@/pages/chat/ChatPage.jsx";
+import {getAccessToken} from "@/api/auth/getset.js";
+import {getMessages} from "@/api/chat/message.js";
+import {exitChatroom} from "@/api/chat/chatroom.js";
 import PropTypes from "prop-types";
-import useSubscribeToChatRoom from "@/hooks/chat/useSubscribeToChatRoom.js";
 
 const MainPanel = ({stompClient}) => {
 
     const chatRoom = useContext(ChatRoomContext).currentChatRoom;
+    const [messages, setMessages] = useState([]);
+    const subscriptionRef = useRef(null);
     const messageEndRef = useRef(null);
-    const messages = useSubscribeToChatRoom(chatRoom?.id, stompClient);
+
+    useEffect(() => {
+        const subscribeToChatRoom = async () => {
+            if (chatRoom && chatRoom.id && stompClient.connected) {
+
+                const response = await getMessages(chatRoom.id);
+                setMessages(response);
+
+                if (subscriptionRef.current) {
+                    console.log('Unsubscribing from previous chat room');
+                    subscriptionRef.current.unsubscribe();
+                }
+
+                console.log('Connected to chat room', chatRoom.id);
+                subscriptionRef.current = stompClient.subscribe(
+                    `/sub/chats/${chatRoom.id}`,
+                    (chatMessage) => {
+                        setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
+                    },
+                    {Authorization: `${getAccessToken()}`}
+                );
+            }
+        }
+
+        subscribeToChatRoom();
+
+        return () => {
+            if (subscriptionRef.current) {
+                console.log('Cleaning up subscription for chat room:', chatRoom?.id);
+                exitChatroom(chatRoom?.id);
+                subscriptionRef.current.unsubscribe();
+                setMessages([]);
+            }
+        }
+    }, [chatRoom, stompClient]);
 
     // 새로운 메시지 발생 시 스크롤 아래로 고정
     useEffect(() => {
@@ -42,7 +80,7 @@ const MainPanel = ({stompClient}) => {
                 marginBottom: '1rem',
                 overflowY: 'auto',
                 scrollbarWidth: "thin",
-                scrollbarColor: '#ccc #f9f9f9'
+                scrollbarColor:'#ccc #f9f9f9'
             }}>
                 {renderMessages(messages)}
                 <div ref={messageEndRef}></div>
@@ -54,10 +92,8 @@ const MainPanel = ({stompClient}) => {
     )
 }
 
-MainPanel.propTypes = {
-    stompClient: PropTypes.shape({
-        current: PropTypes.func
-    }).isRequired
+MainPanel.propTypes={
+    stompClient: PropTypes.object,
 }
 
 export default MainPanel;

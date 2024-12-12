@@ -74,18 +74,8 @@ const ChatPage = () => {
         chatRoomDispatch({type: 'LEAVE'})
     }, []);
 
-    useChatConnect(stompClient);
-
-    useEffect(() => {
-        const fetchChatRooms = async () => {
-            const response = await showChatrooms();
-            chatRoomListDispatch({type: 'INIT', data: response});
-        };
-        fetchChatRooms();
-    }, []); // 채팅방 읽어들이기
-
-    useEffect(() => {
-        if (stompClient?.current.connected) {
+    const subNewMessages = useCallback(() => {
+        if (stompClient.current?.connected) {
             stompClient.current.subscribe('/sub/chats/news', (chatMessage) => {
                 setPendingUpdates((prev) => {
                     const updatedPending = new Set(prev);
@@ -96,7 +86,17 @@ const ChatPage = () => {
         } else {
             console.warn('WebSocket is not connected, cannot subscribe to new messages.');
         }
-    },         [stompClient.current]);// eslint-disable-line react-hooks/exhaustive-deps
+    }, [stompClient]);
+
+    useChatConnect(stompClient, subNewMessages);
+
+    useEffect(() => {
+        const fetchChatRooms = async () => {
+            const response = await showChatrooms();
+            chatRoomListDispatch({type: 'INIT', data: response});
+        };
+        fetchChatRooms();
+    }, []); // 채팅방 읽어들이기
 
     useEffect(() => {
         if (pendingUpdates.size > 0) {
@@ -140,7 +140,8 @@ const ChatPage = () => {
                             </Container>
                         </ChatRoomDispatchContext.Provider>
                     </ChatRoomContext.Provider>
-                </section>}
+                </section>
+            }
         </>
     )
 }
