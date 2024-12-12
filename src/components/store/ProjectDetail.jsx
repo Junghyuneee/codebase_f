@@ -51,9 +51,9 @@ export function ProjectCard({ project }) {
 
                 <Card className="card-profile shadow">
                     <div className="px-4">
-                        <CardImg className="py-5" style={{ borderRadius: '10px' }}
+                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover'}}
                             alt="..."
-                            src={img}
+                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}
                             top
                         />
 

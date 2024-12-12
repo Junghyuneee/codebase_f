@@ -12,7 +12,7 @@ import Banner from "@/components/store/Banner";
 import Banner_mini from "@/components/store/Banner_mini";
 import img from "@/assets/img/theme/img-1-1200x1000.jpg";
 import { getData, useFetch } from "@/components/store/storeAPI";
-
+import NavigationBar from "@/components/Navbars/NavigationBar";
 import {
   Button,
   Card,
@@ -33,13 +33,14 @@ import {
   DropdownItem,
   UncontrolledDropdown,
 } from "reactstrap";
+import classNames from "classnames";
 
-function OneProjectCard({ name, price }) {
+function OneProjectCard({ thumbnail, name, price }) {
   return (
     <>
       <Card className="bg-white shadow border-0 card-lift--hover">
         <blockquote className="card-blockquote p-4">
-          <CardImg style={{ borderRadius: "10px" }} alt="..." src={img} top />
+          <CardImg style={{ borderRadius: "10px", width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} alt="..." src={`${import.meta.env.VITE_APP_AWS_BUCKET}${thumbnail}`} top />
           <h5
             className=" font-weight-bold text-black"
             style={{
@@ -97,11 +98,11 @@ function ProjectCards() {
 
   useEffect(() => {
     console.log("정렬변경");
-    
-    
+
+
     if (Array.isArray(initprojects)) {// 배열이면(값이 안들어왔을때는 아래코드 동작하지 않음)
       let sortedProjects = [];
-       sortedProjects = [...initprojects].sort((a, b) => {
+      sortedProjects = [...initprojects].sort((a, b) => {
         console.log("sortOption : ", sortOption);
         switch (sortOption) {
           case "최신순":
@@ -116,24 +117,49 @@ function ProjectCards() {
       });
       setProjects(sortedProjects);
     }
-    
-  }, [sortOption, initprojects]); 
 
- 
+  }, [sortOption, initprojects]);
+
+
 
   return (
+
     <>
+
+
+      <div style={{ marginLeft: "10%", marginRight: "10%", paddingTop: "50px"}} >
+        <ButtonGroup>
+          <Button
+            color="primary"
+            outline
+            onClick={() => setSortOption("최신순")}
+            active={sortOption === "최신순"}
+          >
+            최신순
+          </Button>
+          <Button
+            color="primary"
+            outline
+            onClick={() => setSortOption("조회순")}
+            active={sortOption === "조회순"}
+          >
+            조회순
+          </Button>
+          <Button
+            color="primary"
+            outline
+            onClick={() => setSortOption("이름순")}
+            active={sortOption === "이름순"}
+          >
+            이름순
+          </Button>
+        </ButtonGroup></div>
       <section
-        className="section bg-secondary pt-4"
-        style={{
-          display: "flex",
-          justifyContent: "center", // 가로 가운데 정렬
-          padding: "0px",
-          maxWidth: "100vw",
-        }}
+        className="section  pt-4"
+
       >
         <div style={{ marginLeft: "10%", marginRight: "10%" }}>
-          <ButtonGroup>
+          {/* <ButtonGroup>
             <Button
               color="primary"
               outline
@@ -158,7 +184,7 @@ function ProjectCards() {
             >
               이름순
             </Button>
-          </ButtonGroup>
+          </ButtonGroup> */}
 
           <Row className="row-grid align-items-center">
 
@@ -177,25 +203,83 @@ function ProjectCards() {
                 >
                   <a href={`/store/${project.id}`}>
                     <OneProjectCard
+                      thumbnail={project.img}
                       name={project.title}
                       price={project.price}
                     />
                   </a>
                 </Col>
               ))}
-              
+
           </Row>
         </div>
       </section>
     </>
   );
 }
+function MyBanner() {
+  return (
+    <>
+      <div className="overlay-header" style={{
+        position: 'absolute', /* 부모 요소 기준으로 위치 지정 */
+        top: '0',
+        left: '0',
+        width: '100%',
+        zIndex: '10', /* 다른 요소 위로 올리기 */
+        backgroundColor: 'rgba(0, 0, 0, 0.0)', /* 반투명 배경 */
+        color: 'white'
+      }}>
 
+        <Banner>
+
+        </Banner>
+
+      </div>
+
+
+
+    </>);
+}
 function Page() {
   return (
     <>
-      <Banner />
-      <Banner_mini />
+      {/* <Banner />
+      <Banner_mini /> */}
+      <NavigationBar />
+
+      <MyBanner></MyBanner>
+
+      <section className="section-profile-cover section-shaped my-0 pb-7">
+        {/* Circles background */}
+        <div className="shape shape-style-1 shape-default alpha-4">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        {/* SVG separator */}
+        <div className="separator separator-bottom separator-skew">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            version="1.1"
+            viewBox="0 0 2560 100"
+            x="0"
+            y="0"
+          >
+            <polygon
+              className="fill-white"
+              points="2560 0 2560 100 0 100"
+            />
+          </svg>
+        </div>
+      </section>
+
+
+
       <main>
         <ProjectCards />
       </main>

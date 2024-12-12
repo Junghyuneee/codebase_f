@@ -185,6 +185,7 @@ function ProjectForm() {
                       placeholder="프로젝트 명"
                       type="text"
                       onChange={(e) => setTitle(e.target.value)}
+                      maxLength={77}
                     />
                   </InputGroup>
                 </div>
@@ -200,7 +201,7 @@ function ProjectForm() {
                       type="text"
                       onChange={(e) => setPrice(e.target.value)}
                       id="price"
-                      min="0"
+                      maxLength={10}
                     />
                     <FormGroup
                       check
@@ -224,6 +225,7 @@ function ProjectForm() {
                     onChange={(e) => setContent(e.target.value)}
                     rows="10"
                     type="textarea"
+                    maxLength={500}
                   />
                 </div>
 

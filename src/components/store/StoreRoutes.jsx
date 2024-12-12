@@ -12,7 +12,7 @@ import Navbar from "@/components/team/Navbar";
 function Admin() {
     return (
         <div>
-             <Navbar/>
+             {/* <Navbar/> */}
 
             <main>
                 <Routes>
