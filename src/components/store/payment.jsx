@@ -15,7 +15,7 @@ export function Page() {
     async function loadItem() {
       const response = await fetch("/api/item") //Cors 설정안해서 ㄴㄴ
       
-      setItem({"id":"shoes","name":"신발","price":1000,"currency":"KRW"}) //이런 형식으로
+      setItem({"id":"shoes","name":"신발","price":1000,"currency":"KRW"}) //item 형태확인
     }
 
     loadItem().catch((error) => console.error(error))
