@@ -17,7 +17,7 @@ function MessageForm({stompClient, chatRoom}) {
 
     const sendMessage = () => {
         stompClient.publish({
-            destination: `/pub/chats/${chatRoom.id}`,
+            destination: `/pub/chats/${chatRoom?.id}`,
             headers: {
                 'Authorization': getAccessToken(),
                 'Content-Type': 'application/json'
@@ -81,12 +81,10 @@ function MessageForm({stompClient, chatRoom}) {
 }
 
 MessageForm.propTypes = {
-    stompClient: PropTypes.shape({
-        publish: PropTypes.func.isRequired,
-    }),
+    stompClient: PropTypes.func,
     chatRoom: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-    }).isRequired,
+        id: PropTypes.number,
+    })
 }
 
 export default MessageForm

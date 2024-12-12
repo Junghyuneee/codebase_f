@@ -6,28 +6,35 @@ import Message from "@/components/chat/MainPanel/Message.jsx";
 import MessageForm from "@/components/chat/Modal/MessageForm.jsx";
 import {getMessages} from "@/api/chat/message.js";
 import {getAccessToken} from "@/api/auth/getset.js";
+import {makeDm} from "@/api/chat/chatroom.js";
 
-const ChatMainModal = ({show, setShow, chatRoom}) => {
+const ChatMainModal = ({show, setShow, member}) => {
     const stompClient = useRef(null);
+    const [chatRoom, setChatRoom] = useState(null);
     const messageEndRef = useRef(null);
     const [messages, setMessages] = useState([]);
 
     const subscribeToChatRoom = useCallback(async () => {
-        if (chatRoom && chatRoom.id && stompClient.current.connected) {
+        await makeDm(member).then(
+            async (chatRoom) => {
+                setChatRoom(chatRoom);
+                if (chatRoom && chatRoom.id && stompClient.current.connected) {
 
-            const response = await getMessages(chatRoom.id);
-            setMessages(response);
+                    const response = await getMessages(chatRoom.id);
+                    setMessages(response);
 
-            console.log('Connected to chat room', chatRoom.id);
-            stompClient.current.subscribe(
-                `/sub/chats/${chatRoom.id}`,
-                (chatMessage) => {
-                    setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
-                },
-                {Authorization: `${getAccessToken()}`}
-            );
-        }
-    }, [chatRoom]);
+                    console.log('Connected to chat room', chatRoom.id);
+                    stompClient.current.subscribe(
+                        `/sub/chats/${chatRoom.id}`,
+                        (chatMessage) => {
+                            setMessages((prevMessages) => [...prevMessages, JSON.parse(chatMessage.body)]);
+                        },
+                        {Authorization: `${getAccessToken()}`}
+                    );
+                }
+            }
+        )
+    }, [member]);
 
     useChatConnect(stompClient, subscribeToChatRoom);
 
@@ -40,9 +47,6 @@ const ChatMainModal = ({show, setShow, chatRoom}) => {
 
     const handleClose = () => {
         setShow(false);
-        if (stompClient.current) {
-            stompClient.current.disconnect();
-        }
     }
 
     const renderMessages = (messages) => (
@@ -58,7 +62,7 @@ const ChatMainModal = ({show, setShow, chatRoom}) => {
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header>
-                <Modal.Title>{chatRoom.title}</Modal.Title>
+                <Modal.Title>{chatRoom?.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div style={{
@@ -76,10 +80,15 @@ const ChatMainModal = ({show, setShow, chatRoom}) => {
                     {renderMessages(messages)}
                     <div ref={messageEndRef}></div>
                 </div>
-                <MessageForm
-                    stompClient={stompClient.current}
-                    chatRoom={chatRoom}
-                />
+                {chatRoom ?
+                    <MessageForm
+                        stompClient={stompClient.current}
+                        chatRoom={chatRoom}
+                    /> :
+                    <div>
+                        No Chatroom found.
+                    </div>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
@@ -87,13 +96,14 @@ const ChatMainModal = ({show, setShow, chatRoom}) => {
                 </Button>
             </Modal.Footer>
         </Modal>
-    );
+    )
+
 }
 
 ChatMainModal.propTypes = {
     show: PropTypes.bool.isRequired,
     setShow: PropTypes.func.isRequired,
-    chatRoom: PropTypes.object,
+    member: PropTypes.string.isRequired,
 }
 
 export default ChatMainModal;

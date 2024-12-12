@@ -4,14 +4,12 @@ import {useEffect, useState} from "react";
 import {getMember} from "@/api/auth/member.js";
 import {useNavigate, useParams} from "react-router-dom";
 import {getEmail} from "@/api/auth/getset.js";
-import {makeDm} from "@/api/chat/chatroom.js";
 import ChatMainModal from "@/components/chat/Modal/ChatMainModal.jsx";
 
 const Profile = () => {
 
     const {id} = useParams();
     const [member, setMember] = useState(null);
-    const [chatRoom, setChatRoom] = useState(null)
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
@@ -25,8 +23,6 @@ const Profile = () => {
 
     const chatToUser = async (e) => {
         e.preventDefault();
-        const response = await makeDm(member.name);
-        setChatRoom(response);
         setShow(true);
     }
 
@@ -142,7 +138,8 @@ const Profile = () => {
                             </Container>
                         </section>
                     </main>
-                    {chatRoom && <ChatMainModal show={show} setShow={setShow} chatRoom={chatRoom}/>}
+                    {/*show를 관리할 state, DM보낼 대상의 이름이 필요해요*/}
+                    {show && <ChatMainModal show={show} setShow={setShow} member={member.name}/>}
                 </> :
                 <div>
                     Loading
