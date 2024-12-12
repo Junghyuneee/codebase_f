@@ -59,7 +59,7 @@ export function getData(url) {
 export function postData(url, data){
 
     const sendToBackend = async () => {
-        console.log(data);
+        //console.log(data);
         try {
           const response = await apiClient.post(
             url,

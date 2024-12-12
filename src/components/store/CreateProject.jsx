@@ -75,9 +75,40 @@ function ProjectForm() {
       alert('제목과 내용을 모두 입력해주세요.');
       return false;
     }
-  
+
     return true;
   }
+
+  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    console.log("file change", file);
+
+    if (!file) {
+      setPreview(""); // 파일이 없으면 미리보기 초기화
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      console.error("Selected file is not an image");
+      setPreview("");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      setPreview(event.target.result); // 파일 내용을 상태로 저장
+    };
+
+    reader.readAsDataURL(file);
+
+    // 리소스 정리
+    return () => reader.abort();
+
+
+  }, [file]);
+
 
   function filevalid() {
     if (file) {
@@ -93,6 +124,8 @@ function ProjectForm() {
     }
 
   }
+
+
 
 
   function submit(event) {
@@ -197,14 +230,14 @@ function ProjectForm() {
 
                 <InputGroup className="input-group-alternative">
 
-                  
-                  
+
+
 
                 </InputGroup>
 
                 <Row xs="2 pb-4">
                   <Col className="">
-                    프로젝트 파일
+                    썸네일
                   </Col>
                   <Col className="">
                     상세 이미지
@@ -213,24 +246,47 @@ function ProjectForm() {
 
                 <Row xs="2 pb-4">
                   <Col className="">
-                  <Input
-                    type="file"
-                    onChange={handleFileChange}
-
-                  />
+                    <Input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="images/*"
+                    />
+                    {/*preview && <img src={preview} alt="Preview" style={{ display: "block", maxWidth: "100%" }} />*/}
+                    {preview && (
+                <div
+                    style={{
+                        maxWidth: "300px",  // 컨테이너의 최대 너비 설정
+                        maxHeight: "300px", // 컨테이너의 최대 높이 설정
+                        overflow: "auto",   // 스크롤바 활성화
+                        border: "1px solid #ccc", // 컨테이너에 테두리 추가
+                        padding: "5px",
+                        marginTop: "10px",
+                    }}
+                >
+                    <img
+                        src={preview}
+                        alt="Preview"
+                        style={{
+                            display: "block",
+                            maxWidth: "100%", // 이미지를 컨테이너 너비에 맞춤
+                            maxHeight: "100%", // 이미지를 컨테이너 높이에 맞춤
+                        }}
+                    />
+                </div>
+            )}
                   </Col>
                   <Col className="">
-                  {/* <Input
+                    {/* <Input
                     type="file"
                     onChange={handleFileChange}
 
                   /> */}
-                  {/*accept=".zip"*/}
+                    {/*accept=".zip"*/}
                   </Col>
                 </Row>
+
+
                 
-                
-                <div>미리보기 영역</div>
 
                 <div>
                   <Button
