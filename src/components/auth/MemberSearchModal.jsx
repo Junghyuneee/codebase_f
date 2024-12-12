@@ -57,7 +57,10 @@ const MemberSearchModal = ({show, setShow, setMember}) => {
                     {members && members.map(member => (
                         <div key={member.id} className="px-3 d-flex align-items-center"
                              style={{gap: ".5rem"}}
-                             onClick={()=>setMember(member)}
+                             onClick={()=> {
+                                 setMember(member)
+                                 setShow(false)
+                             }}
                         >
                             <p className="m-0">{member.name}</p>
                             <p className="m-0">{member.email}</p>
@@ -75,8 +78,9 @@ const MemberSearchModal = ({show, setShow, setMember}) => {
 }
 
 MemberSearchModal.propTypes = {
-    show: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
     setShow: PropTypes.func.isRequired,
+    setMember: PropTypes.func.isRequired,
 }
 
 export default MemberSearchModal;

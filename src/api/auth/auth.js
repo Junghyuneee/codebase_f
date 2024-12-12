@@ -1,5 +1,5 @@
 import apiClient from "@/api/apiClient.js";
-import {getAccessToken, setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
+import {setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
 
 export async function postSignUp(username, password, email, address, postcode, tel) {
     return await apiClient.post('/auth/signup', {
@@ -24,25 +24,32 @@ export async function postOAuthSignUp(email, username, address, postcode, tel) {
 
 export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
+
+    if (!response.data.accessToken || response.data.accessToken === "Invalid password") {
+        localStorage.clear();
+        return false;
+    }
+
     // Save the access token after logging in
-    // console.log(response);
     setAccessToken('Bearer ' + response.data.accessToken);
     setEmail(response.data.email);
     setName(response.data.username);
     setProjectCount(response.data.project_count);
     setMemberId(response.data.member_id);
-    if(getAccessToken() === "Invalid password") {
-        localStorage.clear();
-        return false;
-    }
+
     return true;
 }
 
-export async function postSignOut(){
-    localStorage.clear();
-
-    const response = await apiClient.post("/auth/signout");
-    console.log(response);
+export async function postSignOut() {
+    await apiClient.post("/auth/signout")
+        .then(() => {
+            localStorage.clear();
+            window.location.replace("/");
+        })
+        .catch(() => {
+            localStorage.clear();
+            window.location.replace("/");
+        });
 }
 
 export const kakaoLoginHandler = () => {
@@ -51,4 +58,9 @@ export const kakaoLoginHandler = () => {
 
 export const googleLoginHandler = () => {
     window.location.replace('http://localhost:8080/oauth2/authorization/google');
+}
+
+// 홈페이지 접근시 로그인 됐는지 확인하는 api
+export const isSignined = () => {
+    apiClient.get("/auth");
 }
