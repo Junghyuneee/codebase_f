@@ -255,27 +255,27 @@ function ProjectForm() {
                     />
                     {/*preview && <img src={preview} alt="Preview" style={{ display: "block", maxWidth: "100%" }} />*/}
                     {preview && (
-                <div
-                    style={{
-                        maxWidth: "300px",  // 컨테이너의 최대 너비 설정
-                        maxHeight: "300px", // 컨테이너의 최대 높이 설정
-                        overflow: "auto",   // 스크롤바 활성화
-                        border: "1px solid #ccc", // 컨테이너에 테두리 추가
-                        padding: "5px",
-                        marginTop: "10px",
-                    }}
-                >
-                    <img
-                        src={preview}
-                        alt="Preview"
+                      <div
                         style={{
+                          maxWidth: "300px",  // 컨테이너의 최대 너비 설정
+                          maxHeight: "300px", // 컨테이너의 최대 높이 설정
+                          overflow: "auto",   // 스크롤바 활성화
+                          border: "1px solid #ccc", // 컨테이너에 테두리 추가
+                          padding: "5px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          style={{
                             display: "block",
                             maxWidth: "100%", // 이미지를 컨테이너 너비에 맞춤
                             maxHeight: "100%", // 이미지를 컨테이너 높이에 맞춤
-                        }}
-                    />
-                </div>
-            )}
+                          }}
+                        />
+                      </div>
+                    )}
                   </Col>
                   <Col className="">
                     {/* <Input
@@ -288,7 +288,7 @@ function ProjectForm() {
                 </Row>
 
 
-                
+
 
                 <div>
                   <Button
@@ -316,10 +316,45 @@ function ProjectForm() {
 function Page() {
   return (
     <>
-      <main className="bg-secondary">
+      <main>
+        <section className="section section-lg section-shaped my-0">
+          {/* Circles background */}
+          <div className="shape shape-style-1 shape-default">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          
+          {/* SVG separator */}
+          <div className="separator separator-bottom separator-skew">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              version="1.1"
+              viewBox="0 0 2560 100"
+              x="0"
+              y="0"
+            >
+              <polygon
+                className="fill-white"
+                points="2560 0 2560 100 0 100"
+              />
+            </svg>
+          </div>
+        </section>
         <Banner_mini />
         <Container>{ProjectForm()}</Container>
+        
       </main>
+
+      {/* <main className="bg-secondary">
+        <Banner_mini />
+        <Container>{ProjectForm()}</Container>
+      </main> */}
 
 
     </>

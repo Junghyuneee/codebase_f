@@ -88,6 +88,7 @@ function ProjectCards() {
 
   // 데이터가 로딩 중이 아니고, 에러가 없을 경우
   useEffect(() => {
+ 
     if (data) {
       console.log(data);
       setInitprojects(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
@@ -120,6 +121,10 @@ function ProjectCards() {
 
   }, [sortOption, initprojects]);
 
+  const plusHit = (id) => {
+    console.log("프로젝트 카드 클릭", id);
+    // 여기에 원하는 함수나 추가 동작을 작성
+  };
 
 
   return (
@@ -201,13 +206,13 @@ function ProjectCards() {
                   xl="3"
                   className="p-2"
                 >
-                  <a href={`/store/${project.id}`}>
+                  <Link to={`/store/${project.id}`} onClick={() => plusHit(project.id)}>
                     <OneProjectCard
                       thumbnail={project.img}
                       name={project.title}
                       price={project.price}
                     />
-                  </a>
+                  </Link>
                 </Col>
               ))}
 
@@ -245,7 +250,7 @@ function Page() {
     <>
       {/* <Banner />
       <Banner_mini /> */}
-      <NavigationBar />
+      
 
       <MyBanner></MyBanner>
 
