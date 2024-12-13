@@ -21,7 +21,7 @@ import {
     Row,
 
 } from 'react-bootstrap';
-import isAuthenticated from "@/utils/isAuthenticated.js";
+import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import {postSignOut} from "@/api/auth/auth.js";
 
 const NavigationBar = () => {

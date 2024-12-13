@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import  { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown, Alert } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown, Alert } from "react-bootstrap";
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);

@@ -16,7 +16,7 @@ import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {googleLoginHandler, kakaoLoginHandler, postSignIn} from "@/api/auth/auth.js";
-import isAuthenticated from "@/utils/isAuthenticated.js";
+import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 
 const LoginModal = () => {
     let navigate = useNavigate();
@@ -38,7 +38,12 @@ const LoginModal = () => {
         } else {
             alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
         }
+    }
 
+    const onKeyDown = async (e) => {
+        if(e.key === "Enter") {
+            handleSignin();
+        }
     }
 
     return (
@@ -118,6 +123,7 @@ const LoginModal = () => {
                                                     type="password"
                                                     autoComplete="off"
                                                     value={password}
+                                                    onKeyDown={onKeyDown}
                                                     onChange={(e) => setPassword(e.target.value)}
                                                 />
                                             </InputGroup>

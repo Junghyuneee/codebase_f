@@ -59,7 +59,7 @@ function TeamCreationModal({
           <FormGroup>
             <Label className="h5 mb-3">카테고리 선택</Label>
             <div className="d-flex flex-wrap">
-              {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js'].map((category) => (
+              {['Java', 'Python', 'JavaScript', 'React', 'Spring', 'Node.js', 'Vue.js', 'Angular', 'TypeScript', 'PHP'].map((category) => (
                 <div key={category} className="custom-category-checkbox mb-3 mr-3">
                   <Input
                     type="checkbox"

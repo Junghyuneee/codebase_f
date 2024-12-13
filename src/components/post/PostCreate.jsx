@@ -1,7 +1,7 @@
 // src/pages/post/PostCreate.jsx
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Container, Alert } from 'react-bootstrap';
+import { Button, Form, Container, Alert } from "react-bootstrap";
 import './PostCreate.css'; // CSS 파일 import
 
 const PostCreate = () => {
