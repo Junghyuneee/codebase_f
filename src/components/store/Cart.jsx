@@ -33,9 +33,27 @@ import {
     Nav,
 } from "reactstrap";
 
+import { useFetch } from "@/components/store/storeAPI";
 import Banner from "./Banner_mini";
 function Page() {
 
+    const { data, loading, error } = useFetch("/api/cart/my");
+      const [cartItems, setCartItems] = useState([]); // 다른 상태를 위한 setItem
+    
+
+    
+      // 데이터가 로딩 중이 아니고, 에러가 없을 경우
+      useEffect(() => {
+        if (data) {
+          console.log(data);
+          setCartItems(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
+
+        }
+      }, [data]); // data가 변경될 때마다 실행
+    
+      
+    
+    
 
     const sampleCI = [
         { id: 1, cart_id: 4, name: '브리츠 노이즈 캔슬링 블루투스 헤드폰', price: 10000, project_id: 13, username: '먀먀먀' },
@@ -62,13 +80,13 @@ function Page() {
 
 
                             {/* <CartItem /> */}
-                            {CartItem(sampleCI)}
+                            {CartItem(cartItems)}
 
                         </Col>
                         <Col lg="4">
 
 
-                            {Invoice(sampleCI)}
+                            {Invoice(cartItems)}
 
 
                         </Col>
@@ -150,7 +168,7 @@ function CartItem(CartItem) {
                 //      <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
                 // </Col>
 
-                <a href={`/store/project/${item.project_id}`}>
+                <a href={`/store/${item.project_id}`}>
                 <Card className='card shadow'>
 
                     <div className='p-2'>
@@ -170,7 +188,7 @@ function CartItem(CartItem) {
                             <Col xs="5" sm="5" lg="6" xl="6">
                                 <div>
                                     <span className="d-block text-uppercase font-weight-bold">
-                                        {item.name}
+                                        {item.title}
                                     </span>
 
                                 </div>

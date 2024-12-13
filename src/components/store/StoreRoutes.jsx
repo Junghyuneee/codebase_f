@@ -9,10 +9,11 @@ import StoreTest from "./Test"
 import StoreAdd from "./CreateProject";
 import StoreDetail from "./ProjectDetail.jsx";
 import Navbar from "@/components/team/Navbar";
+import NavigationBar from "@/components/Navbars/NavigationBar";
 function Admin() {
     return (
         <div>
-             {/* <Navbar/> */}
+             <NavigationBar />
 
             <main>
                 <Routes>

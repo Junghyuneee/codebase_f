@@ -51,7 +51,7 @@ export function ProjectCard({ project }) {
 
                 <Card className="card-profile shadow">
                     <div className="px-4">
-                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover'}}
+                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
                             alt="..."
                             src={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}
                             top
@@ -102,21 +102,21 @@ function ProjectExplain({ project }) {
         formData.append("title", project.title);
         formData.append("price", project.price);
         formData.append("project_id", project.id);
-    
-        postData(`/cart/add`, formData);
+
+        postData(`/api/cart/add`, formData);
 
     }
     function deleteCartItem(project) {
-        postData(`/cart/delete/${project.id}`,);
+        postData(`/api/cart/delete/${project.id}`,);
     }
     // 상태를 토글하는 함수
     const toggleCart = () => {
-        if(inCart){
+        if (inCart) {
             //DB 삭제요청
             deleteCartItem(project);
 
         }
-        else{
+        else {
             addCartItem(project);
         }
 
@@ -128,17 +128,17 @@ function ProjectExplain({ project }) {
         console.log(inCart);
     }, [inCart]);
 
+    const { data, loading, error } = useFetch(`/api/cart/ciexist/${project.id}`);
 
-    const { data, loading, error } = useFetch(`/cart/ciexist/${project.id}`);
 
     useEffect(() => {
-        if(data){
-            console.log("카트에 존재함");
+        if (data) {
+            //console.log("카트에 존재함");
             setInCart(true);
         }
     }, [data]);
 
-    
+
 
 
 
@@ -175,7 +175,7 @@ function ProjectExplain({ project }) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-                            
+
                                 {/* {existCart(project.id) &&
                                     <h2>
                                         <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
@@ -322,7 +322,6 @@ function Page() {
     //console.log("id ", id);
 
     id = parseInt(id, 10);
-
 
     const { data, loading, error } = useFetch(`/api/store/${id}`);
     useEffect(() => {
