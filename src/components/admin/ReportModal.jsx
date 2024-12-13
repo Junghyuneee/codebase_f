@@ -67,9 +67,12 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                 <FaExclamationTriangle /> 신고
             </Button>
             {isModalOpen && (
-                <Modal isOpen={isModalOpen}>
-                    <ModalHeader>신고 하기</ModalHeader>
-                    <ModalBody>
+                <Modal className="modal-sm" isOpen={isModalOpen}>
+                    <ModalHeader className="flex-row">
+                        <span style={{ fontWeight: 'bold'}}>{categoryTitle}</span>
+                        <span> 신고 하기</span>
+                    </ModalHeader>
+                    <ModalBody style={{padding: '20px'}}>
                         <FormGroup>
                             <FormCheck
                                 type="radio"
@@ -118,9 +121,13 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                             />
                         </FormGroup>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={closeModal}>닫기</Button>
-                        <Button onClick={handleReport}>신고</Button>
+                    <ModalFooter style={{padding: '10px'}}>
+                        <Button className="btn-outline-default text-default"
+                                style={{backgroundColor: 'white'}}
+                                onClick={closeModal}>닫기</Button>
+                        <Button className="btn-outline-danger text-danger"
+                                style={{backgroundColor: 'white'}}
+                                onClick={handleReport}>신고</Button>
                     </ModalFooter>
                 </Modal>
             )}
