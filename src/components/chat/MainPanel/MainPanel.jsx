@@ -111,12 +111,15 @@ const MainPanel = () => {
             {chatRoom && <MessageHeader/>}
             <div style={{
                 width: '100%',
-                height: '30rem',
+                minHeight: '20rem',
+                maxHeight: '30rem',
                 border: '.2rem solid #ececec',
                 borderRadius: '4px',
                 padding: '1rem',
                 marginBottom: '1rem',
-                overflowY: 'auto'
+                overflowY: 'auto',
+                scrollbarWidth: "thin",
+                scrollbarColor:'#ccc #f9f9f9'
             }}>
                 {/*{searchTerm ?*/}
                 {/*    this.renderMessages(searchResults)*/}

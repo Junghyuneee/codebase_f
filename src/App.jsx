@@ -20,6 +20,8 @@ import OauthCallbackPage from "@/components/auth/OauthCallbackPage.jsx";
 import Review from './components/review/Review.jsx';
 import Post from './components/post/Post.jsx';
 import ChatPage from "@/pages/chat/ChatPage.jsx";
+import Profile from "@/pages/member/Profile.jsx";
+import ChangeInfo from "@/pages/member/ChangeInfo.jsx";
 
 
 function App() {
@@ -40,6 +42,9 @@ function App() {
             <Route path="/review/*" exact element={<Review/>}/>
             <Route path="/oauth" element={<OauthCallbackPage/>}/>
             <Route path="/post/*" element={<Post/>}/>
+
+            <Route path="/profile/:id?" element={<Profile/>}/>
+            <Route path={"/changeinfo"} element={<ChangeInfo/>}/>
 
             <Route path="/chat" element={<ChatPage/>}/>
         </Routes>
