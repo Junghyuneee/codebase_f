@@ -3,10 +3,9 @@
 2024 11 18
 */
 import React, {useEffect, useState} from 'react';
-import { Table, Button } from 'reactstrap';
 import axios from "axios"
 
-import './Admin.css'; // CSS 파일 가져오기
+import './Admin.css';
 
 const MemberManagement = () => {
     const [members, setMembers] = useState([]);
@@ -19,23 +18,22 @@ const MemberManagement = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchMembers = async (currentPage) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/manage/member`,
+                {params: { page: currentPage, size: pageSize }});
+            setMembers(response.data.data);
+            setCurrentPage(response.data.currentPage);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error("데이터 로드 실패:", error);
+            setError("회원 데이터를 불러오는 데 실패했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchMembers = async (currentPage) => {
-
-            try {
-                const response = await axios.get(`http://localhost:8080/manage/member`,
-                    {params: { page: currentPage, size: pageSize }});
-                setMembers(response.data.data);
-                setCurrentPage(response.data.currentPage);
-                setTotalPages(response.data.totalPages);
-            } catch (error) {
-                console.error("데이터 로드 실패:", error);
-                setError("회원 데이터를 불러오는 데 실패했습니다.");
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchMembers(currentPage);
     }, [currentPage]);
 
@@ -46,6 +44,21 @@ const MemberManagement = () => {
     };
 
     // 멤버 권한 변경 구현
+    const changeRole = async (memberId) => {
+        const userResponse = confirm("멤버 권한 변경을 진행하시겠습니까?");
+
+        if (userResponse) {
+            try {
+                const response = await axios.post(`http://localhost:8080/manage/changeMemberRole/${memberId}`);
+                alert("'" + response.data.memberName + "' " + response.data.message);
+                await fetchMembers();
+            } catch (error) {
+                console.error("Error changing member role:", error);
+                alert("권한 변경 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            }
+        }
+    };
+
 
     if (loading) return <p>로딩 중...</p>;
     if (error) return <p>{error}</p>;
@@ -75,7 +88,9 @@ const MemberManagement = () => {
                                 : "admin"}
                         </td>
                         <td className="border-left">
-                            <button onClick={(e) => e.preventDefault()}>권한 변경</button>
+                            <button
+                                onClick={() => changeRole(member.id)}
+                            >권한 변경</button>
                         </td>
                     </tr>
                 ))}
