@@ -37,23 +37,26 @@ import { useFetch } from "@/components/store/storeAPI";
 import Banner from "./Banner_mini";
 function Page() {
 
-    const { data, loading, error } = useFetch("/api/cart/my");
-      const [cartItems, setCartItems] = useState([]); // 다른 상태를 위한 setItem
-    
 
-    
-      // 데이터가 로딩 중이 아니고, 에러가 없을 경우
-      useEffect(() => {
+
+    const { data, loading, error } = useFetch("/api/cart/my");
+    const [cartItems, setCartItems] = useState([]); // 다른 상태를 위한 setItem
+    const [page, setPage] = useState(0);
+    history.pushState(null, '', `?page=${page}`);
+
+
+    // 데이터가 로딩 중이 아니고, 에러가 없을 경우
+    useEffect(() => {
         if (data) {
-          console.log(data);
-          setCartItems(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
+            console.log(data);
+            setCartItems(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
 
         }
-      }, [data]); // data가 변경될 때마다 실행
-    
-      
-    
-    
+    }, [data]); // data가 변경될 때마다 실행
+
+
+
+
 
     const sampleCI = [
         { id: 1, cart_id: 4, name: '브리츠 노이즈 캔슬링 블루투스 헤드폰', price: 10000, project_id: 13, username: '먀먀먀' },
@@ -90,6 +93,8 @@ function Page() {
 
 
                         </Col>
+
+                        
                     </Row>
                 </Container>
 
@@ -169,52 +174,52 @@ function CartItem(CartItem) {
                 // </Col>
 
                 <a href={`/store/${item.project_id}`}>
-                <Card className='card shadow'>
+                    <Card className='card shadow'>
 
-                    <div className='p-2'>
+                        <div className='p-2'>
 
-                        <Row className="align-items-center py-2" >
-                            {/* Thumbnail */}
-                            <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
-                                <img
-                                    alt="Thumbnail"
-                                    className="img-fluid rounded"
-                                    src={Thumbnail}
-                                    style={{ width: "120px", height: "auto" }}
-                                />
-                            </Col>
+                            <Row className="align-items-center py-2" >
+                                {/* Thumbnail */}
+                                <Col xs="3" sm="3" lg="2" xl="2" className="text-center">
+                                    <img
+                                        alt="Thumbnail"
+                                        className="img-fluid rounded"
+                                        src={Thumbnail}
+                                        style={{ width: "120px", height: "auto" }}
+                                    />
+                                </Col>
 
-                            {/* Title/Description */}
-                            <Col xs="5" sm="5" lg="6" xl="6">
-                                <div>
-                                    <span className="d-block text-uppercase font-weight-bold">
-                                        {item.title}
-                                    </span>
+                                {/* Title/Description */}
+                                <Col xs="5" sm="5" lg="6" xl="6">
+                                    <div>
+                                        <span className="d-block text-uppercase font-weight-bold">
+                                            {item.title}
+                                        </span>
 
-                                </div>
-                            </Col>
+                                    </div>
+                                </Col>
 
-                            {/* Value */}
-                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                                <small className="d-block text-uppercase font-weight-bold mt-3">
-                                    {item.price}원
-                                </small>
-                            </Col>
+                                {/* Value */}
+                                <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                                    <small className="d-block text-uppercase font-weight-bold mt-3">
+                                        {item.price}원
+                                    </small>
+                                </Col>
 
-                            {/* Remove Button */}
-                            <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                                <Button className="text-danger" size="sm">
-                                    <i className="fa fa-trash" aria-hidden="true">{item.id}삭제</i>
-                                </Button>
-                            </Col>
-                        </Row>
-
-
+                                {/* Remove Button */}
+                                <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
+                                    <Button className="text-danger" size="sm">
+                                        <i className="fa fa-trash" aria-hidden="true">{item.id}삭제</i>
+                                    </Button>
+                                </Col>
+                            </Row>
 
 
-                    </div>
 
-                </Card>
+
+                        </div>
+
+                    </Card>
                 </a>
 
 
@@ -231,7 +236,7 @@ function CartItem(CartItem) {
 
 function Invoice(CartItem) {
     var total = 0;
-    CartItem.forEach( function(item){
+    CartItem.forEach(function (item) {
         total = total + item.price;
     });
 
@@ -270,3 +275,4 @@ function Invoice(CartItem) {
     </>);
 
 }
+
