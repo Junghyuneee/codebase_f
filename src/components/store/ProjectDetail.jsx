@@ -271,8 +271,7 @@ function ProjectExplain({ project }) {
                                     category={0}
                                     categoryId={project.id}
                                     categoryTitle={project.title}
-                                    //memberId={0}//은즤..이거봐쥬.... 이거필요해?? 난 상관없엉
-                                    memberName={""}
+                                    // 필요없어서 지울게~~~~~
                                     style={{
                                         width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
                                     }} // 여기 스타일 지정하면 신고 버튼에 적용 가능

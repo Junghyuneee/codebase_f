@@ -25,3 +25,8 @@ export const leaveChatroom = async (id) => {
 export const exitChatroom = (id) => {
     apiClient.get(`/chats/exit/${id}`);
 }
+
+export const makeDm = async (id) => {
+    const response = await apiClient.get(`/chats/find/${id}`);
+    return response.data;
+}

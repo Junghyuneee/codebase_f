@@ -78,7 +78,7 @@ const Teamdetail = () => {
             <div className="project-description">
             <div className="project-photo">
               <img 
-                src={`https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`} 
+                src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${team.pjtimg}`}
                 alt={team.pjtname || "프로젝트 이미지"} 
               />
             </div>

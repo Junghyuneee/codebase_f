@@ -9,7 +9,7 @@ import {FaExclamationTriangle} from "react-icons/fa";
 import axios from "axios";
 import {getMemberId} from "@/api/auth/getset.js";
 
-const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) => {
+const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
     const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 정의
 
@@ -38,7 +38,6 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
                 memberId: getMemberId(),
-                // memberName: memberName,
                 content: selectedContent
                 // 전송할 데이터를 JSON 형식으로 작성
             });
@@ -67,9 +66,12 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                 <FaExclamationTriangle /> 신고
             </Button>
             {isModalOpen && (
-                <Modal isOpen={isModalOpen}>
-                    <ModalHeader>신고 하기</ModalHeader>
-                    <ModalBody>
+                <Modal className="modal-sm" isOpen={isModalOpen}>
+                    <ModalHeader className="flex-row">
+                        <span style={{ fontWeight: 'bold'}}>{categoryTitle}</span>
+                        <span> 신고 하기</span>
+                    </ModalHeader>
+                    <ModalBody style={{padding: '20px'}}>
                         <FormGroup>
                             <FormCheck
                                 type="radio"
@@ -118,9 +120,13 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                             />
                         </FormGroup>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button onClick={closeModal}>닫기</Button>
-                        <Button onClick={handleReport}>신고</Button>
+                    <ModalFooter style={{padding: '10px'}}>
+                        <Button className="btn-outline-default text-default"
+                                style={{backgroundColor: 'white'}}
+                                onClick={closeModal}>닫기</Button>
+                        <Button className="btn-outline-danger text-danger"
+                                style={{backgroundColor: 'white'}}
+                                onClick={handleReport}>신고</Button>
                     </ModalFooter>
                 </Modal>
             )}
