@@ -82,6 +82,11 @@ export const emailCodeCheck = async (param, code) => {
 }
 
 export const updateProfile = async (data) => {
-    const response = await apiClient.post("/auth/update", data);
+    const response = await apiClient.post("/auth/update/profile", data);
+    return response.data;
+}
+
+export const updatePassword = async (data) => {
+    const response = await apiClient.post("/auth/update/password", data);
     return response.data;
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getAccessToken, setAccessToken} from "@/api/auth/getset.js";
+import { getAccessToken, setAccessToken } from "@/api/auth/getset.js";
 
 const apiClient = axios.create({
     baseURL: `http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`,
@@ -8,12 +8,12 @@ const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use(config => {
-        const token = getAccessToken();
-        if (token && token.startsWith("Bearer ")) {
-            config.headers.Authorization = `${token}`;
-        }
-        return config;
-    },
+    const token = getAccessToken();
+    if (token && token.startsWith("Bearer ")) {
+        config.headers.Authorization = `${token}`;
+    }
+    return config;
+},
     error => {
         return Promise.reject(error);
     }
@@ -24,10 +24,10 @@ apiClient.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 500)) {
+        if (error.response && (error.response.status === 401)) {
             try {
                 console.log("Refreshing token...");
-                const refreshResponse = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}`+"/auth/refresh", {}, {
+                const refreshResponse = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}` + "/auth/refresh", {}, {
                     withCredentials: true, // Ensure the refresh token (cookie) is sent
                 });
                 const newToken = refreshResponse.data.accessToken;

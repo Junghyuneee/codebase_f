@@ -80,14 +80,24 @@ const Profile = () => {
                                             lg="4"
                                         >
                                             <div className="card-profile-actions py-4 mt-lg-0">
-                                                {member.email === getEmail() ? <Button
-                                                    className="mr-4"
-                                                    color="info"
-                                                    onClick={() => navigate("/changeinfo")}
-                                                    size="sm"
-                                                >
-                                                    정보수정
-                                                </Button>
+                                                {member.email === getEmail() ? <>
+                                                    <Button
+                                                        className="mr-4"
+                                                        color="info"
+                                                        onClick={() => navigate("/changeinfo")}
+                                                        size="sm"
+                                                    >
+                                                        정보수정
+                                                    </Button>
+                                                    <Button
+                                                        className="mr-4"
+                                                        color="info"
+                                                        onClick={() => navigate("/changepwd")}
+                                                        size="sm"
+                                                    >
+                                                        비밀번호 변경
+                                                    </Button>
+                                                </>
                                                     :
                                                     <Button
                                                         className="float-right"
@@ -123,6 +133,10 @@ const Profile = () => {
                                         <div className="h6 font-weight-300">
                                             <i className="ni location_pin mr-2" />
                                             {member.email}
+                                        </div>
+                                        <div className="h6 font-weight-300">
+                                            <i className="ni location_pin mr-2" />
+                                            {member.tel}
                                         </div>
                                         <div className="h6 mt-4">
                                             <i className="ni business_briefcase-24 mr-2" />
