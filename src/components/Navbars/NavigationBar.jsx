@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Headroom from 'headroom.js';
 
 import logoWhite from '../../assets/img/brand/argon-react-white.png';
@@ -22,7 +22,7 @@ import {
 
 } from 'react-bootstrap';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
-import {postSignOut} from "@/api/auth/auth.js";
+import { postSignOut } from "@/api/auth/auth.js";
 
 const NavigationBar = () => {
     const [collapseClasses, setCollapseClasses] = useState('');
@@ -57,13 +57,13 @@ const NavigationBar = () => {
                 >
                     <Container>
                         <Navbar.Brand
-                            style={{cursor:"pointer"}} className="mr-lg-5"
-                            onClick={()=>{navigate("/")}}
+                            style={{ cursor: "pointer" }} className="mr-lg-5"
+                            onClick={() => { navigate("/") }}
                         >
-                            <img alt="..." src={logoWhite}/>
+                            <img alt="..." src={logoWhite} />
                         </Navbar.Brand>
                         <button className="navbar-toggler" id="navbar_global">
-                            <span className="navbar-toggler-icon"/>
+                            <span className="navbar-toggler-icon" />
                         </button>
                         <UncontrolledCollapse
                             toggler="#navbar_global"
@@ -76,13 +76,13 @@ const NavigationBar = () => {
                                 <Row>
                                     <Col className="collapse-brand" xs="6">
                                         <Link to="/">
-                                            <img alt="..." src={logo}/>
+                                            <img alt="..." src={logo} />
                                         </Link>
                                     </Col>
                                     <Col className="collapse-close" xs="6">
                                         <button className="navbar-toggler" id="navbar_global">
-                                            <span/>
-                                            <span/>
+                                            <span />
+                                            <span />
                                         </button>
                                     </Col>
                                 </Row>
@@ -90,24 +90,24 @@ const NavigationBar = () => {
                             <Nav className="navbar-nav-hover align-items-lg-center" navbar>
                                 <UncontrolledDropdown nav>
                                     <DropdownToggle nav>
-                                        <i className="ni ni-collection d-lg-none mr-1"/>
+                                        <i className="ni ni-collection d-lg-none mr-1" />
                                         <span className="nav-link-inner--text">Examples</span>
                                     </DropdownToggle>
                                     <DropdownMenu>
                                         <DropdownItem to="/team" tag={Link}>
-                                            <i className="ni ni-single-02 mr-2"/>
+                                            <i className="ni ni-single-02 mr-2" />
                                             팀 소개
                                         </DropdownItem>
                                         <DropdownItem to="/projects" tag={Link}>
-                                            <i className="ni ni-building mr-2"/>
+                                            <i className="ni ni-building mr-2" />
                                             프로젝트
                                         </DropdownItem>
                                         <DropdownItem to="/contact" tag={Link}>
-                                            <i className="ni ni-email-83 mr-2"/>
+                                            <i className="ni ni-email-83 mr-2" />
                                             문의하기
                                         </DropdownItem>
                                         <DropdownItem to="/about" tag={Link}>
-                                            <i className="ni ni-collection mr-2"/>
+                                            <i className="ni ni-collection mr-2" />
                                             회사 소개
                                         </DropdownItem>
                                     </DropdownMenu>
@@ -115,31 +115,26 @@ const NavigationBar = () => {
                             </Nav>
                             <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto" navbar>
                                 {isLogin ?
-                                    <><Nav.Item>
-                                        <Nav.Link className={"nav-link-icon pointer"}
-                                                  onClick={()=>navigate("/profile")}>
-                                            마이페이지
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                        <Nav.Item>
-                                        <Nav.Link className={"nav-link-icon pointer"}
-                                                  onClick={postSignOut}
-                                        >
-                                            로그아웃
-                                        </Nav.Link>
-                                    </Nav.Item></> :
                                     <>
                                         <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"}
-                                                      onClick={() => navigate('/login')}
-                                            >
+                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate("/profile")}>
+                                                마이페이지
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link className={"nav-link-icon pointer"} onClick={postSignOut}>
+                                                로그아웃
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    </> :
+                                    <>
+                                        <Nav.Item>
+                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate('/login')}>
                                                 로그인
                                             </Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"}
-                                                      onClick={() => navigate('/register')}
-                                            >
+                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate('/register')}>
                                                 회원가입
                                             </Nav.Link>
                                         </Nav.Item>
