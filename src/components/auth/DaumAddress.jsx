@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { memo } from "react";
 
-function Postcode({ setAddress, setPostCode }) {
+function Postcode({ setAddress, setPostCode, buttonName = "주소 찾기" }) {
     const open = useDaumPostcodePopup('https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js');
 
     const handleComplete = (data) => {
@@ -32,7 +32,7 @@ function Postcode({ setAddress, setPostCode }) {
 
     return (
         <Button className="bg-mainTheme text-nowrap" type='button' onClick={handleClick}>
-            주소 찾기
+            {buttonName}
         </Button>
     );
 };
@@ -40,6 +40,7 @@ function Postcode({ setAddress, setPostCode }) {
 Postcode.propTypes = {
     setAddress: PropTypes.func.isRequired,
     setPostCode: PropTypes.func.isRequired,
+    buttonName: PropTypes.string
 }
 
 export default memo(Postcode);

@@ -151,7 +151,7 @@ const RegisterModal = () => {
               style={{ cursor: "pointer" }}
               onClick={() => navigate("/login")}
             >
-              <small>회원가입 하러가기</small>
+              <small>로그인 하러가기</small>
             </a>
           </div>
         </div>

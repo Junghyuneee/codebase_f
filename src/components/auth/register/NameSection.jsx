@@ -4,7 +4,7 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import PropTypes from 'prop-types';
 import { nameCheck } from "@/api/auth/auth.js";
 
-const NameSection = ({ register, errors, watch, trigger }) => {
+const NameSection = ({ register, errors, watch, trigger, initialValue }) => {
   const [nameCheckResult, setNameCheckResult] = useState(false);
 
   const handleNameCheck = async () => {
@@ -53,7 +53,7 @@ const NameSection = ({ register, errors, watch, trigger }) => {
               },
               validate: {
                 checkDuplicate: () => {
-                  if (nameCheckResult === true) return true;
+                  if (nameCheckResult === true || initialValue === watch("username")) return true;
                   return "이름 중복확인을 해주세요.";
                 }
               }
@@ -64,6 +64,7 @@ const NameSection = ({ register, errors, watch, trigger }) => {
           className={"bg-mainTheme text-nowrap"}
           type={"button"}
           onClick={handleNameCheck}
+          disabled={initialValue === watch("username")}
         >
           중복확인
         </Button>
@@ -81,7 +82,8 @@ NameSection.propTypes = {
   register: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
   watch: PropTypes.func.isRequired,
-  trigger: PropTypes.func.isRequired
+  trigger: PropTypes.func.isRequired,
+  initialValue: PropTypes.string
 };
 
 export default NameSection;
