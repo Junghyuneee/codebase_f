@@ -34,7 +34,7 @@ const chatRoomListReducer = (state, action) => {
     }
 }
 
-export const chatRoomReducer = (state, action) => {
+const chatRoomReducer = (state, action) => {
     switch (action.type) {
         case 'LEAVE':
             return null;
@@ -43,7 +43,7 @@ export const chatRoomReducer = (state, action) => {
     }
 }
 
-const MemberManagement = () => {
+const Questions = () => {
 
     const [chatRoomList, chatRoomListDispatch] = useReducer(chatRoomListReducer, []);
     const [currentChatRoom, chatRoomDispatch] = useReducer(chatRoomReducer, null);
@@ -127,7 +127,6 @@ const MemberManagement = () => {
 
     return (
         <div className="container">
-            <h3 className="mb-3 text-center">문의 사항 관리 페이지</h3>
             {stompClient.current &&
                     <ChatRoomContext.Provider value={{chatRoomList, currentChatRoom}}>
                         <ChatRoomDispatchContext.Provider value={{onCreate, onUpdate, onDelete, onSelect, onLeave}}>
@@ -160,4 +159,4 @@ const MemberManagement = () => {
     );
 };
 
-export default MemberManagement;
+export default Questions;
