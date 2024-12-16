@@ -39,11 +39,11 @@ function Page() {
 
 
 
-    const { data, loading, error } = useFetch("/api/cart/my");
+    
     const [cartItems, setCartItems] = useState([]); // 다른 상태를 위한 setItem
-    const [page, setPage] = useState(0);
-    history.pushState(null, '', `?page=${page}`);
-
+    //const [page, setPage] = useState(0);
+    //history.pushState(null, '', `?page=${page}`);
+    const { data, loading, error } = useFetch(`/api/cart/my`);
 
     // 데이터가 로딩 중이 아니고, 에러가 없을 경우
     useEffect(() => {

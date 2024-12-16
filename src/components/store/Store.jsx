@@ -13,6 +13,7 @@ import Banner_mini from "@/components/store/Banner_mini";
 import img from "@/assets/img/theme/img-1-1200x1000.jpg";
 import { getData, useFetch } from "@/components/store/storeAPI";
 import NavigationBar from "@/components/Navbars/NavigationBar";
+import Pagination from 'react-bootstrap/Pagination';
 import {
   Button,
   Card,
@@ -32,6 +33,7 @@ import {
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
+
 } from "reactstrap";
 import classNames from "classnames";
 
@@ -246,6 +248,9 @@ function MyBanner() {
     </>);
 }
 function Page() {
+
+  history.pushState(null,'',`?page=0&sort=recently`)
+
   return (
     <>
       {/* <Banner />
@@ -287,6 +292,7 @@ function Page() {
 
       <main>
         <ProjectCards />
+        <Container><Pageable/></Container>
       </main>
       <br />
       <br />
@@ -299,8 +305,35 @@ function Page() {
       <br />
       <br />
       <br />
+
+
     </>
   );
 }
 
 export default Page;
+
+
+
+function Pageable(){
+  
+  return (
+    <>
+      <Pagination>
+
+      <Pagination.Prev />
+
+      <Pagination.Item>{10}</Pagination.Item>
+      <Pagination.Item>{11}</Pagination.Item>
+      <Pagination.Item active>{1}</Pagination.Item>
+      <Pagination.Item>{13}</Pagination.Item>
+      <Pagination.Item disabled>{14}</Pagination.Item>
+
+      <Pagination.Next />
+
+    </Pagination>
+
+    
+    </>
+  );
+}
