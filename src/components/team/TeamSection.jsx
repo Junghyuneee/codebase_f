@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Container,
@@ -20,6 +20,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
 import isAuthenticated from "@/utils/isAuthenticated.js";
+import PropTypes from 'prop-types';
 
 
 function TeamSection({ projects, currentPage, totalPages, onPageChange, currentMemberId }) {
@@ -51,7 +52,7 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
     }
   };
 
-  const renderDeleteButton = (projectMemberId) => {
+  const renderDeleteButton = (projectMemberId, team) => {
     // 디버깅을 위한 로그 추가
     console.log('Current Member ID:', currentMemberId);
     console.log('Project Member ID:', projectMemberId);
@@ -77,6 +78,33 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
     }
     
     return null;
+  };
+
+  // 페이지네이션 부분만 수정
+  const renderPagination = () => {
+    // projects 배열이 없거나 비어있으면 페이지네이션을 표시하지 않음
+    if (!projects || projects.length === 0) {
+      return null;
+    }
+
+    return (
+      <Container className="mt-4">
+        <Pagination className="d-flex justify-content-center">
+          {[...Array(totalPages)].map((_, i) => (
+            <PaginationItem 
+              key={i} 
+              active={currentPage === i + 1}
+              // projects가 없거나 필터링으로 인해 데이터가 없는 페이지는 비활성화
+              disabled={!projects || projects.length === 0}
+            >
+              <PaginationLink onClick={() => onPageChange(i + 1)}>
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        </Pagination>
+      </Container>
+    );
   };
 
   return (
@@ -128,7 +156,7 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
                         >
                           자세히 보기
                         </Button>
-                        {renderDeleteButton(team.memberId)}
+                        {renderDeleteButton(team.memberId, team)}
                       </div>
                     </CardBody>
                   </Card>
@@ -139,20 +167,8 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
         </Row>
       </Container>
 
-      {/* ���이지네이션 */}
-      {totalPages > 1 && (
-        <Container className="mt-4">
-          <Pagination className="d-flex justify-content-center">
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i} active={currentPage === i + 1}>
-                <PaginationLink onClick={() => onPageChange(i + 1)}>
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </Pagination>
-        </Container>
-      )}
+      {/* 수정된 페이지네이션 렌더링 */}
+      {renderPagination()}
 
       {/* Modal */}
       <Modal isOpen={modal} toggle={() => toggleModal(null)} size="lg">
@@ -212,5 +228,12 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
   );
 }
 
+TeamSection.propTypes = {
+  projects: PropTypes.array,
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
+  onPageChange: PropTypes.func,
+  currentMemberId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
 
 export default TeamSection;

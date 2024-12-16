@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Modal,
   ModalHeader,
@@ -114,5 +114,19 @@ function TeamCreationModal({
     </Modal>
   );
 }
+
+TeamCreationModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  toggle: PropTypes.func.isRequired,
+  formData: PropTypes.shape({
+    pjtname: PropTypes.string,
+    pjtdescription: PropTypes.string,
+    pjcategory: PropTypes.string,
+    deadline: PropTypes.string
+  }).isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleFileChange: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
+};
 
 export default TeamCreationModal; 

@@ -1,7 +1,7 @@
 /*!
 서승환 2024 11 01
 */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 axios.defaults.baseURL = 'http://localhost:8080';
 import {
@@ -41,7 +41,6 @@ const CATEGORIES = [
 
 function Team() {
   const navigate = useNavigate();
-  const [searchFocused, setSearchFocused] = useState(false);
   const [modal, setModal] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [formData, setFormData] = useState({
@@ -56,8 +55,18 @@ function Team() {
   const [projects, setProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentMemberId, setCurrentMemberId] = useState(null);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('/api/projectteams');
+      if (response.status === 200) {
+        setProjects(response.data);
+      }
+    } catch (error) {
+      console.error('프로젝트 목록 조회 중 오류 발생:', error);
+    }
+  };
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -112,36 +121,35 @@ function Team() {
   };
 
   const filteredProjects = projects?.filter(project => {
-    const matchesSearch = 
+    const matchesSearch = searchTerm === '' || (
       project?.pjtname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project?.pjcategory?.toLowerCase().includes(searchTerm.toLowerCase());
+      project?.pjtdescription?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     
     const projectCategories = project?.pjcategory?.split(',').map(cat => cat.trim()) || [];
-    
     const matchesCategories = 
       selectedCategories.length === 0 ||
-      selectedCategories.some(category => 
+      selectedCategories.every(category =>
         projectCategories.includes(category)
       );
 
     return matchesSearch && matchesCategories;
   }) || [];
 
-  const fetchProjects = async () => {
-    try {
-      const response = await axios.get('/api/projectteams');
-      const projectData = Array.isArray(response.data) ? response.data : response.data.content;
-      setProjects(projectData);
-      setTotalPages(Math.ceil(projectData.length / 6));
-    } catch (error) {
-      console.error('Failed to fetch projects:', error);
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    const newTotalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+    setTotalPages(newTotalPages);
+    
+    if (currentPage >= newTotalPages) {
+      setCurrentPage(0);
     }
-  };
+  }, [currentPage, filteredProjects.length]);
 
   const getCurrentPageProjects = () => {
-    const startIndex = currentPage * 6;
-    const endIndex = startIndex + 6;
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     return filteredProjects.slice(startIndex, endIndex);
   };
 
@@ -157,6 +165,7 @@ function Team() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(0);
   };
 
   const handlePageChange = (page) => {
@@ -171,9 +180,10 @@ function Team() {
         return [...prev, category];
       }
     });
+    setCurrentPage(0);
   };
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  
 
   const handleProjectCreate = () => {
     if (!isAuthenticated()) {
@@ -270,8 +280,6 @@ function Team() {
                           type="text"
                           value={searchTerm}
                           onChange={handleSearchChange}
-                          onFocus={() => setSearchFocused(true)}
-                          onBlur={() => setSearchFocused(false)}
                         />
                       </InputGroup>                      
                     </div>
