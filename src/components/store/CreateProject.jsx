@@ -46,12 +46,12 @@ function ProjectForm() {
     fix = fix.replace(/^0|\D/g, ""); //맨앞 0이랑 숫자 아닌 문자 삭제
     setPrice(fix);
     document.getElementById("price").value = fix;
-    console.log("price 확인: ", price);
+    //console.log("price 확인: ", price);
   }, [price]); // (onchange 이벤트 중)
 
 
   useEffect(() => {
-    console.log("free 확인: ", free);
+    //console.log("free 확인: ", free);
     if (free) {
       document.getElementById("price").disabled = true;
       setPrice(0);//0
