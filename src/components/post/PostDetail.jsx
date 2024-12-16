@@ -185,7 +185,8 @@ const PostDetail = () => {
                 category={1}
                 categoryId={id}
                 categoryTitle={post.title}
-                memberName={""}
+                style={{borderColor: 'white', fontWeight: '600', fontSize: '0.875rem'}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
+                  // 신고 버튼 테두리 없애 봤어요 현식님! 맘에 안들면 바꾸셔도 됩니당
               />
             </div>
           </Card.Body>
@@ -219,8 +220,7 @@ const PostDetail = () => {
               <ReportModal
                 category={2}
                 categoryId={c.id}
-                categoryTitle={post.title}
-                memberName={c.author}
+                categoryTitle={c.content}
               />
             </div>
           </Card.Body>
