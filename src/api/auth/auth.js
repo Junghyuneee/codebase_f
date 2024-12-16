@@ -66,7 +66,7 @@ export const isSignined = () => {
 }
 
 // 이름 중복 체크
-export const    nameCheck = async (param) => {
+export const nameCheck = async (param) => {
     const response = await apiClient.get(`/auth/namecheck?name=${param}`);
     return response.data;
 }
@@ -75,3 +75,9 @@ export const emailCheck = async (param) => {
     const response = await apiClient.get(`/auth/emailcheck?email=${param}`);
     return response.data;
 }
+
+export const emailCodeCheck = async (param, code) => {
+    const response = await apiClient.get(`/auth/emailverify?email=${param}&code=${code}`);
+    return response.data;
+}
+

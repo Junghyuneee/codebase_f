@@ -142,15 +142,15 @@ const LoginModal = () => {
                                 </CardBody>
                             </Card>
                             <Row className="mt-3">
-                                <Col xs="6">
-                                    <a
-                                        className="text-light"
-                                        href="#"
-                                        onClick={(e) => e.preventDefault()}
-                                    >
-                                        <small>Forgot password?</small>
-                                    </a>
-                                </Col>
+                                {/*<Col xs="6">*/}
+                                {/*    <a*/}
+                                {/*        className="text-light"*/}
+                                {/*        href="#"*/}
+                                {/*        onClick={(e) => e.preventDefault()}*/}
+                                {/*    >*/}
+                                {/*        <small>Forgot password?</small>*/}
+                                {/*    </a>*/}
+                                {/*</Col>*/}
                                 <Col className="text-right" xs="6">
                                     <a
                                         className="text-light"

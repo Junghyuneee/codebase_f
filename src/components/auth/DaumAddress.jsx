@@ -1,8 +1,9 @@
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { memo } from "react";
 
-export default function Postcode({ setAddress, setPostCode }) {
+function Postcode({ setAddress, setPostCode }) {
     const open = useDaumPostcodePopup('https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js');
 
     const handleComplete = (data) => {
@@ -40,3 +41,5 @@ Postcode.propTypes = {
     setAddress: PropTypes.func.isRequired,
     setPostCode: PropTypes.func.isRequired,
 }
+
+export default memo(Postcode);
