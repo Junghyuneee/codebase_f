@@ -59,17 +59,17 @@ const LoginModal = () => {
                     <Card className="bg-secondary shadow border-0 w-100">
                         <CardHeader className="bg-white">
                             <div className="text-center">
-                                <Button className="btn-neutral btn-icon ml-1" onClick={googleLoginHandler}>
-                                    <span className="btn-inner--icon mr-1">
-                                        <img alt="Google" src={GoogleLogo} />
-                                    </span>
-                                    <span className="btn-inner--text">Google</span>
-                                </Button>
                                 <Button className="btn-neutral btn-icon ml-1" onClick={kakaoLoginHandler}>
                                     <span className="btn-inner--icon mr-1">
                                         <img alt="Kakao" src={KakaoLogo} />
                                     </span>
                                     <span className="btn-inner--text">Kakao</span>
+                                </Button>
+                                <Button className="btn-neutral btn-icon ml-1" onClick={googleLoginHandler}>
+                                    <span className="btn-inner--icon mr-1">
+                                        <img alt="Google" src={GoogleLogo} />
+                                    </span>
+                                    <span className="btn-inner--text">Google</span>
                                 </Button>
                             </div>
                         </CardHeader>
