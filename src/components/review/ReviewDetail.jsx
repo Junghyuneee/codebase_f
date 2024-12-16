@@ -14,6 +14,7 @@ import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import SimpleFooter from "./SimpleFooter";
 import ReviewHeader from "./ReviewHeader";
 import ReportModal from "@/components/admin/ReportModal.jsx";
+import { getAccessToken } from "@/api/auth/getset";
 
 const ReviewDetail = () => {
 	const { id } = useParams(); // URL에서 id 파라미터를 가져옴
@@ -23,6 +24,14 @@ const ReviewDetail = () => {
 	const [likes, setLikes] = useState(0); // 좋아요 카운트
 	const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
 	const navigate = useNavigate(); // useNavigate로 리다이렉션 처리
+
+	// 로그인 상태 확인
+	useEffect(() => {
+		if (!getAccessToken()) {
+			navigate("/review");
+			return;
+		}
+	});
 
 	// 페이지가 로드되었을 때 해당 리뷰를 가져옴
 	useEffect(() => {

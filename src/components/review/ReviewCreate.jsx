@@ -20,11 +20,19 @@ import {
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import SimpleFooter from "./SimpleFooter";
 import ReviewHeader from "./ReviewHeader";
+import { getAccessToken } from "@/api/auth/getset.js"; // 토큰을 가져오는 함수
 
 const ReviewCreate = () => {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const navigate = useNavigate();
+
+	// 로그인 상태 확인
+	if (!getAccessToken()) {
+		alert("로그인이 필요합니다.");
+		navigate("/review");
+		return;
+	}
 
 	//리뷰 등록
 	const handleSubmit = async (e) => {

@@ -5,8 +5,9 @@
 
 // src: /api/review
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./ReviewList.css";
+import { getAccessToken } from "@/api/auth/getset.js"; // 토큰을 가져오는 함수
 
 import {
 	Button,
@@ -30,6 +31,7 @@ const ReviewList = () => {
 	const [filteredReview, setFilteredReview] = useState([]); // 검색된 목록
 	const [currentPage, setCurrentPage] = useState(1); //현재 페이지 번호
 	const [reviewPerPage] = useState(10); //한 페이지당 표시할 리뷰 개수
+	const navigate = useNavigate();
 
 	// 페이지가 로드되었을 때 리뷰 목록을 가져옴
 	useEffect(() => {
@@ -52,7 +54,18 @@ const ReviewList = () => {
 			.catch((error) => {
 				console.error("API 호출 에러:", error);
 			});
-	}, []);
+	}, [navigate]);
+
+	// 등록하기 버튼 핸들러
+	const handleReviewCreate = () => {
+		// 로그인 상태 확인
+		if (!getAccessToken()) {
+			alert("로그인이 필요합니다.");
+			navigate("/login", { state: { from: "/review" } });
+		} else {
+			navigate("/review/create");
+		}
+	};
 
 	// 검색 입력 핸들러
 	const handleSearchChange = (e) => {
@@ -73,24 +86,31 @@ const ReviewList = () => {
 
 	// 조회수 핸들러
 	const handleReviewClick = async (id) => {
-		try {
-			const response = await fetch(
-				`http://localhost:8080/api/review/increaseViews/${id}`,
-				{
-					method: "PUT",
+		// 로그인 확인
+		if (!getAccessToken()) {
+			alert("로그인이 필요합니다.");
+			navigate("/review", { state: { from: `/review/detail/${id}` } });
+		} else {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/review/increaseViews/${id}`,
+					{
+						method: "PUT",
+					}
+				);
+				//console.log("응답 상태: ${reponse.status}"); //응답 상태 확인
+				if (!response.ok) {
+					throw new Error("조회수 증가 요청 실패");
 				}
-			);
-			//console.log("응답 상태: ${reponse.status}"); //응답 상태 확인
-			if (!response.ok) {
-				throw new Error("조회수 증가 요청 실패");
+				//setReview((prevReviews) =>
+				//prevReviews.map((review) =>
+				//	review.id === id ? { ...review, views: review.views + 1 } : review
+				//)
+				//);
+				navigate(`/review/detail/${id}`);
+			} catch (error) {
+				console.error("조회수 증가 오류:", error);
 			}
-			setReview((prevReviews) =>
-				prevReviews.map((review) =>
-					review.id === id ? { ...review, views: review.views + 1 } : review
-				)
-			);
-		} catch (error) {
-			console.error("조회수 증가 오류:", error);
 		}
 	};
 
@@ -135,15 +155,16 @@ const ReviewList = () => {
 							</InputGroup>
 
 							{/*등록버튼*/}
-							<Link to="/review/create" className="">
-								<Button
-									className="btn-icon mb-3 mb-sm-0 ml-auto"
-									color="info"
-									style={{ width: "7rem" }}
-								>
-									<span className="btn-inner--text">등록하기</span>
-								</Button>
-							</Link>
+							{/* <Link to="/review/create" className=""> */}
+							<Button
+								className="btn-icon mb-3 mb-sm-0 ml-auto"
+								color="info"
+								style={{ width: "7rem" }}
+								onClick={handleReviewCreate}
+							>
+								<span className="btn-inner--text">등록하기</span>
+							</Button>
+							{/* </Link> */}
 						</div>
 						<div className="">
 							<table
