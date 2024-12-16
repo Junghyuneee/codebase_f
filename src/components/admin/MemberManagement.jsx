@@ -65,13 +65,12 @@ const MemberManagement = () => {
 
     return (
         <div className="container">
-            <h3 className="mb-3 text-center">회원 관리 페이지</h3>
             <table className="table-layout">
                 <thead>
                 <tr>
                     <th className="column-1">번호</th>
-                    <th className="column-3">이름</th>
-                    <th className="column-3">이메일</th>
+                    <th className="column-2">이름</th>
+                    <th className="column-2">이메일</th>
                     <th className="column-1">권한</th>
                     <th className="column-1">권한 변경</th>
                 </tr>
@@ -90,7 +89,7 @@ const MemberManagement = () => {
                         <td className="border-left">
                             <button
                                 onClick={() => changeRole(member.id)}
-                            >권한 변경</button>
+                            >변경</button>
                         </td>
                     </tr>
                 ))}

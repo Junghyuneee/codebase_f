@@ -12,7 +12,7 @@ function DashBoardContent() {
         <Row>
             <Col className="p-0 m-4">
                 <h3 className="h4 text-success text-center font-weight-bold mb-4" to="/admin"></h3>
-                <div className="ml-3 mr-3">
+                <div>
                     <Row>
                         <Col className="mb-4 col-6">
                             <VisitorChart />

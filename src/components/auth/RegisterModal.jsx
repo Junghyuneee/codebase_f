@@ -1,54 +1,71 @@
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  FormGroup,
-  Form,
-  InputGroup,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
-
+import { Button, Card, CardHeader, CardBody, Form } from "react-bootstrap";
 import GoogleLogo from "@/assets/img/icons/common/google.svg";
 import KakaoLogo from "@/assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
-import Postcode from "./DaumAddress.jsx";
-import {googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp} from "@/api/auth/auth.js";
-import { useLocation } from "react-router-dom";
+import { googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp } from "@/api/auth/auth.js";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import EmailSection from "./register/EmailSection.jsx";
+import NameSection from "./register/NameSection.jsx";
+import PasswordSection from "./register/PasswordSection.jsx";
+import AddressSection from "./register/AddressSection.jsx";
+import TelSection from "./register/TelSection.jsx";
 
 const RegisterModal = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue,
+    trigger,
+    clearErrors
+  } = useForm();
 
   const location = useLocation();
-
   const queryParams = new URLSearchParams(location.search);
-
   const encodedUsername = queryParams.get("username");
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
-  const [postcode, setPostcode] = useState("");
-  const [tel, setTel] = useState("");
   const [social, setSocial] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setEmail(encodedUsername ? decodeURIComponent(encodedUsername) : "");
-    setSocial(!!encodedUsername);
-  }, [encodedUsername])
-
-  const handleSignUp = async () => {
-    if (window.confirm('회원가입 하시겠습니까?')) {
-      const response = social
-        ? await postOAuthSignUp(email, username, address + " " + addressDetail, postcode, tel)
-        : await postSignUp(username, password, email, address + " " + addressDetail, postcode, tel);
-      console.log(response)
-      window.location.replace("/");
+    if (encodedUsername) {
+      setValue('email', decodeURIComponent(encodedUsername));
+      setSocial(true);
     }
-  }
+  }, [encodedUsername, setValue]);
+
+  const onSubmit = async (data) => {
+    if (window.confirm('회원가입 하시겠습니까?')) {
+      try {
+        const response = social
+          ? await postOAuthSignUp(
+            data.email,
+            data.username,
+            `${data.address} ${data.addressDetail}`,
+            data.postcode,
+            data.tel
+          )
+          : await postSignUp(
+            data.username,
+            data.password,
+            data.email,
+            `${data.address} ${data.addressDetail}`,
+            data.postcode,
+            data.tel
+          );
+
+        if (response.error) {
+          alert(response.error);
+          return;
+        }
+
+        window.location.replace("/");
+      } catch (error) {
+        alert(error.response?.data?.error || '회원가입 중 오류가 발생했습니다.');
+      }
+    }
+  };
 
   return (
     <main>
@@ -60,204 +77,87 @@ const RegisterModal = () => {
           <span />
           <span />
         </div>
-        <Container className="pt-lg-7">
-          <Row className="justify-content-center">
-            <Col lg="5">
-              <Card className="bg-secondary shadow border-0">
-                <CardHeader className="bg-white pb-5">
-                  <div className="text-muted text-center mb-3">
-                    <small>Sign up with</small>
-                  </div>
-                  <div className="text-center">
-                    <Button
-                        className="btn-neutral btn-icon ml-1"
-                        color="default"
-                        onClick={googleLoginHandler}
-                    >
-                      <span className="btn-inner--icon mr-1">
-                        <img
-                          alt="..."
-                          src={GoogleLogo}
-                        />
-                      </span>
-                      <span className="btn-inner--text">Google</span>
-                    </Button>
-                    <Button
-                      className="btn-neutral btn-icon ml-1"
-                      color="default"
-                      onClick={kakaoLoginHandler}
-                    >
-                      <span className="btn-inner--icon mr-1">
-                        <img
-                          alt="..."
-                          src={KakaoLogo}
-                        />
-                      </span>
-                      <span className="btn-inner--text">Kakao</span>
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardBody className="px-lg-5 py-lg-5">
-                  <div className="text-center text-muted mb-4">
-                    <small>Or sign up with credentials</small>
-                  </div>
-                  <Form role="form">
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                          <InputGroup.Text>
-                            <i className="ni ni-hat-3" />
-                          </InputGroup.Text>
-                        <Form.Control placeholder="Name" type="text"
-                          value={username}
-                          onChange={(e) => setUsername(e.target.value)} />
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                          <InputGroup.Text>
-                            <i className="ni ni-email-83" />
-                          </InputGroup.Text>
-                        <Form.Control placeholder="Email" type="email"
-                          disabled={social}
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup style={{ display: social && "none" }}>
-                      <InputGroup className="input-group-alternative mb-3">
-                          <InputGroup.Text>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroup.Text>
-                        <Form.Control
-                          placeholder="Password"
-                          type="password"
-                          autoComplete="off"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </InputGroup>
-                      {/* 
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          placeholder="Password Confirm"
-                          type="password"
-                          autoComplete="off"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </InputGroup> */}
-                    </FormGroup>
-                    <FormGroup>
-                      <InputGroup className="input-group-alternative mb-3">
-                        {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-email-83" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
-                        <Form.Control placeholder="Phone Number" type="text"
-                          value={tel}
-                          onChange={(e) => setTel(e.target.value)}
-                        />
-                      </InputGroup>
-                    </FormGroup>
+        <div className="d-flex flex-column align-items-center" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <Card className="bg-secondary shadow border-0 w-100">
+            {/* 소셜 로그인 섹션 */}
+            <CardHeader className="bg-white">
 
-                    <FormGroup>
-                      <div className="d-flex mb-2" style={{ gap: '1rem' }}>
-                        <Form.Control type="text" disabled value={postcode}
-                          placeholder="Postcode"
-                        />
-                        <Postcode setAddress={setAddress} setPostCode={setPostcode} />
-                      </div>
+              <div className="text-center">
+                <Button className="btn-neutral btn-icon ml-1" color="default"
+                  onClick={kakaoLoginHandler}>
+                  <span className="btn-inner--icon mr-1">
+                    <img alt="Kakao" src={KakaoLogo} />
+                  </span>
+                  <span className="btn-inner--text">Kakao</span>
+                </Button>
+                <Button className="btn-neutral btn-icon ml-1" color="default"
+                  onClick={googleLoginHandler}>
+                  <span className="btn-inner--icon mr-1">
+                    <img alt="Google" src={GoogleLogo} />
+                  </span>
+                  <span className="btn-inner--text">Google</span>
+                </Button>
+              </div>
+            </CardHeader>
 
-                      <InputGroup className="input-group-alternative">
-                        {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
-                        <Form.Control
-                          placeholder="주소"
-                          type="text"
-                          autoComplete="off"
-                          disabled
-                          value={address}
-                        />
-                      </InputGroup>
-                      <InputGroup className="input-group-alternative mt-2">
-                        {/* <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-lock-circle-open" />
-                          </InputGroupText>
-                        </InputGroupAddon> */}
-                        <Form.Control
-                          placeholder="상세 주소"
-                          type="text"
-                          autoComplete="off"
-                          value={addressDetail}
-                          onChange={(e) => setAddressDetail(e.target.value)}
-                        />
-                      </InputGroup>
+            {/* 회원가입 폼 섹션 */}
+            <CardBody className="px-lg-5">
+              <Form role="form" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column" style={{ gap: '1rem' }}>
 
-                    </FormGroup>
-                    {/* <div className="text-muted font-italic">
-                      <small>
-                        password strength:{" "}
-                        <span className="text-success font-weight-700">
-                          strong
-                        </span>
-                      </small>
-                    </div> */}
+                <NameSection
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  trigger={trigger}
+                />
+                <EmailSection
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  social={social}
+                  trigger={trigger}
+                />
+                <PasswordSection
+                  register={register}
+                  errors={errors}
+                  watch={watch}
+                  social={social}
+                />
 
-                    {/* <Row className="my-4">
-                      <Col xs="12">
-                        <div className="custom-control custom-control-alternative custom-checkbox">
-                          <input
-                            className="custom-control-input"
-                            id="customCheckRegister"
-                            type="checkbox"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheckRegister"
-                          >
-                            <span>
-                              I agree with the{" "}
-                              <a
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                Privacy Policy
-                              </a>
-                            </span>
-                          </label>
-                        </div>
-                      </Col>
-                    </Row> */}
-                    <div className="text-center">
-                      <Button
-                        className="mt-4"
-                        color="primary"
-                        type="button"
-                        onClick={handleSignUp}
-                      >
-                        Create account
-                      </Button>
-                    </div>
-                  </Form>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
+                <TelSection
+                  register={register}
+                  errors={errors}
+                  setValue={setValue}
+                  clearErrors={clearErrors}
+                />
+
+                <AddressSection
+                  register={register}
+                  setValue={setValue}
+                />
+
+                {/* 회원가입 버튼 */}
+                <div className="text-center">
+                  <Button className="mt-4" color="primary" type="submit">
+                    Create account
+                  </Button>
+                </div>
+              </Form>
+            </CardBody>
+          </Card>
+          <div className="mt-3 w-100 d-flex justify-content-end">
+            <a
+              className="text-light"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/login")}
+            >
+              <small>로그인 하러가기</small>
+            </a>
+          </div>
+        </div>
       </section>
     </main>
-  )
-}
+  );
+};
 
-export default RegisterModal
+export default RegisterModal;

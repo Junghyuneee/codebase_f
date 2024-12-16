@@ -99,6 +99,10 @@ th td .left-border {
     width: 10%; /* 1 비율 */
 }
 
+.column-2 {
+    width: 20%; /* 2 비율 */
+}
+
 .column-3 {
     width: 30%; /* 3 비율 */
 }

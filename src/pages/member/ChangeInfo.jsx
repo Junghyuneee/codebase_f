@@ -1,35 +1,51 @@
-import {Button, Card, CardBody,  Col, Container, Form, FormGroup, InputGroup, Row} from "react-bootstrap";
+import { Button, Card, CardBody, Form } from "react-bootstrap";
 import Postcode from "@/components/auth/DaumAddress.jsx";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {getMember} from "@/api/auth/member.js";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getMember } from "@/api/auth/member.js";
+import { useForm } from "react-hook-form";
+import NameSection from "@/components/auth/register/NameSection.jsx";
+import TelSection from "@/components/auth/register/TelSection.jsx";
+import { updateProfile } from "@/api/auth/auth";
 
 const ChangeInfo = () => {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+        setValue,
+        trigger,
+        clearErrors
+    } = useForm();
 
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState();
-    const [addressDetail, setAddressDetail] = useState("");
-    const [postcode, setPostcode] = useState();
-    const [tel, setTel] = useState();
     const navigate = useNavigate();
+    const [isAddressChanged, setIsAddressChanged] = useState(false);
+    const address = watch('address');
+    const initialName = useRef('');
+    const emailRef = useRef('');
 
     useEffect(() => {
         const fetchMembers = async () => {
             const response = await getMember();
-            setUsername(response.name);
-            setEmail(response.email);
-            setAddress(response.address);
-            setPostcode(response.postcode);
-            setTel(response.tel);
+            setValue('username', response.name);
+            initialName.current = response.name;
+            setValue('address', response.addr);
+            setValue('postcode', response.postcode);
+            setValue('tel', response.tel);
+            emailRef.current = response.email;
         }
         fetchMembers();
-    }, []);
+    }, [setValue]);
 
-
-    const handleSignUp = async () => {
-        if (window.confirm('회원가입 하시겠습니까?')) {
-            console.log("test");
+    const onSubmit = async (data) => {
+        if (window.confirm('회원정보를 수정하시겠습니까?')) {
+            try {
+                await updateProfile(data);
+                navigate("/profile", { replace: true });
+            } catch (error) {
+                alert(error.response?.data?.error || '회원정보 수정 중 오류가 발생했습니다.');
+            }
         }
     }
 
@@ -37,99 +53,93 @@ const ChangeInfo = () => {
         <main>
             <section className="section section-shaped section-lg">
                 <div className="shape shape-style-1 bg-gradient-default">
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
-                    <span/>
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
                 </div>
-                <Container className="pt-lg-7">
-                    <Row className="justify-content-center">
-                        <Col lg="5">
-                            <Card className="bg-secondary shadow border-0">
-                                <CardBody className="px-lg-5 py-lg-5">
-                                    <Form role="form">
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroup.Text>
-                                                    <i className="ni ni-hat-3"/>
-                                                </InputGroup.Text>
-                                                <Form.Control placeholder="Name" type="text"
-                                                              value={username}
-                                                              onChange={(e) => setUsername(e.target.value)}/>
-                                            </InputGroup>
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <InputGroup.Text>
-                                                    <i className="ni ni-email-83"/>
-                                                </InputGroup.Text>
-                                                <Form.Control placeholder="Email" type="email"
-                                                              disabled
-                                                              value={email}
-                                                              onChange={(e) => setEmail(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <InputGroup className="input-group-alternative mb-3">
-                                                <Form.Control placeholder="Phone Number" type="text"
-                                                              value={tel}
-                                                              onChange={(e) => setTel(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
+                <div className="d-flex flex-column align-items-center" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                    <Card className="bg-secondary shadow border-0 w-100">
+                        <CardBody className="px-lg-5 py-lg-5">
+                            <Form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column" style={{ gap: '1rem' }}>
+                                <NameSection
+                                    register={register}
+                                    errors={errors}
+                                    watch={watch}
+                                    trigger={trigger}
+                                    initialValue={initialName.current}
+                                />
 
-                                        <FormGroup>
-                                            <div className="d-flex mb-2" style={{gap: '1rem'}}>
-                                                <Form.Control type="text" disabled value={postcode}
-                                                              placeholder="Postcode"
-                                                />
-                                                <Postcode setAddress={setAddress} setPostCode={setPostcode}/>
-                                            </div>
+                                <Form.Group>
+                                    <Form.Control
+                                        type="email"
+                                        disabled
+                                        defaultValue={emailRef.current}
+                                    />
+                                </Form.Group>
 
-                                            <InputGroup className="input-group-alternative">
-                                                <Form.Control
-                                                    placeholder="주소"
-                                                    type="text"
-                                                    autoComplete="off"
-                                                    disabled
-                                                    value={address}
-                                                />
-                                            </InputGroup>
-                                            <InputGroup className="input-group-alternative mt-2">
-                                                <Form.Control
-                                                    placeholder="상세 주소"
-                                                    type="text"
-                                                    autoComplete="off"
-                                                    value={addressDetail}
-                                                    onChange={(e) => setAddressDetail(e.target.value)}
-                                                />
-                                            </InputGroup>
-                                        </FormGroup>
-                                        <div className="text-center">
-                                            <Button
-                                                className="mt-4"
-                                                color="primary"
-                                                type="button"
-                                                onClick={handleSignUp}
-                                            >
-                                                수정
-                                            </Button>
-                                            <Button
-                                                className="mt-4 bg-danger"
-                                                type="button"
-                                                onClick={() => navigate("/profile", {replace: true})}
-                                            >
-                                                취소
-                                            </Button>
-                                        </div>
-                                    </Form>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-                </Container>
+                                <TelSection
+                                    register={register}
+                                    errors={errors}
+                                    setValue={setValue}
+                                    clearErrors={clearErrors}
+                                />
+
+                                <Form.Group className="mb-3">
+                                    <div className="d-flex mb-2" style={{ gap: '1rem' }}>
+                                        <Form.Control
+                                            type="text"
+                                            disabled
+                                            placeholder="우편번호"
+                                            {...register('postcode')}
+                                        />
+                                        <Postcode
+                                            setAddress={(address) => {
+                                                setValue('address', address);
+                                                setValue('addressDetail', '');
+                                                setIsAddressChanged(true);
+                                            }}
+                                            setPostCode={(postcode) => setValue('postcode', postcode)}
+                                            buttonName="주소 변경"
+                                        />
+                                    </div>
+
+                                    <Form.Control
+                                        className="mb-2"
+                                        placeholder="주소"
+                                        disabled
+                                        {...register('address')}
+                                    />
+
+                                    {isAddressChanged && address && (
+                                        <Form.Control
+                                            placeholder="상세 주소"
+                                            {...register('addressDetail')}
+                                        />
+                                    )}
+                                </Form.Group>
+
+                                <div className="text-center">
+                                    <Button
+                                        className="mt-4"
+                                        color="primary"
+                                        type="submit"
+                                    >
+                                        수정
+                                    </Button>
+                                    <Button
+                                        className="mt-4 bg-danger"
+                                        type="button"
+                                        onClick={() => navigate("/profile", { replace: true })}
+                                    >
+                                        취소
+                                    </Button>
+                                </div>
+                            </Form>
+                        </CardBody>
+                    </Card>
+                </div>
             </section>
         </main>
     )
