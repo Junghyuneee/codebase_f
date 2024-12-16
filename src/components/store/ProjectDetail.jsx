@@ -37,7 +37,9 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 import Banner from "./Banner.jsx";
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
-
+import { randomId } from "./random"
+const { VITE_STORE_ID, VITE_CHANNEL_KEY } = import.meta.env
+import PortOne from "@portone/browser-sdk/v2"
 
 
 export function ProjectCard({ project }) {
@@ -94,6 +96,81 @@ function existCart(id) {
 function ProjectExplain({ project }) {
 
     const [inCart, setInCart] = useState(false);
+    const [isWaitingPayment, setWaitingPayment] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState({
+        status: "IDLE",
+    })
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setWaitingPayment(true)
+        const paymentId = randomId()
+        const payment = await PortOne.requestPayment({
+            storeId: VITE_STORE_ID,
+            channelKey: VITE_CHANNEL_KEY,
+            paymentId,
+            orderName: project.title,
+            totalAmount: project.price,
+            currency: "KRW",
+            payMethod: "CARD",
+            customData: {
+                project: project.id,
+            },
+        })
+        if (payment.code != null) {
+            setWaitingPayment(false)
+            setPaymentStatus({
+                status: "FAILED",
+                message: payment.message,
+            })
+            return
+        }
+        const completeResponse = await fetch("/api/payment/complete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                paymentId: payment.paymentId,
+            }),
+        })
+        setWaitingPayment(false)
+        if (completeResponse.ok) {
+            const paymentComplete = await completeResponse.json()
+            setPaymentStatus({
+                status: paymentComplete.status,
+            })
+        } else {
+            setPaymentStatus({
+                status: "FAILED",
+                message: await completeResponse.text(),
+            })
+        }
+    }
+
+    const handleClose = () =>
+        setPaymentStatus({
+            status: "IDLE",
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function addCartItem(project) {
@@ -255,8 +332,17 @@ function ProjectExplain({ project }) {
                                 )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
-                                <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
+
+                                <form onSubmit={handleSubmit}>
+                                    <Button size='lg' color='success' block><i className="ni ni-money-coins" type="submit"
+                                        aria-busy={isWaitingPayment}
+                                        disabled={isWaitingPayment} /> 즉시구매</Button>
+
+                                </form>
+
+
                             </Col>
+
                         </Row>
 
                         <Row>
