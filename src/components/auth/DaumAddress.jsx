@@ -1,5 +1,5 @@
 import { useDaumPostcodePopup } from 'react-daum-postcode';
-import { Button } from "reactstrap";
+import { Button } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 export default function Postcode({ setAddress, setPostCode }) {
@@ -30,7 +30,7 @@ export default function Postcode({ setAddress, setPostCode }) {
     };
 
     return (
-        <Button className="bg-mainTheme" style={{ whiteSpace: 'nowrap' }} type='button' onClick={handleClick}>
+        <Button className="bg-mainTheme text-nowrap" type='button' onClick={handleClick}>
             주소 찾기
         </Button>
     );
