@@ -81,3 +81,7 @@ export const emailCodeCheck = async (param, code) => {
     return response.data;
 }
 
+export const updateProfile = async (data) => {
+    const response = await apiClient.post("/auth/update", data);
+    return response.data;
+}
