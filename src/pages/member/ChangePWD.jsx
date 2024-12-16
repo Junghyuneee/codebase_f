@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { updatePassword } from "@/api/auth/auth";
 import PasswordSection from "@/components/auth/register/PasswordSection";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { useState } from "react";
 
 const ChangePWD = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -53,7 +56,11 @@ const ChangePWD = () => {
                     <InputGroup.Text>
                       <i className="ni ni-lock-circle-open" />
                     </InputGroup.Text>
-                    <Form.Control placeholder="현재 비밀번호 (초기 비밀번호 없으면 공백)" type="password" {...register('currentPassword')} />
+                    <Form.Control placeholder="현재 비밀번호 (초기 비밀번호 없으면 공백)" type={showPassword ? "text" : "password"} {...register('currentPassword')} />
+                    <InputGroup.Text>
+                      {showPassword ? <LuEye style={{ cursor: "pointer" }} onClick={() => setShowPassword(false)} />
+                        : <LuEyeClosed style={{ cursor: "pointer" }} onClick={() => setShowPassword(true)} />}
+                    </InputGroup.Text>
                   </InputGroup>
 
                 </Form.Group>
@@ -62,6 +69,7 @@ const ChangePWD = () => {
                   errors={errors}
                   watch={watch}
                   trigger={trigger}
+                  social={false}
                 />
 
                 <div className="text-center">

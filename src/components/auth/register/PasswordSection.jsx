@@ -1,8 +1,12 @@
-// components/auth/register/PasswordSection.jsx
 import { Form, InputGroup } from "react-bootstrap";
 import PropTypes from 'prop-types';
+import { useState } from "react";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
+
 
 const PasswordSection = ({ register, errors, watch, social }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   if (social) return null;  // 소셜 로그인일 경우 비밀번호 섹션 숨김
 
   return (
@@ -13,7 +17,7 @@ const PasswordSection = ({ register, errors, watch, social }) => {
           <i className="ni ni-lock-circle-open" />
         </InputGroup.Text>
         <Form.Control
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Password (영문 대/소문자, 숫자, 특수문자 포함 8자 이상)"
           {...register("password", {
             required: "비밀번호를 입력해주세요",
@@ -23,6 +27,10 @@ const PasswordSection = ({ register, errors, watch, social }) => {
             }
           })}
         />
+        <InputGroup.Text>
+          {showPassword ? <LuEye style={{ cursor: "pointer" }} onClick={() => setShowPassword(false)} />
+            : <LuEyeClosed style={{ cursor: "pointer" }} onClick={() => setShowPassword(true)} />}
+        </InputGroup.Text>
       </InputGroup>
       {errors.password && (
         <div className="text-danger" style={{ fontSize: "0.8rem" }}>
@@ -36,13 +44,17 @@ const PasswordSection = ({ register, errors, watch, social }) => {
           <i className="ni ni-lock-circle-open" />
         </InputGroup.Text>
         <Form.Control
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Password Confirm"
           {...register("passwordConfirm", {
             validate: value =>
               value === watch('password') || "비밀번호가 일치하지 않습니다"
           })}
         />
+        <InputGroup.Text>
+          {showPassword ? <LuEye style={{ cursor: "pointer" }} onClick={() => setShowPassword(false)} />
+            : <LuEyeClosed style={{ cursor: "pointer" }} onClick={() => setShowPassword(true)} />}
+        </InputGroup.Text>
       </InputGroup>
       {errors.passwordConfirm && (
         <div className="text-danger" style={{ fontSize: "0.8rem" }}>

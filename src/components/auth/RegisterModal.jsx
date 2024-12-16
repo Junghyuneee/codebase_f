@@ -84,18 +84,18 @@ const RegisterModal = () => {
 
               <div className="text-center">
                 <Button className="btn-neutral btn-icon ml-1" color="default"
-                  onClick={googleLoginHandler}>
-                  <span className="btn-inner--icon mr-1">
-                    <img alt="Google" src={GoogleLogo} />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
-                <Button className="btn-neutral btn-icon ml-1" color="default"
                   onClick={kakaoLoginHandler}>
                   <span className="btn-inner--icon mr-1">
                     <img alt="Kakao" src={KakaoLogo} />
                   </span>
                   <span className="btn-inner--text">Kakao</span>
+                </Button>
+                <Button className="btn-neutral btn-icon ml-1" color="default"
+                  onClick={googleLoginHandler}>
+                  <span className="btn-inner--icon mr-1">
+                    <img alt="Google" src={GoogleLogo} />
+                  </span>
+                  <span className="btn-inner--text">Google</span>
                 </Button>
               </div>
             </CardHeader>

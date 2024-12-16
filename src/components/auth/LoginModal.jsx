@@ -10,13 +10,15 @@ import {
 
 import GoogleLogo from "../../assets/img/icons/common/google.svg";
 import KakaoLogo from "../../assets/img/icons/common/kakao_icon.png";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { googleLoginHandler, kakaoLoginHandler, postSignIn } from "@/api/auth/auth.js";
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import { useForm } from "react-hook-form";
+import { LuEye, LuEyeClosed } from "react-icons/lu";
 
 const LoginModal = () => {
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const {
         register,
@@ -103,12 +105,16 @@ const LoginModal = () => {
                                         </InputGroup.Text>
                                         <Form.Control
                                             placeholder="비밀번호"
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             onKeyDown={onKeyDown}
                                             {...register("password", {
                                                 required: "비밀번호는 필수 입력입니다.",
                                             })}
                                         />
+                                        <InputGroup.Text>
+                                            {showPassword ? <LuEye style={{ cursor: "pointer" }} onClick={() => setShowPassword(false)} />
+                                                : <LuEyeClosed style={{ cursor: "pointer" }} onClick={() => setShowPassword(true)} />}
+                                        </InputGroup.Text>
                                     </InputGroup>
                                     {errors.password && (
                                         <small className="text-danger">{errors.password.message}</small>
