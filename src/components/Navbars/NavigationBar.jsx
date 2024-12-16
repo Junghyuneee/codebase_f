@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Headroom from 'headroom.js';
 
@@ -6,27 +6,22 @@ import logoWhite from '../../assets/img/brand/argon-react-white.png';
 import logo from '../../assets/img/brand/argon-react.png';
 
 import {
-    UncontrolledCollapse,
-    DropdownMenu,
-    DropdownItem,
-    DropdownToggle,
-    UncontrolledDropdown,
-} from 'reactstrap';
-
-import {
     Navbar,
     Nav,
     Container,
     Col,
     Row,
-
+    NavDropdown
 } from 'react-bootstrap';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import { postSignOut } from "@/api/auth/auth.js";
 
 const NavigationBar = () => {
-    const [collapseClasses, setCollapseClasses] = useState('');
     const [isLogin, setIsLogin] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+    const [expanded, setExpanded] = useState(false);
+    const navRef = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,115 +32,132 @@ const NavigationBar = () => {
         }
         setIsLogin(isAuthenticated());
 
-    }, []); //빈 배열을 넣어서 처음 렌더링될 때만 실행
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 992);
+        };
 
-    const onExiting = () => {
-        setCollapseClasses('collapsing-out');
-    };
+        const handleClickOutside = (event) => {
+            if (navRef.current && !navRef.current.contains(event.target)) {
+                setExpanded(false);
+            }
+        };
 
-    const onExited = () => {
-        setCollapseClasses('');
+        window.addEventListener('resize', handleResize);
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const menuItems = [
+        { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
+        { path: "/projects", icon: "ni ni-building", text: "프로젝트" },
+        { path: "/contact", icon: "ni ni-email-83", text: "문의하기" },
+        { path: "/about", icon: "ni ni-collection", text: "회사 소개" }
+    ];
+
+    const renderAuthLinks = () => isLogin ? (
+        <>
+            <Nav.Link onClick={() => {
+                navigate("/profile");
+                setExpanded(false);
+            }}>마이페이지</Nav.Link>
+            <Nav.Link onClick={() => {
+                postSignOut();
+                setExpanded(false);
+            }}>로그아웃</Nav.Link>
+        </>
+    ) : (
+        <>
+            <Nav.Link onClick={() => {
+                navigate('/login');
+                setExpanded(false);
+            }}>로그인</Nav.Link>
+            <Nav.Link onClick={() => {
+                navigate('/register');
+                setExpanded(false);
+            }}>회원가입</Nav.Link>
+        </>
+    );
+
+    const renderMenuItems = () => {
+        if (isMobile) {
+            return menuItems.map((item, index) => (
+                <Nav.Link
+                    key={index}
+                    as={Link}
+                    to={item.path}
+                    onClick={() => setExpanded(false)}
+                >
+                    <i className={`${item.icon} mr-2`} />
+                    {item.text}
+                </Nav.Link>
+            ));
+        }
+
+        return (
+            <NavDropdown
+                title="Examples"
+                id="basic-nav-dropdown"
+                show={showDropdown}
+                onMouseEnter={() => setShowDropdown(true)}
+                onMouseLeave={() => setShowDropdown(false)}
+            >
+                {menuItems.map((item, index) => (
+                    <NavDropdown.Item key={index} as={Link} to={item.path}>
+                        <i className={`${item.icon} mr-2`} />
+                        {item.text}
+                    </NavDropdown.Item>
+                ))}
+            </NavDropdown>
+        );
     };
 
     return (
-        <>
-            <header className="header-global">
-                <Navbar
-                    className="navbar-main navbar-transparent navbar-light headroom"
-                    expand="lg"
-                    id="navbar-main"
+        <Navbar
+            ref={navRef}
+            className="navbar-main navbar-transparent navbar-light headroom"
+            expand="lg"
+            id="navbar-main"
+            expanded={expanded}
+            onToggle={(expanded) => setExpanded(expanded)}
+        >
+            <Container>
+                <Navbar.Brand
+                    style={{ cursor: "pointer" }}
+                    className="mr-lg-5"
+                    onClick={() => {
+                        navigate("/");
+                        setExpanded(false);
+                    }}
                 >
-                    <Container>
-                        <Navbar.Brand
-                            style={{ cursor: "pointer" }} className="mr-lg-5"
-                            onClick={() => { navigate("/") }}
-                        >
-                            <img alt="..." src={logoWhite} />
-                        </Navbar.Brand>
-                        <button className="navbar-toggler" id="navbar_global">
-                            <span className="navbar-toggler-icon" />
-                        </button>
-                        <UncontrolledCollapse
-                            toggler="#navbar_global"
-                            navbar
-                            className={collapseClasses}
-                            onExiting={onExiting}
-                            onExited={onExited}
-                        >
-                            <div className="navbar-collapse-header">
-                                <Row>
-                                    <Col className="collapse-brand" xs="6">
-                                        <Link to="/">
-                                            <img alt="..." src={logo} />
-                                        </Link>
-                                    </Col>
-                                    <Col className="collapse-close" xs="6">
-                                        <button className="navbar-toggler" id="navbar_global">
-                                            <span />
-                                            <span />
-                                        </button>
-                                    </Col>
-                                </Row>
-                            </div>
-                            <Nav className="navbar-nav-hover align-items-lg-center" navbar>
-                                <UncontrolledDropdown nav>
-                                    <DropdownToggle nav>
-                                        <i className="ni ni-collection d-lg-none mr-1" />
-                                        <span className="nav-link-inner--text">Examples</span>
-                                    </DropdownToggle>
-                                    <DropdownMenu>
-                                        <DropdownItem to="/team" tag={Link}>
-                                            <i className="ni ni-single-02 mr-2" />
-                                            팀 소개
-                                        </DropdownItem>
-                                        <DropdownItem to="/projects" tag={Link}>
-                                            <i className="ni ni-building mr-2" />
-                                            프로젝트
-                                        </DropdownItem>
-                                        <DropdownItem to="/contact" tag={Link}>
-                                            <i className="ni ni-email-83 mr-2" />
-                                            문의하기
-                                        </DropdownItem>
-                                        <DropdownItem to="/about" tag={Link}>
-                                            <i className="ni ni-collection mr-2" />
-                                            회사 소개
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </UncontrolledDropdown>
-                            </Nav>
-                            <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto" navbar>
-                                {isLogin ?
-                                    <>
-                                        <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate("/profile")}>
-                                                마이페이지
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"} onClick={postSignOut}>
-                                                로그아웃
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </> :
-                                    <>
-                                        <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate('/login')}>
-                                                로그인
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link className={"nav-link-icon pointer"} onClick={() => navigate('/register')}>
-                                                회원가입
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </>
-                                }
-                            </Nav>
-                        </UncontrolledCollapse>
-                    </Container>
-                </Navbar>
-            </header>
-        </>
+                    <img alt="..." src={logoWhite} />
+                </Navbar.Brand>
+
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <div className="navbar-collapse-header">
+                        <Row>
+                            <Col className="collapse-brand" xs="6">
+                                <Link to="/" onClick={() => setExpanded(false)}>
+                                    <img alt="..." src={logo} />
+                                </Link>
+                            </Col>
+                        </Row>
+                    </div>
+
+                    <Nav className="navbar-nav-hover align-items-lg-center">
+                        {renderMenuItems()}
+                    </Nav>
+
+                    <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto">
+                        {renderAuthLinks()}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     );
 };
 
