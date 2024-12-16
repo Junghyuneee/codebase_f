@@ -128,7 +128,7 @@ function ProjectForm() {
 
 
 
-  function submit(event) {
+  async function submit(event) {
 
     if (!valid()) {
       return;
@@ -152,10 +152,10 @@ function ProjectForm() {
 
 
     if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
-      postData('/api/store/add', formData);
+      const result = await postData('/api/store/add', formData);
 
       alert("게시되었습니다.");
-      navigate("/store");
+      navigate(`/store/${result}`);
     }
     else {
       //확인창에서 취소
