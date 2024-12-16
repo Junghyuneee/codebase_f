@@ -1,9 +1,9 @@
-import { Button, Card, CardHeader, CardBody, Form, Container } from "react-bootstrap";
+import { Button, Card, CardHeader, CardBody, Form } from "react-bootstrap";
 import GoogleLogo from "@/assets/img/icons/common/google.svg";
 import KakaoLogo from "@/assets/img/icons/common/kakao_icon.png";
 import { useEffect, useState } from "react";
 import { googleLoginHandler, kakaoLoginHandler, postOAuthSignUp, postSignUp } from "@/api/auth/auth.js";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import EmailSection from "./register/EmailSection.jsx";
 import NameSection from "./register/NameSection.jsx";
@@ -26,6 +26,7 @@ const RegisterModal = () => {
   const queryParams = new URLSearchParams(location.search);
   const encodedUsername = queryParams.get("username");
   const [social, setSocial] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (encodedUsername) {
@@ -76,16 +77,11 @@ const RegisterModal = () => {
           <span />
           <span />
         </div>
-        <Container>
-          <Card className="bg-secondary shadow border-0" style={{
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
+        <div className="d-flex flex-column align-items-center" style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <Card className="bg-secondary shadow border-0 w-100">
             {/* 소셜 로그인 섹션 */}
             <CardHeader className="bg-white">
-              <div className="text-muted text-center mb-3">
-                <small>Sign up with</small>
-              </div>
+
               <div className="text-center">
                 <Button className="btn-neutral btn-icon ml-1" color="default"
                   onClick={googleLoginHandler}>
@@ -106,9 +102,6 @@ const RegisterModal = () => {
 
             {/* 회원가입 폼 섹션 */}
             <CardBody className="px-lg-5">
-              <div className="text-center text-muted mb-4">
-                <small>Or sign up with credentials</small>
-              </div>
               <Form role="form" onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column" style={{ gap: '1rem' }}>
 
                 <NameSection
@@ -152,7 +145,16 @@ const RegisterModal = () => {
               </Form>
             </CardBody>
           </Card>
-        </Container>
+          <div className="mt-3 w-100 d-flex justify-content-end">
+            <a
+              className="text-light"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate("/login")}
+            >
+              <small>회원가입 하러가기</small>
+            </a>
+          </div>
+        </div>
       </section>
     </main>
   );
