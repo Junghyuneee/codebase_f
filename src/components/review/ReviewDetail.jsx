@@ -10,12 +10,10 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { Button, Container, Row, Col } from "react-bootstrap";
 
-
-import DemoNavbar from './DemoNavbar';
-import SimpleFooter from './SimpleFooter';
-import ReviewHeader from './ReviewHeader';
+import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
+import SimpleFooter from "./SimpleFooter";
+import ReviewHeader from "./ReviewHeader";
 import ReportModal from "@/components/admin/ReportModal.jsx";
-
 
 const ReviewDetail = () => {
 	const { id } = useParams(); // URL에서 id 파라미터를 가져옴
@@ -110,7 +108,7 @@ const ReviewDetail = () => {
 
 	return (
 		<>
-			<DemoNavbar />
+			<NavigationBar />
 			<main>
 				<ReviewHeader />
 				<section className="section">
@@ -166,7 +164,7 @@ const ReviewDetail = () => {
 														categoryId={id}
 														categoryTitle={review.title}
 														style={{
-															fontSize: '0.75rem'
+															fontSize: "0.75rem",
 														}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
 													/>
 												</div>

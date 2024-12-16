@@ -20,7 +20,7 @@ import {
 	PaginationLink,
 } from "reactstrap";
 
-import DemoNavbar from "./DemoNavbar";
+import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import SimpleFooter from "./SimpleFooter";
 import ReviewHeader from "./ReviewHeader";
 
@@ -113,7 +113,7 @@ const ReviewList = () => {
 
 	return (
 		<>
-			<DemoNavbar />
+			<NavigationBar />
 			<main>
 				<ReviewHeader />
 				<section className="section">
