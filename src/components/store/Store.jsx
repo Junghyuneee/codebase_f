@@ -88,6 +88,9 @@ function ProjectCards() {
   const [sortOption, setSortOption] = useState(null); //기본값 (최신순)
   const [projects, setProjects] = useState(null);
 
+  const [page, setPage] = useState(0);
+  
+
   // 데이터가 로딩 중이 아니고, 에러가 없을 경우
   useEffect(() => {
  
@@ -101,7 +104,6 @@ function ProjectCards() {
 
   useEffect(() => {
     console.log("정렬변경");
-
 
     if (Array.isArray(initprojects)) {// 배열이면(값이 안들어왔을때는 아래코드 동작하지 않음)
       let sortedProjects = [];
@@ -118,10 +120,30 @@ function ProjectCards() {
             return 0;
         }
       });
-      setProjects(sortedProjects);
+
+
+      const startIndex = page * 4;
+      const endIndex = startIndex + 4;
+
+      setProjects(sortedProjects.splice(startIndex,endIndex));
     }
 
-  }, [sortOption, initprojects]);
+  }, [sortOption, initprojects, page]);
+
+
+  function next(){
+    if(page+1 < Math.ceil(initprojects.length/4)){
+      setPage(page+1);
+      
+    }
+    
+  }
+  function prev(){
+    if(page > 0){
+      setPage(page-1);
+    }
+   
+  }
 
   const plusHit = (id) => {
     console.log("프로젝트 카드 클릭", id);
@@ -129,11 +151,25 @@ function ProjectCards() {
   };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-
     <>
-
-
       <div style={{ marginLeft: "10%", marginRight: "10%", paddingTop: "50px"}} >
         <ButtonGroup>
           <Button
@@ -166,33 +202,6 @@ function ProjectCards() {
 
       >
         <div style={{ marginLeft: "10%", marginRight: "10%" }}>
-          {/* <ButtonGroup>
-            <Button
-              color="primary"
-              outline
-              onClick={() => setSortOption("최신순")}
-              active={sortOption === "최신순"}
-            >
-              최신순
-            </Button>
-            <Button
-              color="primary"
-              outline
-              onClick={() => setSortOption("조회순")}
-              active={sortOption === "조회순"}
-            >
-              조회순
-            </Button>
-            <Button
-              color="primary"
-              outline
-              onClick={() => setSortOption("이름순")}
-              active={sortOption === "이름순"}
-            >
-              이름순
-            </Button>
-          </ButtonGroup> */}
-
           <Row className="row-grid align-items-center">
 
             {loading && <p>Loading...</p>}
@@ -220,10 +229,44 @@ function ProjectCards() {
 
           </Row>
         </div>
+
+        <Button onClick={() => prev()}>이전</Button>
+        <Button onClick={() => next()}>이후</Button>
       </section>
     </>
   );
 }
+
+
+function Pageable(currentPage, max){
+  
+  function pageswitch(){
+
+  }
+
+  return (
+    <>
+      <Pagination>
+
+      <Pagination.Prev />
+
+      <Pagination.Item>{10}</Pagination.Item>
+      <Pagination.Item>{11}</Pagination.Item>
+      <Pagination.Item active>{1}</Pagination.Item>
+      <Pagination.Item>{13}</Pagination.Item>
+      <Pagination.Item disabled>{14}</Pagination.Item>
+
+      <Pagination.Next />
+
+    </Pagination>
+
+    
+    </>
+  );
+}
+
+
+
 function MyBanner() {
   return (
     <>
@@ -242,7 +285,9 @@ function MyBanner() {
         </Banner>
 
       </div>
-
+      <span>
+      asfdasdfasdfasdfasdasdf
+      </span>
 
 
     </>);
@@ -257,7 +302,7 @@ function Page() {
       <Banner_mini /> */}
       
 
-      <MyBanner></MyBanner>
+      
 
       <section className="section-profile-cover section-shaped my-0 pb-7">
         {/* Circles background */}
@@ -287,7 +332,7 @@ function Page() {
           </svg>
         </div>
       </section>
-
+      <MyBanner></MyBanner>
 
 
       <main>
@@ -315,25 +360,3 @@ export default Page;
 
 
 
-function Pageable(){
-  
-  return (
-    <>
-      <Pagination>
-
-      <Pagination.Prev />
-
-      <Pagination.Item>{10}</Pagination.Item>
-      <Pagination.Item>{11}</Pagination.Item>
-      <Pagination.Item active>{1}</Pagination.Item>
-      <Pagination.Item>{13}</Pagination.Item>
-      <Pagination.Item disabled>{14}</Pagination.Item>
-
-      <Pagination.Next />
-
-    </Pagination>
-
-    
-    </>
-  );
-}

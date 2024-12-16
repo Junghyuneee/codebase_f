@@ -126,7 +126,7 @@ function ProjectExplain({ project }) {
             })
             return
         }
-        const completeResponse = await fetch("/api/payment/complete", {
+        const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
