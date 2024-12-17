@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import {
   Container,
@@ -28,11 +28,6 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
   const [selectedTeam, setSelectedTeam] = useState(null);
   const navigate = useNavigate();
 
-  // 모버깅을 위한 콘솔 로그 추가
-  useEffect(() => {
-    console.log('TeamSection Props:', { projects, currentPage, totalPages });
-  }, [projects, currentPage, totalPages]);
-
   // 모달 열기/닫기
   const toggleModal = (team) => {
     setSelectedTeam(team || null);
@@ -53,22 +48,17 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
   };
 
   const renderDeleteButton = (projectMemberId, team) => {
-    // 디버깅을 위한 로그 추가
-    console.log('Current Member ID:', currentMemberId);
-    console.log('Project Member ID:', projectMemberId);
-    
     if (!isAuthenticated()) {
       return null;
     }
     
-    // 숫자로 변환하여 비교
     if (Number(currentMemberId) === Number(projectMemberId)) {
       return (
         <Button 
           color="danger" 
           size="sm" 
           onClick={(e) => {
-            e.stopPropagation(); // 이벤트 버블링 방지
+            e.stopPropagation();
             handleDelete(team.pjt_id);
           }}
         >
@@ -181,8 +171,8 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
               <img
                 src={
                   selectedTeam?.pjtimg
-                    ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${selectedTeam.pjtimg}`
-                    : defaultImage
+                  ? `${import.meta.env.VITE_APP_AWS_BUCKET}/${selectedTeam.pjtimg}`
+                  : defaultImage
                 }
                 alt={selectedTeam?.pjtname}
                 style={{ 

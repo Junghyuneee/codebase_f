@@ -6,7 +6,7 @@ import {
   
 } from "reactstrap"; // reactstrap 컴포넌트 추가
 import './teamdetail.css';
-import Navbar from './Navbar.jsx'
+import Navbar from '../Navbars/NavigationBar.jsx'
 
 const Teamdetail = () => {
   const { id } = useParams(); // URL에서 ID를 추출
@@ -70,7 +70,7 @@ const Teamdetail = () => {
             <div className="project-description">
             <div className="project-photo">
               <img 
-                src={`https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`} 
+                src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${team.pjtimg}`}
                 alt={team.pjtname || "프로젝트 이미지"} 
               />
             </div>
