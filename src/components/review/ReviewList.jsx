@@ -4,10 +4,10 @@
 */
 
 // src: /api/review
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./ReviewList.css";
-import { getAccessToken } from "@/api/auth/getset.js"; // 토큰을 가져오는 함수
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import './ReviewList.css';
+import { getAccessToken } from '@/api/auth/getset.js'; // 토큰을 가져오는 함수
 
 import {
 	Button,
@@ -19,15 +19,15 @@ import {
 	Pagination,
 	PaginationItem,
 	PaginationLink,
-} from "reactstrap";
+} from 'reactstrap';
 
-import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import SimpleFooter from "./SimpleFooter";
-import ReviewHeader from "./ReviewHeader";
+import NavigationBar from '@/components/Navbars/NavigationBar.jsx';
+import SimpleFooter from './SimpleFooter';
+import ReviewHeader from './ReviewHeader';
 
 const ReviewList = () => {
 	const [review, setReview] = useState([]); // 기본값을 빈 배열로 설정
-	const [search, setSearch] = useState(""); // 검색어 상태
+	const [search, setSearch] = useState(''); // 검색어 상태
 	const [filteredReview, setFilteredReview] = useState([]); // 검색된 목록
 	const [currentPage, setCurrentPage] = useState(1); //현재 페이지 번호
 	const [reviewPerPage] = useState(10); //한 페이지당 표시할 리뷰 개수
@@ -39,7 +39,7 @@ const ReviewList = () => {
 		fetch(`http://localhost:8080/api/review`)
 			.then((response) => {
 				if (!response.ok) {
-					throw new Error("데이터를 가져오는데 실패했습니다.");
+					throw new Error('데이터를 가져오는데 실패했습니다.');
 				}
 				return response.json();
 			})
@@ -52,7 +52,7 @@ const ReviewList = () => {
 				setFilteredReview(sortedData); // 초기화 시 전체 목록 표시
 			})
 			.catch((error) => {
-				console.error("API 호출 에러:", error);
+				console.error('API 호출 에러:', error);
 			});
 	}, [navigate]);
 
@@ -60,10 +60,10 @@ const ReviewList = () => {
 	const handleReviewCreate = () => {
 		// 로그인 상태 확인
 		if (!getAccessToken()) {
-			alert("로그인이 필요합니다.");
-			navigate("/login", { state: { from: "/review" } });
+			alert('로그인이 필요합니다.');
+			navigate('/login', { state: { from: '/review' } });
 		} else {
-			navigate("/review/create");
+			navigate('/review/create');
 		}
 	};
 
@@ -72,7 +72,7 @@ const ReviewList = () => {
 		const keyword = e.target.value.toLowerCase(); //검색어 소문자 변환
 		setSearch(keyword);
 		// 검색어가 없으면 전체 데이터를 보여줌
-		if (keyword === "") {
+		if (keyword === '') {
 			setFilteredReview(review);
 			return;
 		}
@@ -88,19 +88,19 @@ const ReviewList = () => {
 	const handleReviewClick = async (id) => {
 		// 로그인 확인
 		if (!getAccessToken()) {
-			alert("로그인이 필요합니다.");
-			navigate("/review", { state: { from: `/review/detail/${id}` } });
+			alert('로그인이 필요합니다.');
+			navigate('/review', { state: { from: `/review/detail/${id}` } });
 		} else {
 			try {
 				const response = await fetch(
 					`http://localhost:8080/api/review/increaseViews/${id}`,
 					{
-						method: "PUT",
+						method: 'PUT',
 					}
 				);
 				//console.log("응답 상태: ${reponse.status}"); //응답 상태 확인
 				if (!response.ok) {
-					throw new Error("조회수 증가 요청 실패");
+					throw new Error('조회수 증가 요청 실패');
 				}
 				//setReview((prevReviews) =>
 				//prevReviews.map((review) =>
@@ -109,7 +109,7 @@ const ReviewList = () => {
 				//);
 				navigate(`/review/detail/${id}`);
 			} catch (error) {
-				console.error("조회수 증가 오류:", error);
+				console.error('조회수 증가 오류:', error);
 			}
 		}
 	};
@@ -140,7 +140,7 @@ const ReviewList = () => {
 					<Container>
 						<div className="d-flex justify-content-between">
 							{/*검색창*/}
-							<InputGroup className="mb-4" style={{ width: "15rem" }}>
+							<InputGroup className="mb-4" style={{ width: '15rem' }}>
 								<InputGroupAddon addonType="prepend">
 									<InputGroupText>
 										<i className="ni ni-zoom-split-in" />
@@ -159,7 +159,7 @@ const ReviewList = () => {
 							<Button
 								className="btn-icon mb-3 mb-sm-0 ml-auto"
 								color="info"
-								style={{ width: "7rem" }}
+								style={{ width: '7rem' }}
 								onClick={handleReviewCreate}
 							>
 								<span className="btn-inner--text">등록하기</span>
@@ -169,7 +169,7 @@ const ReviewList = () => {
 						<div className="">
 							<table
 								className="col-lg-12"
-								style={{ borderCollapse: "collapse", width: "100%" }}
+								style={{ borderCollapse: 'collapse', width: '100%' }}
 							>
 								<thead>
 									<tr>
@@ -188,15 +188,15 @@ const ReviewList = () => {
 										<tr
 											key={review.id}
 											style={{
-												borderTop: "1px solid #ddd",
+												borderTop: '1px solid #ddd',
 												borderBottom:
 													review.id === review[review.length - 1]
-														? "2px solid #ccc"
-														: "none",
+														? '2px solid #ccc'
+														: 'none',
 											}}
 										>
-											<td style={{ padding: "10px" }}>{review.id}</td>
-											<td style={{ padding: "10px" }}>
+											<td style={{ padding: '10px' }}>{review.id}</td>
+											<td style={{ padding: '10px' }}>
 												<Link
 													to={`/review/detail/${review.id}`}
 													onClick={() => handleReviewClick(review.id)} // 클릭시 조회수 증가
@@ -205,21 +205,21 @@ const ReviewList = () => {
 												</Link>
 											</td>
 											<td>{review.author}</td>
-											<td style={{ padding: "10px" }}>
-												{new Date(review.createdDate).toLocaleString("ko-KR", {
-													year: "numeric", //4자리 연도
-													month: "2-digit", //2자리 월
-													day: "2-digit", //2자리 일
+											<td style={{ padding: '10px' }}>
+												{new Date(review.createdDate).toLocaleString('ko-KR', {
+													year: 'numeric', // 4자리 연도
+													month: '2-digit', // 2자리 월
+													day: '2-digit', // 2자리 일
 												})}
 											</td>
-											<td style={{ padding: "10px" }}>{review.views}</td>
+											<td style={{ padding: '10px' }}>{review.views}</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
 							{/* 검색 결과가 없을 때 메시지 표시 */}
 							{filteredReview.length === 0 && (
-								<div style={{ textAlign: "center", marginTop: "20px" }}>
+								<div style={{ textAlign: 'center', marginTop: '20px' }}>
 									<p>검색 결과가 없습니다</p>
 								</div>
 							)}
