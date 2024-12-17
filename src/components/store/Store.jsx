@@ -103,12 +103,12 @@ function ProjectCards() {
   }, [data]); // data가 변경될 때마다 실행
 
   useEffect(() => {
-    console.log("정렬변경");
+    //console.log("정렬변경");
 
     if (Array.isArray(initprojects)) {// 배열이면(값이 안들어왔을때는 아래코드 동작하지 않음)
       let sortedProjects = [];
       sortedProjects = [...initprojects].sort((a, b) => {
-        console.log("sortOption : ", sortOption);
+        //console.log("sortOption : ", sortOption);
         switch (sortOption) {
           case "최신순":
             return b.id - a.id; // ID로 최신순 정렬
@@ -146,7 +146,7 @@ function ProjectCards() {
   }
 
   const plusHit = (id) => {
-    console.log("프로젝트 카드 클릭", id);
+    //console.log("프로젝트 카드 클릭", id);
     // 여기에 원하는 함수나 추가 동작을 작성
   };
 
