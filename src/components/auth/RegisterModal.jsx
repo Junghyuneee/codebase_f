@@ -80,25 +80,25 @@ const RegisterModal = () => {
         <div className="d-flex flex-column align-items-center" style={{ maxWidth: '600px', margin: '0 auto' }}>
           <Card className="bg-secondary shadow border-0 w-100">
             {/* 소셜 로그인 섹션 */}
-            <CardHeader className="bg-white">
+            {!social && <CardHeader className="bg-white">
 
               <div className="text-center">
                 <Button className="btn-neutral btn-icon ml-1" color="default"
-                  onClick={kakaoLoginHandler}>
+                        onClick={kakaoLoginHandler}>
                   <span className="btn-inner--icon mr-1">
-                    <img alt="Kakao" src={KakaoLogo} />
+                    <img alt="Kakao" src={KakaoLogo}/>
                   </span>
                   <span className="btn-inner--text">Kakao</span>
                 </Button>
                 <Button className="btn-neutral btn-icon ml-1" color="default"
-                  onClick={googleLoginHandler}>
+                        onClick={googleLoginHandler}>
                   <span className="btn-inner--icon mr-1">
-                    <img alt="Google" src={GoogleLogo} />
+                    <img alt="Google" src={GoogleLogo}/>
                   </span>
                   <span className="btn-inner--text">Google</span>
                 </Button>
               </div>
-            </CardHeader>
+            </CardHeader>}
 
             {/* 회원가입 폼 섹션 */}
             <CardBody className="px-lg-5">
