@@ -39,7 +39,7 @@ function Banner_mini() {
 
     return (
         <>
-            <div className="position-relative bg-info pt-5 pb-4">
+            <div className="position-relative pt-5 pb-4"> {/*bg-info */}
             
                 <Container className="py-lg-md d-flex">
 

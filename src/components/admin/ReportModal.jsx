@@ -9,7 +9,7 @@ import {FaExclamationTriangle} from "react-icons/fa";
 import axios from "axios";
 import {getMemberId} from "@/api/auth/getset.js";
 
-const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) => {
+const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
     const [isModalOpen, setModalOpen] = useState(false); // 모달 상태 정의
 
@@ -38,7 +38,6 @@ const ReportModal = ({category, categoryId, categoryTitle, memberName, style}) =
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
                 memberId: getMemberId(),
-                // memberName: memberName,
                 content: selectedContent
                 // 전송할 데이터를 JSON 형식으로 작성
             });

@@ -56,20 +56,35 @@ export function getData(url) {
     return data; // 상태 반환
 }
 
-export function postData(url, data){
+// export function postData(url, data){
 
-    const sendToBackend = async () => {
-        console.log(data);
-        try {
-          const response = await apiClient.post(
-            url,
-            data
-          );
-          console.log("Response:", response.data);
-        } catch (error) {
-          console.error("Error posting data:", error);
-        }
-    };
+//     const sendToBackend = async () => {
+//         //console.log(data);
+//         try {
+//           const response = await apiClient.post(
+//             url,
+//             data
+//           );
+//           console.log("Response:", response.data);
+          
+//         } catch (error) {
+//           console.error("Error posting data:", error);
+//         }
+//     };
     
-    sendToBackend();
+//     sendToBackend();
+
+//} 
+
+export async function postData(url, data){
+
+    try {
+        const response = await apiClient.post(url, data);
+        console.log("Response:", response.data);
+        return response.data; // 서버의 응답 데이터 반환
+    } catch (error) {
+        console.error("Error posting data:", error);
+        throw error; // 에러를 호출하는 쪽으로 전달
+    }
+
 } 

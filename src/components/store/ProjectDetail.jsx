@@ -37,7 +37,9 @@ import img from "../../assets/img/theme/img-1-1200x1000.jpg";
 import Banner from "./Banner.jsx";
 import ReportModal from "@/components/admin/ReportModal.jsx";
 
-
+import { randomId } from "./random"
+const { VITE_STORE_ID, VITE_CHANNEL_KEY } = import.meta.env
+import PortOne from "@portone/browser-sdk/v2"
 
 
 export function ProjectCard({ project }) {
@@ -51,9 +53,9 @@ export function ProjectCard({ project }) {
 
                 <Card className="card-profile shadow">
                     <div className="px-4">
-                        <CardImg className="py-5" style={{ borderRadius: '10px' }}
+                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
                             alt="..."
-                            src={img}
+                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}
                             top
                         />
 
@@ -94,6 +96,81 @@ function existCart(id) {
 function ProjectExplain({ project }) {
 
     const [inCart, setInCart] = useState(false);
+    const [isWaitingPayment, setWaitingPayment] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState({
+        status: "IDLE",
+    })
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setWaitingPayment(true)
+        const paymentId = randomId()
+        const payment = await PortOne.requestPayment({
+            storeId: VITE_STORE_ID,
+            channelKey: VITE_CHANNEL_KEY,
+            paymentId,
+            orderName: project.title,
+            totalAmount: project.price,
+            currency: "KRW",
+            payMethod: "CARD",
+            customData: {
+                project: project.id,
+            },
+        })
+        if (payment.code != null) {
+            setWaitingPayment(false)
+            setPaymentStatus({
+                status: "FAILED",
+                message: payment.message,
+            })
+            return
+        }
+        const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                paymentId: payment.paymentId,
+            }),
+        })
+        setWaitingPayment(false)
+        if (completeResponse.ok) {
+            const paymentComplete = await completeResponse.json()
+            setPaymentStatus({
+                status: paymentComplete.status,
+            })
+        } else {
+            setPaymentStatus({
+                status: "FAILED",
+                message: await completeResponse.text(),
+            })
+        }
+    }
+
+    const handleClose = () =>
+        setPaymentStatus({
+            status: "IDLE",
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function addCartItem(project) {
@@ -102,21 +179,21 @@ function ProjectExplain({ project }) {
         formData.append("title", project.title);
         formData.append("price", project.price);
         formData.append("project_id", project.id);
-    
-        postData(`/cart/add`, formData);
+
+        postData(`/api/cart/add`, formData);
 
     }
     function deleteCartItem(project) {
-        postData(`/cart/delete/${project.id}`,);
+        postData(`/api/cart/delete/${project.id}`,);
     }
     // 상태를 토글하는 함수
     const toggleCart = () => {
-        if(inCart){
+        if (inCart) {
             //DB 삭제요청
             deleteCartItem(project);
 
         }
-        else{
+        else {
             addCartItem(project);
         }
 
@@ -128,17 +205,17 @@ function ProjectExplain({ project }) {
         console.log(inCart);
     }, [inCart]);
 
+    const { data, loading, error } = useFetch(`/api/cart/ciexist/${project.id}`);
 
-    const { data, loading, error } = useFetch(`/cart/ciexist/${project.id}`);
 
     useEffect(() => {
-        if(data){
-            console.log("카트에 존재함");
+        if (data) {
+            //console.log("카트에 존재함");
             setInCart(true);
         }
     }, [data]);
 
-    
+
 
 
 
@@ -175,7 +252,7 @@ function ProjectExplain({ project }) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-                            
+
                                 {/* {existCart(project.id) &&
                                     <h2>
                                         <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
@@ -255,8 +332,17 @@ function ProjectExplain({ project }) {
                                 )}
                             </Col>
                             <Col style={{ paddingLeft: '0' }}>
-                                <Button size='lg' color='success' block><i className="ni ni-money-coins" /> 즉시구매</Button>
+
+                                <form onSubmit={handleSubmit}>
+                                    <Button size='lg' color='success' block><i className="ni ni-money-coins" type="submit"
+                                        aria-busy={isWaitingPayment}
+                                        disabled={isWaitingPayment} /> 즉시구매</Button>
+
+                                </form>
+
+
                             </Col>
+
                         </Row>
 
                         <Row>
@@ -271,8 +357,7 @@ function ProjectExplain({ project }) {
                                     category={0}
                                     categoryId={project.id}
                                     categoryTitle={project.title}
-                                    //memberId={0}//은즤..이거봐쥬.... 이거필요해?? 난 상관없엉
-                                    memberName={""}
+                                    // 필요없어서 지울게~~~~~
                                     style={{
                                         width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
                                     }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
@@ -322,7 +407,6 @@ function Page() {
     //console.log("id ", id);
 
     id = parseInt(id, 10);
-
 
     const { data, loading, error } = useFetch(`/api/store/${id}`);
     useEffect(() => {
