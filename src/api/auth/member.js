@@ -5,8 +5,13 @@ export const searchMember = async (param) => {
     return response.data;
 }
 
+export const getProfile = async () => {
+    const response = await apiClient.get("/member/profile");
+    return response.data;
+}
+
 export const getMemberByName = async (param) => {
-    const response = await apiClient.get("/member/name" + (param ? "/" + param : ""));
+    const response = await apiClient.get("/member/name/" + param);
     return response.data;
 }
 
