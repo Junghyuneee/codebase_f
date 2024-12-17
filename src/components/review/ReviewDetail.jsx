@@ -5,16 +5,16 @@
 
 // src: /api/review/detail/{id}
 // src: /api/review/delete/{id}
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col } from 'react-bootstrap';
 
-import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import SimpleFooter from "./SimpleFooter";
-import ReviewHeader from "./ReviewHeader";
-import ReportModal from "@/components/admin/ReportModal.jsx";
-import { getAccessToken } from "@/api/auth/getset";
+import NavigationBar from '@/components/Navbars/NavigationBar.jsx';
+import SimpleFooter from './SimpleFooter';
+import ReviewHeader from './ReviewHeader';
+import ReportModal from '@/components/admin/ReportModal.jsx';
+import { getAccessToken, getName } from '@/api/auth/getset.js';
 
 const ReviewDetail = () => {
 	const { id } = useParams(); // URL에서 id 파라미터를 가져옴
@@ -23,15 +23,25 @@ const ReviewDetail = () => {
 	const [error, setError] = useState(null); // 오류 상태
 	const [likes, setLikes] = useState(0); // 좋아요 카운트
 	const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
+	const [author, setAuthor] = useState(false); // 현재 로그인한 사용자가 리뷰 작성자인지 여부
+	const [currentName, setCurrentName] = useState(''); // 로그인한 사용자 이름
+	//const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
 	const navigate = useNavigate(); // useNavigate로 리다이렉션 처리
 
-	// 로그인 상태 확인
+	// 로그인한 사용자 이름을 getAccessToken()으로 가져오기
 	useEffect(() => {
-		if (!getAccessToken()) {
-			navigate("/review");
-			return;
+		const token = getAccessToken(); // getAccessToken으로 토큰 가져오기
+		if (token) {
+			const name = getName(); // 로그인한 사용자의 이름을 로컬 스토리지에서 가져오기
+			if (name) {
+				setCurrentName(name);
+			} else {
+				navigate('/login'); // 이름이 없으면 로그인 페이지로 리다이렉트
+			}
+		} else {
+			navigate('/login'); // 토큰이 없으면 로그인 페이지로 리다이렉트
 		}
-	});
+	}, [navigate]);
 
 	// 페이지가 로드되었을 때 해당 리뷰를 가져옴
 	useEffect(() => {
@@ -47,37 +57,43 @@ const ReviewDetail = () => {
 				setLikes(data.likes || 0); // 초기 좋아요 수 설정
 				setDislikes(data.dislikes || 0); // 초기 싫어요 수 설정
 				setLoading(false);
+
+				if (data.author === currentName) {
+					setAuthor(true); // 작성자와 로그인한 사용자의 이름이 일치하면 수정/삭제 표시
+				} else {
+					setAuthor(false); // 일치하지 않으면 버튼을 숨김
+				}
 			} catch (error) {
-				setError("리뷰 정보를 가져오는 중 오류가 발생했습니다.");
+				setError('리뷰 정보를 가져오는 중 오류가 발생했습니다.');
 				setLoading(false);
 			}
 		};
 
 		fetchReviewDetail();
-	}, [id]);
+	}, [id, currentName]);
 
 	// 삭제 함수
 	const handleDelete = async () => {
 		try {
 			//id값 확인
-			console.log("삭제할 리뷰 id:", { id });
+			console.log('삭제할 리뷰 id:', { id });
 
 			const response = await fetch(
 				`http://localhost:8080/api/review/delete/${id}`,
 				{
-					method: "DELETE",
+					method: 'DELETE',
 				}
 			);
 
 			if (response.ok) {
-				alert("리뷰가 삭제되었습니다");
-				navigate("/review");
+				alert('리뷰가 삭제되었습니다');
+				navigate('/review');
 			} else {
-				throw new Error("리뷰 삭제 실패");
+				throw new Error('리뷰 삭제 실패');
 			}
 		} catch (error) {
-			console.error("삭제 요청 중 오류 발생: ", error);
-			alert("리뷰 삭제 중 오류가 발생했습니다.");
+			console.error('삭제 요청 중 오류 발생: ', error);
+			alert('리뷰 삭제 중 오류가 발생했습니다.');
 		}
 	};
 
@@ -87,14 +103,14 @@ const ReviewDetail = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/like/${id}`,
 				{
-					method: "POST",
+					method: 'POST',
 				}
 			);
 			if (response.ok) {
 				setLikes(likes + 1);
 			}
 		} catch (error) {
-			console.error("좋아요 요청 중 오류 발생: ", error);
+			console.error('좋아요 요청 중 오류 발생: ', error);
 		}
 	};
 
@@ -104,14 +120,14 @@ const ReviewDetail = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/dislike/${id}`,
 				{
-					method: "POST",
+					method: 'POST',
 				}
 			);
 			if (response.ok) {
 				setDislikes(dislikes + 1);
 			}
 		} catch (error) {
-			console.error("싫어요 요청 중 오류 발생: ", error);
+			console.error('싫어요 요청 중 오류 발생: ', error);
 		}
 	};
 
@@ -128,7 +144,7 @@ const ReviewDetail = () => {
 								{loading && <div>리뷰 정보를 불러오는 중...</div>}
 								{error && <div>{error}</div>}
 								{/* 리뷰 데이터를 가져왔을 때만 해당 내용 표시 */}
-								{review && !loading && !error && (
+								{review && (
 									<>
 										<Row className="justify-content-center">
 											<Col className="order-lg-2 text-center" lg="3">
@@ -154,26 +170,31 @@ const ReviewDetail = () => {
 												lg="4"
 											>
 												<div>
-													<Button
-														color="default"
-														href={`/review/update/${id}`}
-														size="sm"
-													>
-														수정하기
-													</Button>
-													<Button
-														color="danger"
-														size="sm"
-														onClick={handleDelete}
-													>
-														삭제하기
-													</Button>
+													{/* 작성자와 현재 사용자 비교 */}
+													{author && (
+														<div>
+															<Button
+																color="default"
+																href={`/review/update/${id}`}
+																size="sm"
+															>
+																수정하기
+															</Button>
+															<Button
+																color="danger"
+																size="sm"
+																onClick={handleDelete}
+															>
+																삭제하기
+															</Button>
+														</div>
+													)}
 													<ReportModal
 														category={3}
 														categoryId={id}
 														categoryTitle={review.title}
 														style={{
-															fontSize: "0.75rem",
+															fontSize: '0.75rem',
 														}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
 													/>
 												</div>
@@ -184,7 +205,14 @@ const ReviewDetail = () => {
 											<Row>
 												<Col sm="6">
 													<small className="float-left ml-1">
-														{new Date(review.createdDate).toLocaleString()}
+														{new Date(review.createdDate).toLocaleString(
+															'ko-KR',
+															{
+																year: 'numeric', // 4자리 연도
+																month: '2-digit', // 2자리 월
+																day: '2-digit', // 2자리 일
+															}
+														)}
 													</small>
 												</Col>
 												<Col sm="6">

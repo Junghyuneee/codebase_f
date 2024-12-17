@@ -4,8 +4,8 @@
 */
 
 // src: /api/review/create
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
 	Button,
@@ -15,24 +15,34 @@ import {
 	Row,
 	Col,
 	Form,
-} from "reactstrap";
+} from 'reactstrap';
 
-import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import SimpleFooter from "./SimpleFooter";
-import ReviewHeader from "./ReviewHeader";
-import { getAccessToken } from "@/api/auth/getset.js"; // 토큰을 가져오는 함수
+import NavigationBar from '@/components/Navbars/NavigationBar.jsx';
+import SimpleFooter from './SimpleFooter';
+import ReviewHeader from './ReviewHeader';
+import { getAccessToken, getName } from '@/api/auth/getset.js'; // 토큰을 가져오는 함수
 
 const ReviewCreate = () => {
-	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
+	const [title, setTitle] = useState('');
+	const [content, setContent] = useState('');
+	const [author, setAuthor] = useState('');
 	const navigate = useNavigate();
 
-	// 로그인 상태 확인
-	if (!getAccessToken()) {
-		alert("로그인이 필요합니다.");
-		navigate("/review");
-		return;
-	}
+	useEffect(() => {
+		// 로그인 상태 확인
+		if (!getAccessToken()) {
+			alert('로그인이 필요합니다.');
+			navigate('/review');
+			return;
+		}
+
+		const name = getName();
+		if (name) {
+			setAuthor(name);
+		} else {
+			alert('사용자 정보를 가져오지 못했습니다.');
+		}
+	}, [navigate]);
 
 	//리뷰 등록
 	const handleSubmit = async (e) => {
@@ -40,32 +50,32 @@ const ReviewCreate = () => {
 
 		// 입력값 확인
 		if (!title.trim() || !content.trim()) {
-			alert("제목과 내용을 모두 입력해주세요.");
+			alert('제목과 내용을 모두 입력해주세요.');
 			return;
 		}
 
 		try {
 			// 서버에 데이터 전송
 			const response = await fetch(`http://localhost:8080/api/review`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ title, content }),
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ title, content, author }),
 			});
 
 			if (response.ok) {
 				// 성공적으로 등록되었을 경우
-				alert("리뷰가 성공적으로 등록되었습니다.");
-				setTitle("");
-				setContent("");
+				alert('리뷰가 성공적으로 등록되었습니다.');
+				setTitle('');
+				setContent('');
 				navigate(`/review`); // 목록 페이지로 이동
 			} else {
 				const errorData = await response.json();
-				console.error("리뷰 등록 실패:", errorData);
-				alert("리뷰 등록에 실패했습니다.");
+				console.error('리뷰 등록 실패:', errorData);
+				alert('리뷰 등록에 실패했습니다.');
 			}
 		} catch (error) {
-			console.error("리뷰 등록 오류:", error.message);
-			alert("리뷰 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+			console.error('리뷰 등록 오류:', error.message);
+			alert('리뷰 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
 		}
 	};
 
@@ -89,7 +99,7 @@ const ReviewCreate = () => {
 									className="btn-icon mb-3 mb-sm-0 btn-info"
 									color="info"
 									onClick={handleNavigateToList}
-									style={{ width: "5rem" }}
+									style={{ width: '5rem' }}
 								>
 									<span className="btn-inner--text">목록</span>
 								</Button>
