@@ -5,9 +5,10 @@
 import {useEffect, useRef, useState} from "react";
 import { Row, Col } from "reactstrap";
 import Chart from "chart.js/auto";
-import axios from "axios"
+import apiClient from "@/api/apiClient.js";
 
 function DashBoardContent() {
+
     return (
         <Row>
             <Col className="p-0 m-4">
@@ -40,7 +41,7 @@ const VisitorChart = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dashboard/visitor/weekly')
+        apiClient.get('/dashboard/visitor/weekly')
             .then(response => {
                 setData(response.data);
             })
@@ -109,7 +110,7 @@ const PopularProjectsChart = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dashboard/popular/project')
+        apiClient.get('/dashboard/popular/project')
             .then(response => {
                 setData(response.data);
             })
@@ -185,7 +186,7 @@ const NewMemberChart = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dashboard/newMember/weekly')
+        apiClient.get('/dashboard/newMember/weekly')
             .then(response => {
                 setData(response.data);
             })
@@ -254,7 +255,7 @@ const PopularPostsChart = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/dashboard/popular/post')
+        apiClient.get('/dashboard/popular/post')
             .then(response => {
                 setData(response.data);
             })
