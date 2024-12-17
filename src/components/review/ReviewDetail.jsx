@@ -5,14 +5,17 @@
 
 // src: /api/review/detail/{id}
 // src: /api/review/delete/{id}
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from "react-bootstrap";
+
 
 import DemoNavbar from './DemoNavbar';
 import SimpleFooter from './SimpleFooter';
 import ReviewHeader from './ReviewHeader';
+import ReportModal from "@/components/admin/ReportModal.jsx";
+
 
 const ReviewDetail = () => {
 	const { id } = useParams(); // URL에서 id 파라미터를 가져옴
@@ -38,7 +41,7 @@ const ReviewDetail = () => {
 				setDislikes(data.dislikes || 0); // 초기 싫어요 수 설정
 				setLoading(false);
 			} catch (error) {
-				setError('리뷰 정보를 가져오는 중 오류가 발생했습니다.');
+				setError("리뷰 정보를 가져오는 중 오류가 발생했습니다.");
 				setLoading(false);
 			}
 		};
@@ -50,24 +53,24 @@ const ReviewDetail = () => {
 	const handleDelete = async () => {
 		try {
 			//id값 확인
-			console.log('삭제할 리뷰 id:', { id });
+			console.log("삭제할 리뷰 id:", { id });
 
 			const response = await fetch(
 				`http://localhost:8080/api/review/delete/${id}`,
 				{
-					method: 'DELETE',
+					method: "DELETE",
 				}
 			);
 
 			if (response.ok) {
-				alert('리뷰가 삭제되었습니다');
-				navigate('/review');
+				alert("리뷰가 삭제되었습니다");
+				navigate("/review");
 			} else {
-				throw new Error('리뷰 삭제 실패');
+				throw new Error("리뷰 삭제 실패");
 			}
 		} catch (error) {
-			console.error('삭제 요청 중 오류 발생: ', error);
-			alert('리뷰 삭제 중 오류가 발생했습니다.');
+			console.error("삭제 요청 중 오류 발생: ", error);
+			alert("리뷰 삭제 중 오류가 발생했습니다.");
 		}
 	};
 
@@ -77,14 +80,14 @@ const ReviewDetail = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/like/${id}`,
 				{
-					method: 'POST',
+					method: "POST",
 				}
 			);
 			if (response.ok) {
 				setLikes(likes + 1);
 			}
 		} catch (error) {
-			console.error('좋아요 요청 중 오류 발생: ', error);
+			console.error("좋아요 요청 중 오류 발생: ", error);
 		}
 	};
 
@@ -94,14 +97,14 @@ const ReviewDetail = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/dislike/${id}`,
 				{
-					method: 'POST',
+					method: "POST",
 				}
 			);
 			if (response.ok) {
 				setDislikes(dislikes + 1);
 			}
 		} catch (error) {
-			console.error('싫어요 요청 중 오류 발생: ', error);
+			console.error("싫어요 요청 중 오류 발생: ", error);
 		}
 	};
 
@@ -158,6 +161,14 @@ const ReviewDetail = () => {
 													>
 														삭제하기
 													</Button>
+													<ReportModal
+														category={3}
+														categoryId={id}
+														categoryTitle={review.title}
+														style={{
+															fontSize: '0.75rem'
+														}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
+													/>
 												</div>
 											</Col>
 										</Row>
