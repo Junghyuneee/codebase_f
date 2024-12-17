@@ -1,7 +1,7 @@
 import { Button, Card, Container, Row, Col } from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import { useEffect, useState } from "react";
-import { getMember } from "@/api/auth/member.js";
+import {getMemberByName, getProfile} from "@/api/auth/member.js";
 import { useNavigate, useParams } from "react-router-dom";
 import { getEmail } from "@/api/auth/getset.js";
 import ChatMainModal from "@/components/chat/Modal/ChatMainModal.jsx";
@@ -15,7 +15,7 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchMembers = async () => {
-            const response = await getMember(id);
+            const response = id ? await getMemberByName(id) : await getProfile();
             setMember(response);
         }
         fetchMembers();

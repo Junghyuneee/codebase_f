@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Link } from "react-router-dom";
 import {
-  Button,
   UncontrolledCollapse,
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
   UncontrolledDropdown,
-  Media,
   NavbarBrand,
   Navbar,
   NavItem,
@@ -25,7 +23,6 @@ import argonReactWhite from '../../assets/img/brand/argon-react-white.png';
 
 function DemoNavbar() {
   const [collapseClasses, setCollapseClasses] = useState("");
-  const [collapseOpen, setCollapseOpen] = useState(false);
 
 
 

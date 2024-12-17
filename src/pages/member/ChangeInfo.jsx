@@ -1,19 +1,19 @@
-import { Button, Card, CardBody, Form } from "react-bootstrap";
+import {Button, Card, CardBody, Form} from "react-bootstrap";
 import Postcode from "@/components/auth/DaumAddress.jsx";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getMember } from "@/api/auth/member.js";
-import { useForm } from "react-hook-form";
+import {useEffect, useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useForm} from "react-hook-form";
 import NameSection from "@/components/auth/register/NameSection.jsx";
 import TelSection from "@/components/auth/register/TelSection.jsx";
-import { updateProfile } from "@/api/auth/auth";
+import {removeProfile, updateProfile} from "@/api/auth/auth";
+import {getProfile} from "@/api/auth/member.js";
 
 const ChangeInfo = () => {
     const {
         register,
         handleSubmit,
         watch,
-        formState: { errors },
+        formState: {errors},
         setValue,
         trigger,
         clearErrors
@@ -27,7 +27,7 @@ const ChangeInfo = () => {
 
     useEffect(() => {
         const fetchMembers = async () => {
-            const response = await getMember();
+            const response = await getProfile();
             setValue('username', response.name);
             initialName.current = response.name;
             setValue('address', response.addr);
@@ -42,9 +42,20 @@ const ChangeInfo = () => {
         if (window.confirm('회원정보를 수정하시겠습니까?')) {
             try {
                 await updateProfile(data);
-                navigate("/profile", { replace: true });
+                navigate("/profile", {replace: true});
             } catch (error) {
                 alert(error.response?.data?.error || '회원정보 수정 중 오류가 발생했습니다.');
+            }
+        }
+    }
+
+    const handleRemoveProfile = async () => {
+        if (window.confirm("정말 탈퇴하시겠습니까?")) {
+            const response = await removeProfile();
+            if (response) {
+                alert("계정이 삭제되엇습니다.");
+                localStorage.clear();
+                navigate("/", {replace: true});
             }
         }
     }
@@ -53,16 +64,17 @@ const ChangeInfo = () => {
         <main>
             <section className="section section-shaped section-lg">
                 <div className="shape shape-style-1 bg-gradient-default">
-                    <span />
-                    <span />
-                    <span />
-                    <span />
-                    <span />
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
+                    <span/>
                 </div>
-                <div className="d-flex flex-column align-items-center" style={{ maxWidth: '600px', margin: '0 auto' }}>
+                <div className="d-flex flex-column align-items-center" style={{maxWidth: '600px', margin: '0 auto'}}>
                     <Card className="bg-secondary shadow border-0 w-100">
                         <CardBody className="px-lg-5 py-lg-5">
-                            <Form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column" style={{ gap: '1rem' }}>
+                            <Form onSubmit={handleSubmit(onSubmit)} className="d-flex flex-column"
+                                  style={{gap: '1rem'}}>
                                 <NameSection
                                     register={register}
                                     errors={errors}
@@ -87,7 +99,7 @@ const ChangeInfo = () => {
                                 />
 
                                 <Form.Group className="mb-3">
-                                    <div className="d-flex mb-2" style={{ gap: '1rem' }}>
+                                    <div className="d-flex mb-2" style={{gap: '1rem'}}>
                                         <Form.Control
                                             type="text"
                                             disabled
@@ -120,21 +132,26 @@ const ChangeInfo = () => {
                                     )}
                                 </Form.Group>
 
-                                <div className="text-center">
-                                    <Button
-                                        className="mt-4"
-                                        color="primary"
-                                        type="submit"
+                                <div className="d-flex justify-content-between">
+                                    <Button className={"bg-danger"} type={"button"}
+                                            onClick={handleRemoveProfile}
                                     >
-                                        수정
+                                        탈퇴
                                     </Button>
-                                    <Button
-                                        className="mt-4 bg-danger"
-                                        type="button"
-                                        onClick={() => navigate("/profile", { replace: true })}
-                                    >
-                                        취소
-                                    </Button>
+                                    <div className="d-flex" style={{gap: '.5rem'}}>
+                                        <Button
+                                            color="primary"
+                                            type="submit"
+                                        >
+                                            수정
+                                        </Button>
+                                        <Button
+                                            className={"bg-gray-dark"}
+                                            type="button"
+                                            onClick={() => navigate("/profile", {replace: true})}
+                                        >
+                                            취소
+                                        </Button></div>
                                 </div>
                             </Form>
                         </CardBody>

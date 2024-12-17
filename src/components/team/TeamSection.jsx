@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import {
   Container,
@@ -19,17 +19,14 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
+import isAuthenticated from "@/utils/isAuthenticated.js";
+import PropTypes from 'prop-types';
 
 
-function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
+function TeamSection({ projects, currentPage, totalPages, onPageChange, currentMemberId }) {
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const navigate = useNavigate();
-
-  // 모버깅을 위한 콘솔 로그 추가
-  useEffect(() => {
-    console.log('TeamSection Props:', { projects, currentPage, totalPages });
-  }, [projects, currentPage, totalPages]);
 
   // 모달 열기/닫기
   const toggleModal = (team) => {
@@ -37,17 +34,67 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
     setModal(!modal);
   };
 
-  // 팀 삭제
-  const deleteTeam = async (id) => {
+  // 팀 삭제 함수 수정
+  const handleDelete = async (teamId) => {
     if (!window.confirm("정말 삭제하시겠습니까?")) return;
     try {
-      await axios.delete(`/api/projectteams/${id}`);
+      await axios.delete(`/api/projectteams/${teamId}`);
       alert("팀이 삭제되었습니다!");
-      location.reload(true);
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting team:", error);
       alert("삭제 중 오류가 발생했습니다.");
     }
+  };
+
+  const renderDeleteButton = (projectMemberId, team) => {
+    if (!isAuthenticated()) {
+      return null;
+    }
+    
+    if (Number(currentMemberId) === Number(projectMemberId)) {
+      return (
+        <Button 
+          color="danger" 
+          size="sm" 
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDelete(team.pjt_id);
+          }}
+        >
+          삭제
+        </Button>
+      );
+    }
+    
+    return null;
+  };
+
+  // 페이지네이션 부분만 수정
+  const renderPagination = () => {
+    // projects 배열이 없거나 비어있으면 페이지네이션을 표시하지 않음
+    if (!projects || projects.length === 0) {
+      return null;
+    }
+
+    return (
+      <Container className="mt-4">
+        <Pagination className="d-flex justify-content-center">
+          {[...Array(totalPages)].map((_, i) => (
+            <PaginationItem 
+              key={i} 
+              active={currentPage === i + 1}
+              // projects가 없거나 필터링으로 인해 데이터가 없는 페이지는 비활성화
+              disabled={!projects || projects.length === 0}
+            >
+              <PaginationLink onClick={() => onPageChange(i + 1)}>
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        </Pagination>
+      </Container>
+    );
   };
 
   return (
@@ -67,29 +114,39 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
                           : defaultImage
                       }
                       top
+                      style={{ 
+                        height: '200px',     // 높이 고정
+                        objectFit: 'cover',  // 이미지 비율 유지하면서 영역 채우기
+                        objectPosition: 'center' // 이미지 중앙 정렬
+                      }}
                     />
-                    <CardBody className="py-5">
-                      <h6 className="text-primary text-uppercase">{team.pjtname}</h6>
-                      <p className="description mt-3">{team.pjtdescription}</p>
-                      <div>
-                        <Badge color="primary" pill className="mr-1">
-                          {team.pjcategory}
-                        </Badge>
+                    <CardBody className="py-3">
+                      <h6 className="text-primary text-uppercase mb-1">
+                        {team.pjtname}
+                      </h6>
+                      <p className="description mt-2 mb-2">
+                        {team.pjtdescription}
+                      </p>
+                      <div className="mb-2">
+                        {team.pjcategory?.split(',').map((category, index) => (
+                          <Badge 
+                            key={index}
+                            color="primary" 
+                            pill 
+                            className="mr-1 mb-1"
+                          >
+                            {category.trim()}
+                          </Badge>
+                        )) || "카테고리 없음"}
                       </div>
-                      <div className="mt-3">
+                      <div className="d-flex gap-2">
                         <Button
-                          className="mt-2"
                           color="primary"
                           onClick={() => toggleModal(team)}
                         >
                           자세히 보기
                         </Button>
-                        <Button
-                          color="danger"
-                          onClick={() => deleteTeam(team.pjt_id)}
-                        >
-                          삭제
-                        </Button>
+                        {renderDeleteButton(team.memberId, team)}
                       </div>
                     </CardBody>
                   </Card>
@@ -100,20 +157,8 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
         </Row>
       </Container>
 
-      {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <Container className="mt-4">
-          <Pagination className="d-flex justify-content-center">
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i} active={currentPage === i + 1}>
-                <PaginationLink onClick={() => onPageChange(i + 1)}>
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-          </Pagination>
-        </Container>
-      )}
+      {/* 수정된 페이지네이션 렌더링 */}
+      {renderPagination()}
 
       {/* Modal */}
       <Modal isOpen={modal} toggle={() => toggleModal(null)} size="lg">
@@ -126,11 +171,19 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
               <img
                 src={
                   selectedTeam?.pjtimg
-                    ? `${import.meta.env.VITE_APP_AWS_BUCKET}/${selectedTeam.pjtimg}`
-                    : defaultImage
+
+                  ? `${import.meta.env.VITE_APP_AWS_BUCKET}/${selectedTeam.pjtimg}`
+                  : defaultImage
+
                 }
                 alt={selectedTeam?.pjtname}
-                style={{ width: '100%', borderRadius: '8px' }}
+                style={{ 
+                  width: '100%', 
+                  maxHeight: '300px',    // 최대 높이 제한
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  borderRadius: '8px' 
+                }}
               />
             </Col>
             <Col md="8">
@@ -167,5 +220,12 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange }) {
   );
 }
 
+TeamSection.propTypes = {
+  projects: PropTypes.array,
+  currentPage: PropTypes.number,
+  totalPages: PropTypes.number,
+  onPageChange: PropTypes.func,
+  currentMemberId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
 
 export default TeamSection;

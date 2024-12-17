@@ -46,12 +46,12 @@ function ProjectForm() {
     fix = fix.replace(/^0|\D/g, ""); //맨앞 0이랑 숫자 아닌 문자 삭제
     setPrice(fix);
     document.getElementById("price").value = fix;
-    console.log("price 확인: ", price);
+    //console.log("price 확인: ", price);
   }, [price]); // (onchange 이벤트 중)
 
 
   useEffect(() => {
-    console.log("free 확인: ", free);
+    //console.log("free 확인: ", free);
     if (free) {
       document.getElementById("price").disabled = true;
       setPrice(0);//0
@@ -75,9 +75,40 @@ function ProjectForm() {
       alert('제목과 내용을 모두 입력해주세요.');
       return false;
     }
-  
+
     return true;
   }
+
+  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    console.log("file change", file);
+
+    if (!file) {
+      setPreview(""); // 파일이 없으면 미리보기 초기화
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      console.error("Selected file is not an image");
+      setPreview("");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      setPreview(event.target.result); // 파일 내용을 상태로 저장
+    };
+
+    reader.readAsDataURL(file);
+
+    // 리소스 정리
+    return () => reader.abort();
+
+
+  }, [file]);
+
 
   function filevalid() {
     if (file) {
@@ -95,7 +126,9 @@ function ProjectForm() {
   }
 
 
-  function submit(event) {
+
+
+  async function submit(event) {
 
     if (!valid()) {
       return;
@@ -119,10 +152,10 @@ function ProjectForm() {
 
 
     if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
-      postData('/api/store/add', formData);
+      const result = await postData('/api/store/add', formData);
 
       alert("게시되었습니다.");
-      navigate("/store");
+      navigate(`/store/${result}`);
     }
     else {
       //확인창에서 취소
@@ -152,6 +185,7 @@ function ProjectForm() {
                       placeholder="프로젝트 명"
                       type="text"
                       onChange={(e) => setTitle(e.target.value)}
+                      maxLength={77}
                     />
                   </InputGroup>
                 </div>
@@ -167,7 +201,7 @@ function ProjectForm() {
                       type="text"
                       onChange={(e) => setPrice(e.target.value)}
                       id="price"
-                      min="0"
+                      maxLength={10}
                     />
                     <FormGroup
                       check
@@ -191,20 +225,21 @@ function ProjectForm() {
                     onChange={(e) => setContent(e.target.value)}
                     rows="10"
                     type="textarea"
+                    maxLength={500}
                   />
                 </div>
 
 
                 <InputGroup className="input-group-alternative">
 
-                  
-                  
+
+
 
                 </InputGroup>
 
                 <Row xs="2 pb-4">
                   <Col className="">
-                    프로젝트 파일
+                    썸네일
                   </Col>
                   <Col className="">
                     상세 이미지
@@ -213,24 +248,47 @@ function ProjectForm() {
 
                 <Row xs="2 pb-4">
                   <Col className="">
-                  <Input
-                    type="file"
-                    onChange={handleFileChange}
-
-                  />
+                    <Input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept="images/*"
+                    />
+                    {/*preview && <img src={preview} alt="Preview" style={{ display: "block", maxWidth: "100%" }} />*/}
+                    {preview && (
+                      <div
+                        style={{
+                          maxWidth: "300px",  // 컨테이너의 최대 너비 설정
+                          maxHeight: "300px", // 컨테이너의 최대 높이 설정
+                          overflow: "auto",   // 스크롤바 활성화
+                          border: "1px solid #ccc", // 컨테이너에 테두리 추가
+                          padding: "5px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          style={{
+                            display: "block",
+                            maxWidth: "100%", // 이미지를 컨테이너 너비에 맞춤
+                            maxHeight: "100%", // 이미지를 컨테이너 높이에 맞춤
+                          }}
+                        />
+                      </div>
+                    )}
                   </Col>
                   <Col className="">
-                  {/* <Input
+                    {/* <Input
                     type="file"
                     onChange={handleFileChange}
 
                   /> */}
-                  {/*accept=".zip"*/}
+                    {/*accept=".zip"*/}
                   </Col>
                 </Row>
-                
-                
-                <div>미리보기 영역</div>
+
+
+
 
                 <div>
                   <Button
@@ -258,10 +316,45 @@ function ProjectForm() {
 function Page() {
   return (
     <>
-      <main className="bg-secondary">
+      <main>
+        <section className="section section-lg section-shaped my-0">
+          {/* Circles background */}
+          <div className="shape shape-style-1 shape-default">
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          
+          {/* SVG separator */}
+          <div className="separator separator-bottom separator-skew">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              version="1.1"
+              viewBox="0 0 2560 100"
+              x="0"
+              y="0"
+            >
+              <polygon
+                className="fill-white"
+                points="2560 0 2560 100 0 100"
+              />
+            </svg>
+          </div>
+        </section>
         <Banner_mini />
         <Container>{ProjectForm()}</Container>
+        
       </main>
+
+      {/* <main className="bg-secondary">
+        <Banner_mini />
+        <Container>{ProjectForm()}</Container>
+      </main> */}
 
 
     </>

@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@portone/browser-sdk": "^0.0.11",
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.7",
     "bootstrap": "^4.6.2",

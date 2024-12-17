@@ -90,3 +90,8 @@ export const updatePassword = async (data) => {
     const response = await apiClient.post("/auth/update/password", data);
     return response.data;
 }
+
+export const removeProfile = async () => {
+    const response = await apiClient.delete("/auth/profile");
+    return response.data;
+}
