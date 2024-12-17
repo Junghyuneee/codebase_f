@@ -294,7 +294,7 @@ function MyBanner() {
 }
 function Page() {
 
-  history.pushState(null,'',`?page=0&sort=recently`)
+  //history.pushState(null,'',`?page=0&sort=recently`)
 
   return (
     <>
