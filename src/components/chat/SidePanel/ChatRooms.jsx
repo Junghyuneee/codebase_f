@@ -18,7 +18,7 @@ const ChatRooms = () => {
     }
 
     useEffect(() => {
-        if(show){
+        if (show) {
             createChatroomRef.current.focus();
         }
     }, [show]);
@@ -44,17 +44,43 @@ const ChatRooms = () => {
     const renderChatrooms = (chatRooms) => (
         chatRooms.length > 0 && (
             chatRooms.map((room) => (
+                (room.DM === false) &&
                 <li key={room.id}
                     className="p-2 align-items-center m-0 d-flex align-items-center justify-content-between"
                     onClick={() => {
-                        room.hasNewMessage=false
+                        room.hasNewMessage = false
                         setActiveChatRoomId(room.id);
                         onSelect(room);
                     }}
                     style={{cursor: 'pointer', backgroundColor: room.id === activeChatRoomId && "#FFFFFF45"}}
                 >
-                    <div className="d-flex align-items-center" style={{gap:'.5rem'}}><h4 className="text-white m-0">{room.title} </h4>
-                        ({room.memberCount})</div>
+                    <div className="d-flex align-items-center" style={{gap: '.5rem'}}>
+                        <h5 className="text-white m-0">{room.title} </h5>
+                        ({room.memberCount})
+                    </div>
+                    {room.hasNewMessage && <FaCircle className="text-red"/>}
+                </li>
+            ))
+        )
+    )
+
+    const renderDMs = (chatRooms) => (
+        chatRooms.length > 0 && (
+            chatRooms.map((room) => (
+                (room.DM) &&
+                <li key={room.id}
+                    className="p-2 align-items-center m-0 d-flex align-items-center justify-content-between"
+                    onClick={() => {
+                        room.hasNewMessage = false
+                        setActiveChatRoomId(room.id);
+                        onSelect(room);
+                    }}
+                    style={{cursor: 'pointer', backgroundColor: room.id === activeChatRoomId && "#FFFFFF45"}}
+                >
+                    <div className="d-flex align-items-center" style={{gap: '.5rem'}}>
+                        <h5 className="text-white m-0">{room.title} </h5>
+                        ({room.memberCount})
+                    </div>
                     {room.hasNewMessage && <FaCircle className="text-red"/>}
                 </li>
             ))
@@ -64,20 +90,26 @@ const ChatRooms = () => {
     return (
         <div>
             <div className="justify-content-between px-2" style={{
-                width: '100%',                display: 'flex', alignItems: 'center',
+                width: '100%', display: 'flex', alignItems: 'center',
                 textAlign: "center"
             }}>
-                <div className="d-flex align-items-center" style={{gap:'.5rem'}}><h2 className="text-white align-items-center">
+                <div className="d-flex align-items-center" style={{gap: '.5rem'}}><h2
+                    className="text-white align-items-center">
                     <FaCommentDots/>
-                </h2> &nbsp; {''} ( {chatRooms.length} )</div>
+                </h2> &nbsp; {''} ( {chatRooms.length} )
+                </div>
                 <FaPlus style={{
-                     cursor: 'pointer'
+                    cursor: 'pointer'
                 }} onClick={handleShow}/>
 
             </div>
             <hr className="border-white"/>
             <ul style={{listStyleType: 'none', padding: 0}}>
                 {renderChatrooms(chatRooms)}
+            </ul>
+            <hr className="border-white"/>
+            <ul style={{listStyleType: 'none', padding: 0}}>
+                {renderDMs(chatRooms)}
             </ul>
 
             {/* ADD CHAT ROOM MODAL*/}
