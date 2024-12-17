@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // useParams 임포트
 import axios from "axios"; // axios 임포트
 import {
   Container,
-  Row,
-  Col,
-  Button,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText
+  
 } from "reactstrap"; // reactstrap 컴포넌트 추가
 import './teamdetail.css';
-import Navbar from './Navbar.jsx'
+import Navbar from '../Navbars/NavigationBar.jsx'
 
 const Teamdetail = () => {
   const { id } = useParams(); // URL에서 ID를 추출
   const [team, setTeam] = useState(null);
-  const [searchFocused, setSearchFocused] = useState(false); // 검색 상태 추가
-  const [toggle, setToggle] = useState(false); // 토글 상태 추가
-
+  
   // 팀 데이터 로드
   useEffect(() => {
     const fetchTeam = async () => {

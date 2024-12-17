@@ -2,7 +2,7 @@ import { Button, Card, CardBody, Form } from "react-bootstrap";
 import Postcode from "@/components/auth/DaumAddress.jsx";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getMember } from "@/api/auth/member.js";
+import { getMemberByName } from "@/api/auth/member.js";
 import { useForm } from "react-hook-form";
 import NameSection from "@/components/auth/register/NameSection.jsx";
 import TelSection from "@/components/auth/register/TelSection.jsx";
@@ -27,7 +27,7 @@ const ChangeInfo = () => {
 
     useEffect(() => {
         const fetchMembers = async () => {
-            const response = await getMember();
+            const response = await getMemberByName();
             setValue('username', response.name);
             initialName.current = response.name;
             setValue('address', response.addr);

@@ -19,7 +19,6 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]);
   const [editCommentIndex, setEditCommentIndex] = useState(null);
 
-
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -70,11 +69,8 @@ const PostDetail = () => {
     
     if (comment.trim()) {
       try {
-        // post.id가 실제로 존재하는지 콘솔에서 확인
-        console.log('게시글 ID:', post.id);
-        
         const commentData = {
-          postId: post.id,  // 이 값이 실제 posts 테이블에 있는 id여야 함
+          postId: post.id,
           content: comment.trim(),
           author: "작성자"
         };
@@ -91,7 +87,6 @@ const PostDetail = () => {
           throw new Error('댓글 저장 실패');
         }
 
-        // 댓글 저장 성공 시 처리
         const savedComment = await response.json();
         setComments([...comments, savedComment]);
         setComment('');
@@ -100,17 +95,16 @@ const PostDetail = () => {
         alert('댓글 저장에 실패했습니다.');
       }
     }
-};
+  };
 
   const handleEditComment = (index) => {
     setEditCommentIndex(index);
-    setComment(comments[index].content); // content로 수정
+    setComment(comments[index].content);
   };
 
   const handleDeleteComment = (index) => {
     if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-      const commentId = comments[index].id; // 댓글 ID를 가져옴
-      // 서버에서 댓글 삭제 요청
+      const commentId = comments[index].id;
       fetch(`http://localhost:8080/api/comments/${commentId}`, {
         method: 'DELETE',
       })
@@ -125,7 +119,6 @@ const PostDetail = () => {
     }
   };
 
-  // 좋아요 버튼 클릭 핸들러
   const handleLike = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/post/like/${id}`, {
@@ -139,7 +132,6 @@ const PostDetail = () => {
     }
   };
 
-  // 싫어요 버튼 클릭 핸들러
   const handleDislike = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/post/dislike/${id}`, {
@@ -157,6 +149,11 @@ const PostDetail = () => {
     <Container className="post-detail-container mt-4">
       {loading && <Alert variant="info">리뷰 정보를 불러오는 중...</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
+      
+      <Button variant="secondary" onClick={() => navigate('/post')} className="mb-3">
+        목록
+      </Button>
+
       {post && (
         <Card className="mb-4 shadow-sm">
           <Card.Body>
@@ -185,8 +182,7 @@ const PostDetail = () => {
                 category={1}
                 categoryId={id}
                 categoryTitle={post.title}
-                style={{borderColor: 'white', fontWeight: '600', fontSize: '0.875rem'}} // 여기 스타일 지정하면 신고 버튼에 적용 가능
-                  // 신고 버튼 테두리 없애 봤어요 현식님! 맘에 안들면 바꾸셔도 됩니당
+                style={{borderColor: 'white', fontWeight: '600', fontSize: '0.875rem'}}
               />
             </div>
           </Card.Body>
