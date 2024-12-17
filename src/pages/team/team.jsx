@@ -23,7 +23,7 @@ import TeamSection from "../../components/team/TeamSection.jsx";
 import TeamCreationModal from "../../components/team/TeamCreationModal.jsx";
 import { getMemberId } from "../../api/auth/getset.js";
 import { useNavigate } from 'react-router-dom';
-import isAuthenticated from "@/utils/isAuthenticated.js";
+import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 
 // CATEGORIES 배열 추가
 const CATEGORIES = [
