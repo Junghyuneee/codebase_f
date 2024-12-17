@@ -110,7 +110,7 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
                       alt={team.pjtname || "프로젝트 이미지"}
                       src={
                         team.pjtimg
-                          ? `https://codebase-bucket-gvzby4.s3.ap-northeast-2.amazonaws.com/${team.pjtimg}`
+                          ? `${import.meta.env.VITE_APP_AWS_BUCKET}/${team.pjtimg}`
                           : defaultImage
                       }
                       top
@@ -171,8 +171,10 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
               <img
                 src={
                   selectedTeam?.pjtimg
+
                   ? `${import.meta.env.VITE_APP_AWS_BUCKET}/${selectedTeam.pjtimg}`
                   : defaultImage
+
                 }
                 alt={selectedTeam?.pjtname}
                 style={{ 

@@ -4,8 +4,8 @@
 */
 
 // src: /api/review/update/{id}
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
 	Button,
 	FormGroup,
@@ -14,19 +14,19 @@ import {
 	Row,
 	Col,
 	Form,
-} from 'reactstrap';
+} from "reactstrap";
 
-import DemoNavbar from './DemoNavbar';
-import SimpleFooter from './SimpleFooter';
-import ReviewHeader from './ReviewHeader';
+import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
+import SimpleFooter from "./SimpleFooter";
+import ReviewHeader from "./ReviewHeader";
 
 const ReviewUpdate = () => {
 	const { id } = useParams(); //URL에서 id 파라미터를 가져옴
 	//const [review, setReview] = useState({ title: '', content: ''}); // 수정할 리뷰 데이터
 	const [loading, setLoading] = useState(true); // 로딩 상태
 	const [error, setError] = useState(null); // 오류 상태
-	const [title, setTitle] = useState('');
-	const [content, setContent] = useState('');
+	const [title, setTitle] = useState("");
+	const [content, setContent] = useState("");
 	const navigate = useNavigate(); // 리다이렉션 처리
 
 	// 리뷰 데이터 가져오기
@@ -44,7 +44,7 @@ const ReviewUpdate = () => {
 			} catch (error) {
 				//console.error('리뷰 불러오기 오류:', error);
 				//alert('리뷰를 불러오는 중 오류가 발생했습니다.');
-				setError('리뷰 정보를 가져오는 중 오류가 발생했습니다.');
+				setError("리뷰 정보를 가져오는 중 오류가 발생했습니다.");
 				setLoading(false);
 			}
 		};
@@ -69,8 +69,8 @@ const ReviewUpdate = () => {
 			const response = await fetch(
 				`http://localhost:8080/api/review/update/${id}`,
 				{
-					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(updatedReview), // 수정된 리뷰 데이터 전송
 				}
 			);
@@ -83,7 +83,7 @@ const ReviewUpdate = () => {
 				//const updatedReview = JSON.parse(responsebody);
 				//setTitle(updatedReview.title); //수정된 제목 반영
 				//setContent(updatedReview.content); //수정된 내용 반영
-				alert('리뷰가 수정되었습니다.');
+				alert("리뷰가 수정되었습니다.");
 				//navigate(`/review/detail/${id}`); //수정 후 해당 리뷰의 상세 페이지로 돌아감
 				navigate(`/review`);
 			} else {
@@ -94,11 +94,11 @@ const ReviewUpdate = () => {
 				//		response.statusText
 				//	}`
 				//);
-				throw new Error('리뷰 수정 실패');
+				throw new Error("리뷰 수정 실패");
 			}
 		} catch (error) {
-			console.error('리뷰 수정 오류:', error);
-			alert('리뷰 수정 중 오류가 발생했습니다.');
+			console.error("리뷰 수정 오류:", error);
+			alert("리뷰 수정 중 오류가 발생했습니다.");
 		}
 	};
 
@@ -113,7 +113,7 @@ const ReviewUpdate = () => {
 
 	return (
 		<>
-			<DemoNavbar />
+			<NavigationBar />
 			<main>
 				<ReviewHeader />
 				<section className="section">
