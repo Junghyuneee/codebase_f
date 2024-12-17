@@ -4,10 +4,10 @@
 */
 
 // src: /api/review
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./ReviewList.css";
-import { getAccessToken } from "@/api/auth/getset.js"; // 토큰을 가져오는 함수
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import './ReviewList.css';
+import { getAccessToken } from '@/api/auth/getset.js'; // 토큰을 가져오는 함수
 
 import {
 	Button,
@@ -19,18 +19,24 @@ import {
 	Pagination,
 	PaginationItem,
 	PaginationLink,
-} from "reactstrap";
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownToggle,
+} from 'reactstrap';
 
-import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import SimpleFooter from "./SimpleFooter";
-import ReviewHeader from "./ReviewHeader";
+import NavigationBar from '@/components/Navbars/NavigationBar.jsx';
+import SimpleFooter from './SimpleFooter';
+import ReviewHeader from './ReviewHeader';
 
 const ReviewList = () => {
 	const [review, setReview] = useState([]); // 기본값을 빈 배열로 설정
-	const [search, setSearch] = useState(""); // 검색어 상태
-	const [filteredReview, setFilteredReview] = useState([]); // 검색된 목록
+	const [search, setSearch] = useState(''); // 검색어
+	const [filteredReview, setFilteredReview] = useState([]); // 검색/정렬된 목록
 	const [currentPage, setCurrentPage] = useState(1); //현재 페이지 번호
 	const [reviewPerPage] = useState(10); //한 페이지당 표시할 리뷰 개수
+	const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
+	const [selectedSort, setSelectedSort] = useState('최신순'); // 기본 정렬 기준 : 최신순
 	const navigate = useNavigate();
 
 	// 페이지가 로드되었을 때 리뷰 목록을 가져옴
@@ -39,7 +45,7 @@ const ReviewList = () => {
 		fetch(`http://localhost:8080/api/review`)
 			.then((response) => {
 				if (!response.ok) {
-					throw new Error("데이터를 가져오는데 실패했습니다.");
+					throw new Error('데이터를 가져오는데 실패했습니다.');
 				}
 				return response.json();
 			})
@@ -48,22 +54,44 @@ const ReviewList = () => {
 				const sortedData = data.sort(
 					(a, b) => new Date(b.createdDate) - new Date(a.createdDate)
 				);
-				setReview(sortedData);
-				setFilteredReview(sortedData); // 초기화 시 전체 목록 표시
+				setReview(sortedData); // 전체 리뷰 목록 저장
+				setFilteredReview(sortedData); // 필터링된 리뷰 목록 초기화
 			})
 			.catch((error) => {
-				console.error("API 호출 에러:", error);
+				console.error('API 호출 에러:', error);
 			});
 	}, [navigate]);
+
+	// 리뷰 목록을 정렬하는 함수
+	const sortReviews = (data, 정렬기준) => {
+		switch (정렬기준) {
+			case '조회순':
+				// 조회수 내림차순으로 정렬
+				return data.sort((a, b) => b.views - a.views);
+			case '오래된 순':
+				// 작성일 오름차순으로 정렬
+				return data.sort(
+					(a, b) => new Date(a.createdDate) - new Date(b.createdDate)
+				);
+			case '추천순':
+				// 추천순 내림차순으로 정렬
+				return data.sort((a, b) => b.likes - a.likes);
+			case '최신순':
+				// 최신순으로 정렬(기본값)
+				return data.sort(
+					(a, b) => new Date(b.createdDate) - new Date(a.createDate)
+				);
+		}
+	};
 
 	// 등록하기 버튼 핸들러
 	const handleReviewCreate = () => {
 		// 로그인 상태 확인
 		if (!getAccessToken()) {
-			alert("로그인이 필요합니다.");
-			navigate("/login", { state: { from: "/review" } });
+			alert('로그인이 필요합니다.');
+			navigate('/login', { state: { from: '/review' } });
 		} else {
-			navigate("/review/create");
+			navigate('/review/create');
 		}
 	};
 
@@ -72,14 +100,14 @@ const ReviewList = () => {
 		const keyword = e.target.value.toLowerCase(); //검색어 소문자 변환
 		setSearch(keyword);
 		// 검색어가 없으면 전체 데이터를 보여줌
-		if (keyword === "") {
+		if (keyword === '') {
 			setFilteredReview(review);
 			return;
 		}
 		// 검색어가 있는 경우 필터링
 		const filtered = review.filter(
-			(review) => review.title.toLowerCase().includes(search.toLowerCase())
-			//|| review.author.toLowerCase().includes(search.toLowerCase())
+			(review) => review.title.toLowerCase().includes(keyword) // 제목에서 검색어가 포함되는지 확인
+			//|| review.author.toLowerCase().includes(search.toLowerCase()) // 필요 시 작성자도 포함하여 검색할 수 있음
 		);
 		setFilteredReview(filtered);
 	};
@@ -88,19 +116,19 @@ const ReviewList = () => {
 	const handleReviewClick = async (id) => {
 		// 로그인 확인
 		if (!getAccessToken()) {
-			alert("로그인이 필요합니다.");
-			navigate("/review", { state: { from: `/review/detail/${id}` } });
+			alert('로그인이 필요합니다.');
+			navigate('/review', { state: { from: `/review/detail/${id}` } });
 		} else {
 			try {
 				const response = await fetch(
 					`http://localhost:8080/api/review/increaseViews/${id}`,
 					{
-						method: "PUT",
+						method: 'PUT',
 					}
 				);
 				//console.log("응답 상태: ${reponse.status}"); //응답 상태 확인
 				if (!response.ok) {
-					throw new Error("조회수 증가 요청 실패");
+					throw new Error('조회수 증가 요청 실패');
 				}
 				//setReview((prevReviews) =>
 				//prevReviews.map((review) =>
@@ -109,7 +137,7 @@ const ReviewList = () => {
 				//);
 				navigate(`/review/detail/${id}`);
 			} catch (error) {
-				console.error("조회수 증가 오류:", error);
+				console.error('조회수 증가 오류:', error);
 			}
 		}
 	};
@@ -131,6 +159,16 @@ const ReviewList = () => {
 		pageNumbers.push(i);
 	}
 
+	// 드롭다운 열기
+	const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+	// 정렬 방식 변경 함수
+	const handleSortChange = (정렬기준) => {
+		setSelectedSort(정렬기준); // 선택된 정렬 방식 상태 업데이트
+		const sortedReviews = sortReviews([...review], 정렬기준); // 리뷰 목록 정렬
+		setFilteredReview(sortedReviews); // 정렬된 리뷰 목록을 필터링된 리뷰로 설정
+	};
+
 	return (
 		<>
 			<NavigationBar />
@@ -140,7 +178,7 @@ const ReviewList = () => {
 					<Container>
 						<div className="d-flex justify-content-between">
 							{/*검색창*/}
-							<InputGroup className="mb-4" style={{ width: "15rem" }}>
+							<InputGroup className="mb-4" style={{ width: '15rem' }}>
 								<InputGroupAddon addonType="prepend">
 									<InputGroupText>
 										<i className="ni ni-zoom-split-in" />
@@ -154,12 +192,32 @@ const ReviewList = () => {
 								/>
 							</InputGroup>
 
+							{/* 정렬 드롭다운 */}
+							<Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+								<DropdownToggle caret>{selectedSort}</DropdownToggle>{' '}
+								{/* 상태로 텍스트 변경 */}
+								<DropdownMenu>
+									<DropdownItem onClick={() => handleSortChange('최신순')}>
+										최신순
+									</DropdownItem>
+									<DropdownItem onClick={() => handleSortChange('오래된 순')}>
+										오래된 순
+									</DropdownItem>
+									<DropdownItem onClick={() => handleSortChange('조회순')}>
+										조회순
+									</DropdownItem>
+									<DropdownItem onClick={() => handleSortChange('추천순')}>
+										추천순
+									</DropdownItem>
+								</DropdownMenu>
+							</Dropdown>
+
 							{/*등록버튼*/}
 							{/* <Link to="/review/create" className=""> */}
 							<Button
 								className="btn-icon mb-3 mb-sm-0 ml-auto"
 								color="info"
-								style={{ width: "7rem" }}
+								style={{ width: '7rem' }}
 								onClick={handleReviewCreate}
 							>
 								<span className="btn-inner--text">등록하기</span>
@@ -169,7 +227,7 @@ const ReviewList = () => {
 						<div className="">
 							<table
 								className="col-lg-12"
-								style={{ borderCollapse: "collapse", width: "100%" }}
+								style={{ borderCollapse: 'collapse', width: '100%' }}
 							>
 								<thead>
 									<tr>
@@ -188,15 +246,15 @@ const ReviewList = () => {
 										<tr
 											key={review.id}
 											style={{
-												borderTop: "1px solid #ddd",
+												borderTop: '1px solid #ddd',
 												borderBottom:
 													review.id === review[review.length - 1]
-														? "2px solid #ccc"
-														: "none",
+														? '2px solid #ccc'
+														: 'none',
 											}}
 										>
-											<td style={{ padding: "10px" }}>{review.id}</td>
-											<td style={{ padding: "10px" }}>
+											<td style={{ padding: '10px' }}>{review.id}</td>
+											<td style={{ padding: '10px' }}>
 												<Link
 													to={`/review/detail/${review.id}`}
 													onClick={() => handleReviewClick(review.id)} // 클릭시 조회수 증가
@@ -205,21 +263,24 @@ const ReviewList = () => {
 												</Link>
 											</td>
 											<td>{review.author}</td>
-											<td style={{ padding: "10px" }}>
-												{new Date(review.createdDate).toLocaleString("ko-KR", {
-													year: "numeric", //4자리 연도
-													month: "2-digit", //2자리 월
-													day: "2-digit", //2자리 일
-												})}
+											<td style={{ padding: '10px' }}>
+												{new Date(review.createdDate).toLocaleDateString(
+													'ko-KR',
+													{
+														year: 'numeric', // 4자리 연도
+														month: '2-digit', // 2자리 월
+														day: '2-digit', // 2자리 일
+													}
+												)}
 											</td>
-											<td style={{ padding: "10px" }}>{review.views}</td>
+											<td style={{ padding: '10px' }}>{review.views}</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
 							{/* 검색 결과가 없을 때 메시지 표시 */}
 							{filteredReview.length === 0 && (
-								<div style={{ textAlign: "center", marginTop: "20px" }}>
+								<div style={{ textAlign: 'center', marginTop: '20px' }}>
 									<p>검색 결과가 없습니다</p>
 								</div>
 							)}
@@ -228,11 +289,13 @@ const ReviewList = () => {
 							<nav aria-label="Page navigation example">
 								<Pagination className="pagination justify-content-end">
 									<PaginationItem disabled={currentPage === 1}>
+										{/* 이전 페이지지 */}
 										<PaginationLink
 											onClick={() => paginate(currentPage - 1)}
 											previous
 										/>
 									</PaginationItem>
+									{/* 페이지 번호호 */}
 									{pageNumbers.map((number) => (
 										<PaginationItem
 											key={number}
@@ -243,7 +306,7 @@ const ReviewList = () => {
 											</PaginationLink>
 										</PaginationItem>
 									))}
-
+									{/* 다음 페이지 */}
 									<PaginationItem disabled={currentPage === pageNumbers.length}>
 										<PaginationLink
 											onClick={() => paginate(currentPage + 1)}

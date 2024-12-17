@@ -2,7 +2,7 @@
 김은지
 2024 11 08
 */
-import {Routes, Route, Link} from "react-router-dom";
+import {Routes, Route, Link, useNavigate} from "react-router-dom";
 
 import AdminNavBar from "./AdminNavBar.jsx";
 import DashboardContent from "./DashBoard.jsx";
@@ -11,8 +11,22 @@ import ReportManagement from "./ReportManagement.jsx";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import {Container} from "reactstrap";
 import Questions from "./Questions.jsx";
+import {isAdmin} from "@/components/admin/isAdmin.js";
+import {useEffect} from "react";
+import {getAccessToken} from "@/api/auth/getset.js";
 
 function Admin() {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isAdmin()) {
+            alert("관리자 계정으로 로그인하세요.");
+            if(!getAccessToken()) navigate('/login'); // 로그인 X, 로그인 페이지로 이동
+            else navigate('/') // 로그인 O, 메인 페이지로 이동
+        }
+    }, [isAdmin, navigate]);
+
     return (
         <>
             <div className="position-relative">

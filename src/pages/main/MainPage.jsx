@@ -6,6 +6,7 @@ import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import {useEffect, useState} from "react";
 import {isSignined} from "@/api/auth/auth.js";
 import MemberSearchModal from "@/components/auth/MemberSearchModal.jsx";
+import {isAdmin} from "@/components/admin/isAdmin.js";
 
 const MainPage = () => {
 	const navigate = useNavigate();
@@ -44,7 +45,7 @@ const MainPage = () => {
 						<Button onClick={() => navigate('/post')}>Post</Button>
 
 						<Button onClick={() => navigate('/store')}>store</Button>
-						<Button onClick={() => navigate('/admin')}>Admin</Button>
+						{isAdmin() && (<Button onClick={() => navigate('/admin')}>Admin</Button>)}
 						<Button onClick={()=>setShow(true)}>Search Member</Button>
 
 						<VisitorIp/>
