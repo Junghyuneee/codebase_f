@@ -5,37 +5,27 @@
 
 import React, { useEffect, useState, useRef, Outlet } from "react";
 import { Link } from "react-router-dom";
-// nodejs library that concatenates classes
-
-//nav 테스트
 import Banner from "@/components/store/Banner";
-import Banner_mini from "@/components/store/Banner_mini";
 import img from "@/assets/img/theme/img-1-1200x1000.jpg";
 import { getData, useFetch } from "@/components/store/storeAPI";
-import NavigationBar from "@/components/Navbars/NavigationBar";
 import Pagination from 'react-bootstrap/Pagination';
 import {
   Button,
   Card,
   CardImg,
-  ButtonGroup,
+  
   CardBody,
   FormGroup,
-  Input,
   InputGroupAddon,
-  InputGroupText,
+  Input,
   InputGroup,
+
+  ButtonGroup,
   Container,
   Row,
   Col,
-  Badge,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-
+  Badge
 } from "reactstrap";
-import classNames from "classnames";
 
 function OneProjectCard({ thumbnail, name, price }) {
   return (
@@ -89,11 +79,11 @@ function ProjectCards() {
   const [projects, setProjects] = useState(null);
 
   const [page, setPage] = useState(0);
-  
+
 
   // 데이터가 로딩 중이 아니고, 에러가 없을 경우
   useEffect(() => {
- 
+
     if (data) {
       console.log(data);
       setInitprojects(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
@@ -125,24 +115,24 @@ function ProjectCards() {
       const startIndex = page * 4;
       const endIndex = startIndex + 4;
 
-      setProjects(sortedProjects.splice(startIndex,endIndex));
+      setProjects(sortedProjects.splice(startIndex, endIndex));
     }
 
   }, [sortOption, initprojects, page]);
 
 
-  function next(){
-    if(page+1 < Math.ceil(initprojects.length/4)){
-      setPage(page+1);
-      
+  function next() {
+    if (page + 1 < Math.ceil(initprojects.length / 4)) {
+      setPage(page + 1);
+
     }
-    
+
   }
-  function prev(){
-    if(page > 0){
-      setPage(page-1);
+  function prev() {
+    if (page > 0) {
+      setPage(page - 1);
     }
-   
+
   }
 
   const plusHit = (id) => {
@@ -151,26 +141,9 @@ function ProjectCards() {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     <>
-      <div style={{ marginLeft: "10%", marginRight: "10%", paddingTop: "50px"}} >
+      <div style={{ marginLeft: "10%", marginRight: "10%", paddingTop: "50px" }} >
         <ButtonGroup>
           <Button
             color="primary"
@@ -237,75 +210,106 @@ function ProjectCards() {
   );
 }
 
-
-function Pageable(currentPage, max){
-  
-  function pageswitch(){
-
-  }
-
-  return (
-    <>
-      <Pagination>
-
-      <Pagination.Prev />
-
-      <Pagination.Item>{10}</Pagination.Item>
-      <Pagination.Item>{11}</Pagination.Item>
-      <Pagination.Item active>{1}</Pagination.Item>
-      <Pagination.Item>{13}</Pagination.Item>
-      <Pagination.Item disabled>{14}</Pagination.Item>
-
-      <Pagination.Next />
-
-    </Pagination>
-
-    
-    </>
-  );
-}
-
-
-
 function MyBanner() {
   return (
     <>
-      <div className="overlay-header" style={{
-        position: 'absolute', /* 부모 요소 기준으로 위치 지정 */
-        top: '0',
-        left: '0',
-        width: '100%',
-        zIndex: '10', /* 다른 요소 위로 올리기 */
-        backgroundColor: 'rgba(0, 0, 0, 0.0)', /* 반투명 배경 */
-        color: 'white'
-      }}>
-
-        <Banner>
-
-        </Banner>
-
-      </div>
-      <span>
-      asfdasdfasdfasdfasdasdf
-      </span>
-
-
+       <div className="position-relative">
+               {/* Hero for FREE version */}
+               <section className="section section-hero section-shaped">
+                 {/* Background circles */}
+                 <div className="shape shape-style-1 shape-default">
+                   <span className="span-150" />
+                   <span className="span-50" />
+                   <span className="span-50" />
+                   <span className="span-75" />
+                   <span className="span-100" />
+                   <span className="span-75" />
+                   <span className="span-50" />
+                   <span className="span-100" />
+                   <span className="span-50" />
+                   <span className="span-100" />
+                 </div>
+                 <Container className="shape-container d-flex py-lg">
+                   <div className="col px-0">
+                     <Row className="">
+                       <Col className="" lg="6">
+                         <img
+                           alt="..."
+                           className="img-fluid"
+                           src={img}
+                           style={{ width: "200px" }}
+                         />
+                         <h1 className="text-white">ㅋㄷㅂㅇㅅ ㅅㅈ</h1>
+                         <div className="btn-wrapper mt-5">
+                           <Button
+                             className="btn-white btn-icon mb-3 mb-sm-0"
+                             color="default"
+                             href="/store/cart"
+                             size="lg"
+                           >
+                             <span className="btn-inner--icon mr-1">
+                               <i className="ni ni-cloud-download-95" />
+                             </span>
+                             <span className="btn-inner--text">장바구니</span>
+                           </Button>
+                           <Button
+                             className="btn-icon mb-3 mb-sm-0"
+                             color="github"
+                             href="/store/add"
+                             size="lg"
+                             target="_blank"
+                           >
+                             <span className="btn-inner--icon mr-1">
+                               <i className="fa fa-github" />
+                             </span>
+                             <span className="btn-inner--text">
+                               <span className="text-warning mr-1">프로젝트</span>
+                               등록하기
+                             </span>
+                           </Button>
+                         </div>
+                         <div className="mt-5">
+                           <small className="text-white font-weight-bold mb-0 mr-2">
+                             ******ㅁ*ㄴㅇㄹ*ㅁㅇㄹ*
+                           </small>
+                           <img
+                             alt="..."
+                             src={img}
+                             className="ml-1"
+                             style={{ height: "28px" }}
+                            
+                           />
+                         </div>
+                       </Col>
+                     </Row>
+                   </div>
+                 </Container>
+                 {/* SVG separator */}
+                 <div className="separator separator-bottom separator-skew zindex-100">
+                   <svg
+                     xmlns="http://www.w3.org/2000/svg"
+                     preserveAspectRatio="none"
+                     version="1.1"
+                     viewBox="0 0 2560 100"
+                     x="0"
+                     y="0"
+                   >
+                     <polygon
+                       className="fill-white"
+                       points="2560 0 2560 100 0 100"
+                     />
+                   </svg>
+                 </div>
+               </section>
+             </div>
     </>);
 }
 function Page() {
 
-  //history.pushState(null,'',`?page=0&sort=recently`)
-
   return (
     <>
-      {/* <Banner />
-      <Banner_mini /> */}
-      
-
-      
-
-      <section className="section-profile-cover section-shaped my-0 pb-7">
-        {/* Circles background */}
+      {/* <section className="section-profile-cover section-shaped my-0 pb-7">
+        
         <div className="shape shape-style-1 shape-default alpha-4">
           <span />
           <span />
@@ -315,7 +319,7 @@ function Page() {
           <span />
           <span />
         </div>
-        {/* SVG separator */}
+        
         <div className="separator separator-bottom separator-skew">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -331,27 +335,24 @@ function Page() {
             />
           </svg>
         </div>
-      </section>
+      </section> */}
       <MyBanner></MyBanner>
 
 
       <main>
         <ProjectCards />
-        <Container><Pageable/></Container>
+        <Container></Container>
       </main>
       <br />
       <br />
       <br />
       <br />
-
       <br />
       <br />
       <br />
       <br />
       <br />
       <br />
-
-
     </>
   );
 }
