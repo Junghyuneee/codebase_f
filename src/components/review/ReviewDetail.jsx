@@ -172,7 +172,7 @@ const ReviewDetail = () => {
 												<div>
 													{/* 작성자와 현재 사용자 비교 */}
 													{author && (
-														<div>
+														<>
 															<Button
 																color="default"
 																href={`/review/update/${id}`}
@@ -187,7 +187,7 @@ const ReviewDetail = () => {
 															>
 																삭제하기
 															</Button>
-														</div>
+														</>
 													)}
 													<ReportModal
 														category={3}
