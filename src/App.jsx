@@ -40,11 +40,7 @@ function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if(isLoading){
-        return <div>Loading...</div>;
-    }
-
-    return (
+    return !isLoading && (
 
         <Routes>
             <Route path="/" element={<MainPage/>}/>
