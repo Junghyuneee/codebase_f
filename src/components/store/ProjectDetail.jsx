@@ -42,7 +42,7 @@ export function ProjectCard({ project }) {
                     <div className="px-4">
                         <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
                             alt="..."
-                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}
+                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}
                             top
                         />
 

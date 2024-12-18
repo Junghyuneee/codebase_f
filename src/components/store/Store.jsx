@@ -7,19 +7,11 @@ import React, { useEffect, useState, useRef, Outlet } from "react";
 import { Link } from "react-router-dom";
 import Banner from "@/components/store/Banner";
 import img from "@/assets/img/theme/img-1-1200x1000.jpg";
-import { getData, useFetch } from "@/components/store/storeAPI";
-import Pagination from 'react-bootstrap/Pagination';
+import { useFetch } from "@/components/store/storeAPI";
 import {
   Button,
   Card,
   CardImg,
-  
-  CardBody,
-  FormGroup,
-  InputGroupAddon,
-  Input,
-  InputGroup,
-
   ButtonGroup,
   Container,
   Row,
@@ -32,7 +24,7 @@ function OneProjectCard({ thumbnail, name, price }) {
     <>
       <Card className="bg-white shadow border-0 card-lift--hover">
         <blockquote className="card-blockquote p-4">
-          <CardImg style={{ borderRadius: "10px", width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} alt="..." src={`${import.meta.env.VITE_APP_AWS_BUCKET}${thumbnail}`} top />
+          <CardImg style={{ borderRadius: "10px", width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} alt="..." src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${thumbnail}`} top />
           <h5
             className=" font-weight-bold text-black"
             style={{
@@ -257,7 +249,7 @@ function MyBanner() {
                              color="github"
                              href="/store/add"
                              size="lg"
-                             target="_blank"
+                             //target="_blank"
                            >
                              <span className="btn-inner--icon mr-1">
                                <i className="fa fa-github" />
