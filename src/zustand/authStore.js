@@ -1,5 +1,5 @@
-import {create} from "zustand";
-import {devtools} from "zustand/middleware";
+import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 import axios from "axios";
 
 const useAuthStore = create(devtools((set) => ({
@@ -15,7 +15,7 @@ const useAuthStore = create(devtools((set) => ({
         memberId,
         role
     }),
-    clearAuthData: () => set({accessToken: null, email: null, name: null, memberId: null, role: null}),
+    clearAuthData: () => set({ accessToken: null, email: null, name: null, memberId: null, role: null }),
 
     // 리프레시 토큰으로 요청하기
     initializeAuth: async () => {
@@ -26,15 +26,18 @@ const useAuthStore = create(devtools((set) => ({
 
             if (response.status === 200) {
                 const newToken = response.data.accessToken;
-                set({...response.data, accessToken: `Bearer ${newToken}`});
+                set({ ...response.data, accessToken: `Bearer ${newToken}` });
 
             } else {
-                console.warn('Failed to refresh token', response.status);
-                set({accessToken: null, email: null, name: null, memberId: null, role: null});
+                console.warn('No refresh token found', response.status);
             }
         } catch (error) {
             console.error('Error initializing auth:', error);
-            set({accessToken: null, email: null, name: null, memberId: null, role: null});
+
+            if (error.response?.status === 401) {
+                window.location.replace('/login');
+            }
+            set({ accessToken: null, email: null, name: null, memberId: null, role: null });
         }
     }
 })));
