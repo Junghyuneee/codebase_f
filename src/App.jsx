@@ -37,6 +37,7 @@ function App() {
             setIsLoading(false)
         }
         checkRefreshToken();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if(isLoading){
