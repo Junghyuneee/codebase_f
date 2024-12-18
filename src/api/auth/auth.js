@@ -95,3 +95,8 @@ export const removeProfile = async () => {
     const response = await apiClient.delete("/auth/profile");
     return response.data;
 }
+
+export const getRole = async () => {
+    const response = await apiClient.get("/auth/role");
+    return response.data;
+}
