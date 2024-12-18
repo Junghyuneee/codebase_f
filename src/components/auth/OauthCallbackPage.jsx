@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
-import {setAccessToken, setEmail, setMemberId, setName, setProjectCount} from "@/api/auth/getset.js";
+import useAuthStore from "@/zustand/authStore.js";
 
 const OauthCallbackPage = () => {
     const navigate = useNavigate();
@@ -9,13 +9,19 @@ const OauthCallbackPage = () => {
         const handleOauthRedirect = async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get("token");
+            const email = urlParams.get("email");
+            const name = urlParams.get("name");
+            const memberId = urlParams.get("memberId");
+            const role = urlParams.get("role");
 
-            if (token) {
-                setAccessToken('Bearer '+ decodeURIComponent(token));
-                setEmail(decodeURIComponent(urlParams.get("email")));
-                setName(decodeURIComponent(urlParams.get("name")));
-                setMemberId(urlParams.get("memberId"));
-                setProjectCount(urlParams.get("project_count"));
+            if (token && email && name && memberId && role) {
+                useAuthStore.getState().setAuthData(
+                    decodeURIComponent(token),
+                    decodeURIComponent(email),
+                    decodeURIComponent(name),
+                    memberId,
+                    decodeURIComponent(role),
+                );
                 navigate("/", {replace: true});
             }
         }
