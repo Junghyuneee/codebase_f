@@ -61,11 +61,6 @@ export const googleLoginHandler = () => {
     window.location.replace('http://localhost:8080/oauth2/authorization/google');
 }
 
-// 홈페이지 접근시 로그인 됐는지 확인하는 api
-export const isSignined = () => {
-    apiClient.get("/auth");
-}
-
 // 이름 중복 체크
 export const nameCheck = async (param) => {
     const response = await apiClient.get(`/auth/namecheck?name=${param}`);
