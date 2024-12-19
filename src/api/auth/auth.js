@@ -26,7 +26,7 @@ export async function postSignIn(email, password) {
     const response = await apiClient.post("/auth/signin", {email, password});
 
     if (!response.data.accessToken || response.data.accessToken === "Invalid password") {
-        localStorage.clear();
+        useAuthStore.getState().clearAuthData();
         return false;
     }
 
@@ -35,7 +35,7 @@ export async function postSignIn(email, password) {
         response.data.email,
         response.data.username,
         response.data.member_id,
-        response.data.role  // Add more fields as needed
+        response.data.role
     );
 
     return true;
@@ -43,14 +43,10 @@ export async function postSignIn(email, password) {
 
 export async function postSignOut() {
     await apiClient.post("/auth/signout")
-        .then(() => {
+        .finally(() => {
             useAuthStore.getState().clearAuthData();
             window.location.replace("/");
         })
-        .catch(() => {
-            useAuthStore.getState().clearAuthData();
-            window.location.replace("/");
-        });
 }
 
 export const kakaoLoginHandler = () => {
@@ -89,5 +85,6 @@ export const updatePassword = async (data) => {
 
 export const removeProfile = async () => {
     const response = await apiClient.delete("/auth/profile");
+    useAuthStore.getState().clearAuthData();
     return response.data;
 }

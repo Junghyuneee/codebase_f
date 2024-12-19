@@ -16,12 +16,10 @@ const useAuthStore = create(devtools((set) => ({
         role
     }),
     clearAuthData: () => set({ accessToken: null, email: null, name: null, memberId: null, role: null }),
-
-    // 리프레시 토큰으로 요청하기
     initializeAuth: async () => {
         try {
             const response = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/auth/refresh`, {}, {
-                withCredentials: true, // Ensure the refresh token (cookie) is sent
+                withCredentials: true,
             });
 
             if (response.status === 200) {
