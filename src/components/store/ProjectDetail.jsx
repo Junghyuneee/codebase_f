@@ -359,7 +359,7 @@ function ProjectExplain({ project }) {
                                     categoryTitle={project.title}
                                     // 필요없어서 지울게~~~~~
                                     style={{
-                                        width: '100%', padding: '.375rem .75rem', fontSize: '1rem'
+                                        width: '100%', padding: '0.625rem 1.25rem', fontSize: '0.875rem'
                                     }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
                                 />
                             </Col>
