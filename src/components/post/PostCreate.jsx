@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container, Alert } from "react-bootstrap";
 import { getAccessToken, getName } from '@/api/auth/getset.js'; // 토큰과 사용자 이름을 가져오는 함수
-import './PostCreate.css'; // CSS 파일 import
+
 
 const PostCreate = () => {
   const [topic, setTopic] = useState('');

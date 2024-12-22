@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown, Alert } from "react-bootstrap";
-import { getAccessToken, getName } from '@/api/auth/getset.js'; // 토큰과 사용자 이름을 가져오는 함수
+import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown, Alert, Spinner } from "react-bootstrap";
+import { getAccessToken } from '@/api/auth/getset.js'; // 토큰을 가져오는 함수
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
@@ -9,9 +9,9 @@ const PostList = () => {
   const [sortOption, setSortOption] = useState('최신순');
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
   const postsPerPage = 3;
   const navigate = useNavigate(); // useNavigate 훅 추가
-  const [author, setAuthor] = useState(''); // 작성자 상태
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -22,18 +22,12 @@ const PostList = () => {
         setPosts(data);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false); // 로딩 완료
       }
     };
 
     fetchPosts();
-    
-    // 로그인 상태 확인 및 작성자 이름 설정
-    if (getAccessToken()) {
-      const name = getName(); // 로그인한 사용자의 이름을 가져옴
-      if (name) {
-        setAuthor(name); // 작성자 이름 설정
-      }
-    }
   }, [navigate]);
 
   // 정렬 로직
@@ -59,8 +53,7 @@ const PostList = () => {
   // 필터링 로직
   const filteredPosts = useMemo(() => {
     return sortedPosts.filter(post =>
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.author.toLowerCase().includes(searchTerm.toLowerCase())
+      post.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [sortedPosts, searchTerm]);
 
@@ -95,6 +88,10 @@ const PostList = () => {
       navigate('/post/new'); // 게시물 작성 페이지로 이동
     }
   };
+
+  if (loading) {
+    return <Spinner animation="border" />; // 로딩 스피너 표시
+  }
 
   return (
     <Container className="mt-4">
