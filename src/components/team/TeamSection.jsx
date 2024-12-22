@@ -19,7 +19,11 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import defaultImage from "../../../template/src/assets/img/theme/img-1-1200x1000.jpg";
+ post
+import isAuthenticated from "@/utils//auth/isAuthenticated";
+
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
+ main
 import PropTypes from 'prop-types';
 
 
