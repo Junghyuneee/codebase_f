@@ -1,6 +1,7 @@
-import  { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, Button, Container, Row, Col, Form, Pagination, Dropdown, Alert } from "react-bootstrap";
+import { getAccessToken, getName } from '@/api/auth/getset.js'; // 토큰과 사용자 이름을 가져오는 함수
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
@@ -9,6 +10,8 @@ const PostList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null);
   const postsPerPage = 3;
+  const navigate = useNavigate(); // useNavigate 훅 추가
+  const [author, setAuthor] = useState(''); // 작성자 상태
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -23,7 +26,15 @@ const PostList = () => {
     };
 
     fetchPosts();
-  }, []);
+    
+    // 로그인 상태 확인 및 작성자 이름 설정
+    if (getAccessToken()) {
+      const name = getName(); // 로그인한 사용자의 이름을 가져옴
+      if (name) {
+        setAuthor(name); // 작성자 이름 설정
+      }
+    }
+  }, [navigate]);
 
   // 정렬 로직
   const sortedPosts = useMemo(() => {
@@ -36,7 +47,7 @@ const PostList = () => {
         case '오래된순':
           return createdateA - createdateB;
         case '추천순':
-          return b.likes - a.likes; // 수정된 부분
+          return b.likes - a.likes;
         case '조회순':
           return b.views - a.views;
         default:
@@ -75,11 +86,21 @@ const PostList = () => {
     }
   };
 
+  // 작성하기 버튼 핸들러
+  const handlePostCreate = () => {
+    if (!getAccessToken()) {
+      alert('로그인이 필요합니다.');
+      navigate('/login', { state: { from: '/post' } }); // 로그인 페이지로 리다이렉트
+    } else {
+      navigate('/post/new'); // 게시물 작성 페이지로 이동
+    }
+  };
+
   return (
     <Container className="mt-4">
-      <Link to="/post/new">
-        <Button variant="primary" className="mb-3">작성하기</Button>
-      </Link>
+      <Button variant="primary" className="mb-3" onClick={handlePostCreate}>
+        작성하기
+      </Button>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form className="mb-4">
         <Form.Control 
@@ -115,8 +136,7 @@ const PostList = () => {
                 <Card.Text>
                   <span>주제: {post.topic}</span><br />
                   <span>등록일: {new Date(post.createDate).toLocaleString('ko-KR')}</span><br />
-                  <span>태그: {post.tags ? post.tags.join(', ') : '없음'}</span><br />
-                  <span>좋아요 수: {post.likes}</span><br /> {/* 수정된 부분 */}
+                  <span>좋아요 수: {post.likes}</span><br />
                   <span>조회수: {post.views}</span><br />
                 </Card.Text>
                 <Link to={`/post/${post.id}`} onClick={() => handleViewIncrease(post.id)}>
