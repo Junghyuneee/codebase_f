@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Container, Form, Alert, Card } from "react-bootstrap";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
-import './PostDetail.css';
+import { getAccessToken, getName } from '@/api/auth/getset.js'; // 추가: 사용자 이름 가져오기
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -18,6 +18,7 @@ const PostDetail = () => {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [editCommentIndex, setEditCommentIndex] = useState(null);
+  const [currentUserName, setCurrentUserName] = useState(''); // 현재 사용자 이름 저장
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -44,6 +45,12 @@ const PostDetail = () => {
     };
 
     fetchPost();
+
+    // 현재 사용자 이름 설정
+    const token = getAccessToken();
+    if (token) {
+      setCurrentUserName(getName()); // 로그인한 사용자의 이름을 가져옴
+    }
   }, [id]);
 
   const handleDelete = async () => {
@@ -72,7 +79,7 @@ const PostDetail = () => {
         const commentData = {
           postId: post.id,
           content: comment.trim(),
-          author: "작성자"
+          author: currentUserName // 로그인한 사용자 이름 사용
         };
 
         const response = await fetch('http://localhost:8080/api/comments', {
@@ -163,8 +170,12 @@ const PostDetail = () => {
             <div className="d-flex justify-content-between">
               <span className="badge bg-secondary">{post.topic}</span>
               <div>
-                <Button variant="warning" onClick={() => navigate(`/post/${id}/edit`)}>수정</Button>
-                <Button variant="danger" onClick={handleDelete}>삭제</Button>
+                {post.author === currentUserName && ( // 수정 및 삭제 버튼을 작성자만 볼 수 있도록 조건부 렌더링
+                  <>
+                    <Button variant="warning" onClick={() => navigate(`/post/${id}/edit`)}>수정</Button>
+                    <Button variant="danger" onClick={handleDelete}>삭제</Button>
+                  </>
+                )}
               </div>
             </div>
             <div className="mt-2">
