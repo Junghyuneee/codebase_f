@@ -6,6 +6,7 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios"
 
 import './Admin.css';
+import apiClient from "@/api/apiClient.js";
 
 const MemberManagement = () => {
     const [members, setMembers] = useState([]);
@@ -20,7 +21,7 @@ const MemberManagement = () => {
 
     const fetchMembers = async (currentPage) => {
         try {
-            const response = await axios.get(`http://localhost:8080/manage/member`,
+            const response = await apiClient.get(`/manage/member`,
                 {params: { page: currentPage, size: pageSize }});
             setMembers(response.data.data);
             setCurrentPage(response.data.currentPage);
@@ -49,7 +50,7 @@ const MemberManagement = () => {
 
         if (userResponse) {
             try {
-                const response = await axios.post(`http://localhost:8080/manage/changeMemberRole/${memberId}`);
+                const response = await apiClient.post(`/manage/changeMemberRole/${memberId}`);
                 alert("'" + response.data.memberName + "' " + response.data.message);
                 await fetchMembers();
             } catch (error) {

@@ -9,6 +9,7 @@ import {Link, useLocation, useSearchParams} from "react-router-dom";
 import axios from "axios";
 import ReportDetailModal from "@/components/admin/ReportDetailModal.jsx";
 import {Button} from "reactstrap";
+import apiClient from "@/api/apiClient.js";
 
 const ReportManagement = () => {
     const [isHoveredAll, setIsHoveredAll] = useState(false); // 카테고리 버튼 스타일 지정
@@ -71,13 +72,12 @@ const ReportManagement = () => {
             }
 
             try {
-                const response = await axios.get(`http://localhost:8080/reports/read/${category}`,
+                const response = await apiClient.get(`/reports/read/${category}`,
                     {params: {page: currentPage, size: pageSize}});
                 console.log(response.data.data)
                 setReports(response.data.data);
                 setCurrentPage(response.data.currentPage);
                 setTotalPages(response.data.totalPages);
-                console.log(response.data);
             } catch (error) {
                 console.error("데이터 로드 실패:", error);
                 setError("신고 데이터를 불러오는 데 실패했습니다.");
@@ -99,7 +99,7 @@ const ReportManagement = () => {
         const userResponse = confirm("신고 처리를 진행하시겠습니까?");
 
         if (userResponse) {
-            const response = axios.post(`http://localhost:8080/reports/process/${reportId}`);
+            const response = apiClient.post(`/reports/process/${reportId}`);
             alert("'" + response.data.title + "'" + response.data.message)
         }
     }
