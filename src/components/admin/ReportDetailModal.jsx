@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import axios from "axios";
+import apiClient from "@/api/apiClient.js";
 
 const ReportDetailModal = ({ isReportDetailModalOpen, reportId, categoryTitle, closeReportDetailModal }) => {
     const [reportDetails, setReportDetails] = useState(null); // 데이터를 저장할 상태
@@ -20,7 +21,7 @@ const ReportDetailModal = ({ isReportDetailModalOpen, reportId, categoryTitle, c
 
                 setLoading(true);
                 try {
-                    const response = await axios.get(`http://localhost:8080/reports/details/${reportId}`);
+                    const response = await apiClient.get(`/reports/details/${reportId}`);
                     setReportDetails(response.data);
                 } catch (err) {
                     setError('데이터를 불러오는 중 문제가 발생했습니다.');
