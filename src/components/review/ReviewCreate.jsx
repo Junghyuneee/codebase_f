@@ -26,6 +26,8 @@ const ReviewCreate = () => {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
 	const [author, setAuthor] = useState('');
+	const [projectteam, setProjecttem] = useState([]); // 프로젝트 목록 상태
+	const [selectedProjectteam, setSelectedProjectteam] = useState(''); // 선택한 프로젝트
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -42,6 +44,22 @@ const ReviewCreate = () => {
 		} else {
 			alert('사용자 정보를 가져오지 못했습니다.');
 		}
+
+		// 팀원 프로젝트 목록 가져오기
+		const fetchProjectTeam = async () => {
+			try {
+				const response = await fetch(`http://localhost:8080/api/projectteams`); // 프로젝트 등록 리스트 API
+				if (response.ok) {
+					const data = await response.json();
+					setProjecttem(data);
+				} else {
+					console.error(`프로젝트 목록 불러오기 실패`);
+				}
+			} catch (error) {
+				console.error('프로젝트 목록 불러오기 오류:', error);
+			}
+		};
+		fetchProjectTeam();
 	}, [navigate]);
 
 	//리뷰 등록
@@ -49,8 +67,8 @@ const ReviewCreate = () => {
 		e.preventDefault();
 
 		// 입력값 확인
-		if (!title.trim() || !content.trim()) {
-			alert('제목과 내용을 모두 입력해주세요.');
+		if (!title.trim() || !content.trim() || selectedProjectteam) {
+			alert('제목과 내용, 프로젝트를 모두 입력/선택해주세요.');
 			return;
 		}
 
@@ -59,7 +77,12 @@ const ReviewCreate = () => {
 			const response = await fetch(`http://localhost:8080/api/review`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ title, content, author }),
+				body: JSON.stringify({
+					title,
+					content,
+					author,
+					pjt_id: selectedProjectteam,
+				}),
 			});
 
 			if (response.ok) {
@@ -67,6 +90,7 @@ const ReviewCreate = () => {
 				alert('리뷰가 성공적으로 등록되었습니다.');
 				setTitle('');
 				setContent('');
+				setSelectedProjectteam('');
 				navigate(`/review`); // 목록 페이지로 이동
 			} else {
 				const errorData = await response.json();
@@ -126,6 +150,23 @@ const ReviewCreate = () => {
 												value={content}
 												onChange={(e) => setContent(e.target.value)}
 											/>
+										</FormGroup>
+										<FormGroup>
+											<Input
+												type="select"
+												value={selectedProjectteam}
+												onChange={(e) => setSelectedProjectteam(e.target.value)}
+											>
+												<option value="">프로젝트 선택</option>
+												{projectteam.map((projectteam) => (
+													<option
+														key={projectteam.pjt_id}
+														value={projectteam.pjt_id}
+													>
+														{projectteam.pjtname}
+													</option>
+												))}
+											</Input>
 										</FormGroup>
 										<div>
 											<Button

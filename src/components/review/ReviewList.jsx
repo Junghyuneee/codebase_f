@@ -37,6 +37,7 @@ const ReviewList = () => {
 	const [reviewPerPage] = useState(10); //한 페이지당 표시할 리뷰 개수
 	const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
 	const [selectedSort, setSelectedSort] = useState('최신순'); // 기본 정렬 기준 : 최신순
+	const [projectteams, setProjectteams] = useState([]);
 	const navigate = useNavigate();
 
 	// 페이지가 로드되었을 때 리뷰 목록을 가져옴
@@ -59,6 +60,21 @@ const ReviewList = () => {
 			})
 			.catch((error) => {
 				console.error('API 호출 에러:', error);
+			});
+
+		// 프로젝트 목록 가져오기
+		fetch(`http://localhost:8080/api/projectteams`)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error('프로젝트 목록을 가져오는데 실패했습니다.');
+				}
+				return response.json();
+			})
+			.then((data) => {
+				setProjectteams(data);
+			})
+			.catch((error) => {
+				console.error('프로젝트 목록 가져오기 에러:', error);
 			});
 	}, [navigate]);
 
@@ -169,6 +185,14 @@ const ReviewList = () => {
 		setFilteredReview(sortedReviews); // 정렬된 리뷰 목록을 필터링된 리뷰로 설정
 	};
 
+	// 프로젝트 썸네일 가져오기
+	const getPtjThumbnail = (pjt_id) => {
+		const projectteam = projectteams.find(
+			(projectteam) => projectteam.pjt_id === pjt_id
+		);
+		return projectteam ? projectteam.thumbnailUrl : ''; // 프로젝트 썸네일 url 반환환
+	};
+
 	return (
 		<>
 			<NavigationBar />
@@ -233,6 +257,7 @@ const ReviewList = () => {
 									<tr>
 										<th className="col-lg-1">번호</th>
 										<th className="col-lg-4">제목</th>
+										<th className="col-lg-1">프로젝트</th>
 										<th className="col-lg-1">작성자</th>
 										<th className="col-lg-3">작성일자</th>
 										<th className="col-lg-1">조회수</th>
@@ -261,6 +286,13 @@ const ReviewList = () => {
 												>
 													{review.title}
 												</Link>
+											</td>
+											<td>
+												<img
+													src={getPtjThumbnail(review.pjt_id)}
+													alt="Projectteam Thumbnail"
+													style={{ width: '50px', height: '50px' }}
+												/>
 											</td>
 											<td>{review.author}</td>
 											<td style={{ padding: '10px' }}>
