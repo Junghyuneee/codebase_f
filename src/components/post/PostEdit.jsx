@@ -1,6 +1,6 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Form, Container, Alert } from "react-bootstrap";
+import { Button, Form, Container, Alert, Spinner } from "react-bootstrap";
 
 const PostEdit = () => {
   const { id } = useParams();
@@ -10,9 +10,9 @@ const PostEdit = () => {
     title: '',
     content: '',
     topic: '',
-    tags: '' // 태그 상태 추가
   });
   const [error, setError] = useState(''); // 에러 상태 추가
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -24,11 +24,12 @@ const PostEdit = () => {
           title: data.title,
           content: data.content,
           topic: data.topic,
-          tags: data.tags ? data.tags.join(', ') : '' // 태그를 쉼표로 구분된 문자열로 변환
         });
       } catch (err) {
         console.error(err.message);
         setError(err.message); // 에러 메시지 설정
+      } finally {
+        setLoading(false); // 로딩 완료
       }
     };
 
@@ -56,21 +57,23 @@ const PostEdit = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          title: post.title,
-          content: post.content,
-          topic: post.topic,
-          tags: post.tags.split(',').map(tag => tag.trim()) // 태그를 배열로 변환
-        }),
+        body: JSON.stringify(post), // 직접 post 객체 사용
       });
 
-      if (!response.ok) throw new Error('게시물 수정 실패');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '게시물 수정 실패');
+      }
       navigate(`/post/${id}`);
     } catch (err) {
       console.error(err.message);
       setError('게시물 수정 중 오류가 발생했습니다: ' + err.message);
     }
   };
+
+  if (loading) {
+    return <Spinner animation="border" />; // 로딩 스피너 표시
+  }
 
   return (
     <Container className="mt-4">
@@ -106,16 +109,6 @@ const PostEdit = () => {
             value={post.topic}
             onChange={handleChange}
             required
-          />
-        </Form.Group>
-        <Form.Group controlId="tags" className="mt-3">
-          <Form.Label>태그</Form.Label>
-          <Form.Control
-            type="text"
-            name="tags"
-            value={post.tags}
-            onChange={handleChange}
-            placeholder="쉼표로 구분하여 입력"
           />
         </Form.Group>
         <Button variant="primary" type="submit" className="mt-3">수정하기</Button>

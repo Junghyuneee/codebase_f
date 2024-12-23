@@ -8,6 +8,8 @@ import {FormCheck} from "react-bootstrap";
 import {FaExclamationTriangle} from "react-icons/fa";
 import axios from "axios";
 import {getMemberId} from "@/api/auth/getset.js";
+import {CanReport} from "@/components/admin/CanReport.js";
+import {useNavigate} from "react-router-dom";
 
 const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
@@ -19,6 +21,14 @@ const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
     const [isSubmitting, setSubmitting] = useState(false); // 신고 데이터 전송 상태 관리
     const [selectedContent, setSelectedContent] = useState(""); // 신고 내용 라디오 버튼 선택 값 관리
+
+    const navigate = useNavigate();
+
+    const handleCanReport = () => { // 신고 시 로그인 체크
+        if(CanReport(navigate)) { // 로그인 O
+            openModal();
+        }
+    }
 
     const handleReport = async () => { // 신고 처리하는 함수
         if(!selectedContent) {
@@ -62,7 +72,7 @@ const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
     return (
         <>
-            <Button style={style} color='danger' outline onClick={openModal} className="ms-2 btn-sm">
+            <Button style={style} color='danger' outline onClick={handleCanReport} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 신고
             </Button>
             {isModalOpen && (

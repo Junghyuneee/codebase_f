@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import {useState, useEffect, useRef, useCallback, memo} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Headroom from 'headroom.js';
 
@@ -15,6 +15,13 @@ import {
 } from 'react-bootstrap';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import { postSignOut } from "@/api/auth/auth.js";
+
+const menuItems = [
+    { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
+    { path: "/projects", icon: "ni ni-building", text: "프로젝트" },
+    { path: "/contact", icon: "ni ni-email-83", text: "문의하기" },
+    { path: "/about", icon: "ni ni-collection", text: "회사 소개" }
+];
 
 const NavigationBar = () => {
     const [isLogin, setIsLogin] = useState(false);
@@ -51,14 +58,8 @@ const NavigationBar = () => {
         };
     }, []);
 
-    const menuItems = [
-        { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
-        { path: "/projects", icon: "ni ni-building", text: "프로젝트" },
-        { path: "/contact", icon: "ni ni-email-83", text: "문의하기" },
-        { path: "/about", icon: "ni ni-collection", text: "회사 소개" }
-    ];
-
-    const renderAuthLinks = () => isLogin ? (
+    
+    const renderAuthLinks = useCallback(() => isLogin ? (
         <>
             <Nav.Link onClick={() => {
                 navigate("/profile");
@@ -80,9 +81,9 @@ const NavigationBar = () => {
                 setExpanded(false);
             }}>회원가입</Nav.Link>
         </>
-    );
+    ), [isLogin, navigate]);
 
-    const renderMenuItems = () => {
+    const renderMenuItems = useCallback(() => {
         if (isMobile) {
             return menuItems.map((item, index) => (
                 <Nav.Link
@@ -113,7 +114,7 @@ const NavigationBar = () => {
                 ))}
             </NavDropdown>
         );
-    };
+    }, [isMobile, showDropdown]);
 
     return (
         <Navbar
@@ -161,4 +162,4 @@ const NavigationBar = () => {
     );
 };
 
-export default NavigationBar;
+export default memo(NavigationBar);
