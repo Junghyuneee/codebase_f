@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import {useEffect, useState} from "react";
-import {isSignined} from "@/api/auth/auth.js";
 import MemberSearchModal from "@/components/auth/MemberSearchModal.jsx";
 import {isAdmin} from "@/components/admin/isAdmin.js";
 
@@ -13,10 +12,6 @@ const MainPage = () => {
 	const [show, setShow] = useState(false);
 	const [member, setMember] = useState(null);
 
-	useEffect(() => {
-		const getAuth = () => { isSignined();};
-		getAuth();
-	}, []);
 
 	useEffect(() => {
 		if(member){

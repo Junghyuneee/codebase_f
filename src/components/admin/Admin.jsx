@@ -17,15 +17,15 @@ import {getAccessToken} from "@/api/auth/getset.js";
 
 function Admin() {
 
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (!isAdmin()) {
-            alert("관리자 계정으로 로그인하세요.");
-            if(!getAccessToken()) navigate('/login'); // 로그인 X, 로그인 페이지로 이동
-            else navigate('/') // 로그인 O, 메인 페이지로 이동
-        }
-    }, [isAdmin, navigate]);
+    // const navigate = useNavigate();
+    //
+    // useEffect(() => {
+    //     if (!isAdmin()) {
+    //         alert("관리자 계정으로 로그인하세요.");
+    //         if(!getAccessToken()) navigate('/login'); // 로그인 X, 로그인 페이지로 이동
+    //         else navigate('/') // 로그인 O, 메인 페이지로 이동
+    //     }
+    // }, [isAdmin, navigate]);
 
     return (
         <>

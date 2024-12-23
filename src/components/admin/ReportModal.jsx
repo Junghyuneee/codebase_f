@@ -6,8 +6,10 @@ import { useState } from "react";
 import {Modal, Button, ModalHeader, ModalBody, ModalFooter, FormGroup} from "reactstrap";
 import {FormCheck} from "react-bootstrap";
 import {FaExclamationTriangle} from "react-icons/fa";
-import axios from "axios";
 import {getMemberId} from "@/api/auth/getset.js";
+import {CanReport} from "@/components/admin/CanReport.js";
+import {useNavigate} from "react-router-dom";
+import apiClient from "@/api/apiClient.js";
 
 const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
@@ -20,24 +22,43 @@ const ReportModal = ({category, categoryId, categoryTitle, style}) => {
     const [isSubmitting, setSubmitting] = useState(false); // 신고 데이터 전송 상태 관리
     const [selectedContent, setSelectedContent] = useState(""); // 신고 내용 라디오 버튼 선택 값 관리
 
+    const navigate = useNavigate();
+
+    const handleCanReport = () => { // 신고 시 로그인 체크
+        if(CanReport(navigate)) { // 로그인 O
+            openModal();
+        }
+    }
+
+    const validate = () => {
+        if(category === null || category === undefined || category === "" ||
+            categoryId === null || categoryId === undefined || categoryId === "" ||
+            categoryTitle === null || categoryTitle === undefined || categoryTitle === "") {
+            // 각 데이터가 0일 수 있어서 !데이터로 안됨
+            alert("신고 데이터가 입력되지 않았습니다. 다시 시도해주세요.");
+            return false;
+        } else if(!getMemberId()) {
+            alert("로그인 후 신고를 진행해주세요.")
+            navigate('/login');
+            return false;
+        }
+    }
+
     const handleReport = async () => { // 신고 처리하는 함수
         if(!selectedContent) {
             alert("신고 사유를 선택해주세요.");
             return;
         }
 
-        console.log(`카테고리: ${category}, 카테고리 id: ${categoryId}`);
-        alert("신고가 접수되었습니다.");
-
         setSubmitting(true); // 전송 시작
 
         try {
+            validate();
             // response : 응답 객체
-            const response = await axios.post("http://localhost:8080/reports/create",{
+            const response = await apiClient.post("/reports/create",{
                 category: category,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
-                memberId: getMemberId(),
                 content: selectedContent
                 // 전송할 데이터를 JSON 형식으로 작성
             });
@@ -62,7 +83,7 @@ const ReportModal = ({category, categoryId, categoryTitle, style}) => {
 
     return (
         <>
-            <Button style={style} color='danger' outline onClick={openModal} className="ms-2 btn-sm">
+            <Button style={style} color='danger' outline onClick={handleCanReport} className="ms-2 btn-sm">
                 <FaExclamationTriangle /> 신고
             </Button>
             {isModalOpen && (
