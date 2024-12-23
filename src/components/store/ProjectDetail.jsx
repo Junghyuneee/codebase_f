@@ -116,8 +116,12 @@ function ProjectExplain({ project }) {
             },
             body: JSON.stringify({
                 paymentId: payment.paymentId,
+                project_id: project.id,
+                price: project.price
             }),
         })
+
+        
         setWaitingPayment(false)
         if (completeResponse.ok) {
             const paymentComplete = await completeResponse.json()
