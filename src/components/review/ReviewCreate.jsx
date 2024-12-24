@@ -28,6 +28,7 @@ const ReviewCreate = () => {
 	const [author, setAuthor] = useState("");
 	const [projectteam, setProjecttem] = useState([]); // 프로젝트 목록 상태
 	const [selectedProjectteam, setSelectedProjectteam] = useState(""); // 선택한 프로젝트
+	const [selectedCategory, setSelectedCategory] = useState(""); // 선택한 카테고리
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -43,6 +44,7 @@ const ReviewCreate = () => {
 			setAuthor(name);
 		} else {
 			alert("사용자 정보를 가져오지 못했습니다.");
+			//navigate("/login");
 		}
 
 		// 팀원 프로젝트 목록 가져오기
@@ -73,7 +75,7 @@ const ReviewCreate = () => {
 
 		// 입력값 확인
 		if (!title.trim() || !content.trim()) {
-			alert("제목과 내용, 프로젝트를 모두 입력/선택해주세요.");
+			alert("제목과 내용을 모두 입력해주세요.");
 			return;
 		}
 
@@ -86,7 +88,8 @@ const ReviewCreate = () => {
 					title,
 					content,
 					author,
-					pjt_id: selectedProjectteam,
+					pjt_id: selectedProjectteam || null,
+					category: selectedCategory || null,
 				}),
 			});
 
@@ -96,6 +99,7 @@ const ReviewCreate = () => {
 				setTitle("");
 				setContent("");
 				setSelectedProjectteam("");
+				setSelectedCategory("");
 				navigate(`/review`); // 목록 페이지로 이동
 			} else {
 				const errorData = await response.json();
@@ -155,6 +159,17 @@ const ReviewCreate = () => {
 												value={content}
 												onChange={(e) => setContent(e.target.value)}
 											/>
+										</FormGroup>
+										<FormGroup>
+											<Input
+												type="select"
+												value={selectedCategory}
+												onChange={(e) => setSelectedCategory(e.target.value)}
+											>
+												<option value="">게시물 구분 선택</option>
+												<option value="팀원">팀원</option>
+												<option value="프로젝트">프로젝트</option>
+											</Input>
 										</FormGroup>
 										<FormGroup>
 											<Input
