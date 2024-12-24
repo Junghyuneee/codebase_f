@@ -1,22 +1,3 @@
-// export function getAccessToken() {
-//     return localStorage.getItem('accessToken'); // Retrieve the token
-// }
-//
-// export function getEmail(){
-//     return localStorage.getItem('email');
-// }
-// export function getName() {
-//     return localStorage.getItem('name');
-// }
-//
-// export function getMemberId() {
-//     return localStorage.getItem('member_id');
-// }
-//
-// export function getRole() {
-//     return localStorage.getItem('role');
-// }
-
 import useAuthStore from '@/zustand/authStore';
 
 export function getAccessToken() {
