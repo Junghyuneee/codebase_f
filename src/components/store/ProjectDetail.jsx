@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { postData, useFetch } from './storeAPI';
-import {getMemberId } from "@/api/auth/getset.js";
+import {getMemberId , getName} from "@/api/auth/getset.js";
 
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -28,6 +28,7 @@ import ReportModal from "@/components/admin/ReportModal.jsx";
 import { randomId } from "./random"
 const { VITE_STORE_ID, VITE_CHANNEL_KEY } = import.meta.env
 import PortOne from "@portone/browser-sdk/v2"
+import apiClient from '@/api/apiClient';
 
 
 export function ProjectCard({ project }) {
@@ -61,7 +62,7 @@ export function ProjectCard({ project }) {
 
                     </div>
                 </Card>
-                <a href={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}>
+                <a href={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}>
                     <button>이미지</button>
                 </a>
                 
@@ -82,7 +83,7 @@ function ProjectExplain({ project }) {
     const [paymentStatus, setPaymentStatus] = useState({
         status: "IDLE",
     })
-    //console.log(getMemberId(), project.maker_id);
+    console.log(getName(), getMemberId(), project.maker_id);
     const maker = getMemberId() == project.maker_id ? true : false;
 
     const handleSubmit = async (e) => {
@@ -109,19 +110,26 @@ function ProjectExplain({ project }) {
             })
             return
         }
-        const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
-            method: "POST",
+        // const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         paymentId: payment.paymentId,
+        //         project_id: project.id,
+        //         price: project.price
+        //     }),
+        // })
+        const completeResponse = await apiClient.post("api/store/payment/complete", {
+            paymentId: payment.paymentId,
+            project_id: project.id,
+            price: project.price
+        }, {
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                paymentId: payment.paymentId,
-                project_id: project.id,
-                price: project.price
-            }),
-        })
-
-        
+            }
+        });
         setWaitingPayment(false)
         if (completeResponse.ok) {
             const paymentComplete = await completeResponse.json()

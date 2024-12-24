@@ -75,6 +75,7 @@ function Team() {
     fetchProjects();
     
     const memberId = getMemberId();
+    console.log("memberId ㅠㅅ ㅠ : ",memberId);
     if (memberId) {
       setCurrentMemberId(memberId);
       setFormData(prev => ({ ...prev, memberId }));
