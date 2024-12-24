@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { postData, useFetch } from './storeAPI';
-import {getMemberId , getName} from "@/api/auth/getset.js";
+import {getMemberId} from "@/api/auth/getset.js";
 
 import { VscChromeClose } from "react-icons/vsc";
 
@@ -83,7 +83,7 @@ function ProjectExplain({ project }) {
     const [paymentStatus, setPaymentStatus] = useState({
         status: "IDLE",
     })
-    console.log(getName(), getMemberId(), project.maker_id);
+    //console.log( getMemberId(), project.maker_id);
     const maker = getMemberId() == project.maker_id ? true : false;
 
     const handleSubmit = async (e) => {
@@ -177,7 +177,9 @@ function ProjectExplain({ project }) {
         setInCart(!inCart); // 현재 상태를 반대로 변경
     };
 
-
+    const deleteProject = ()=>{
+        
+    }
     useEffect(() => {
         console.log(inCart);
     }, [inCart]);
@@ -229,52 +231,6 @@ function ProjectExplain({ project }) {
                         <br />
                         <Row className='mb-2'>
                             <Col>
-
-                                {/* {existCart(project.id) &&
-                                    <h2>
-                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 담았음</Button>
-
-                                    </h2>
-                                }
-                                {!existCart(project.id) &&
-                                    <h2>
-                                        <Button size='lg' color='success' onClick={() => addCartItem(project)} outline block> <i className="ni ni-cart" /> 장바구니</Button>
-
-                                    </h2>
-                                } */}
-
-                                {/* inCart &&
-                                    <h2>
-                                    <Button
-                                        size="lg"
-                                        color="success"
-                                        onClick={() => {
-                                            toggleCart();
-                                            console.log(`Removed project ${project.id} from cart`);
-                                        }}
-                                        outline
-                                        block
-                                    >
-                                        <i className="ni ni-cart" /> 담았음
-                                    </Button>
-                                </h2>
-                                }
-                                {!inCart &&
-                                    <h2>
-                                    <Button
-                                        size="lg"
-                                        color="success"
-                                        onClick={() => {
-                                            toggleCart();
-                                            console.log(`Removed project ${project.id} from cart`);
-                                        }}
-                                        outline
-                                        block
-                                    >
-                                        <i className="ni ni-cart" /> 담았음
-                                    </Button>
-                                </h2>
-                                */}
 
                                 {inCart ? (
                                     <h2>
@@ -330,7 +286,10 @@ function ProjectExplain({ project }) {
                                 <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
                             {maker ?  
-                            <Col><Button color='danger' outline block><VscChromeClose /> 삭제</Button></Col>
+                            <Col><Button color='danger' outline block onClick={() => {
+                                deleteProject();
+                                console.log();
+                            }}><VscChromeClose /> 삭제</Button></Col>
                             :
                             <Col>
                                 <ReportModal
