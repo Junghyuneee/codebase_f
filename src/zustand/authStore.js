@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import {create} from "zustand";
+import {devtools} from "zustand/middleware";
 import axios from "axios";
 
 const useAuthStore = create(devtools((set) => ({
@@ -15,7 +15,7 @@ const useAuthStore = create(devtools((set) => ({
         memberId,
         role
     }),
-    clearAuthData: () => set({ accessToken: null, email: null, name: null, memberId: null, role: null }),
+    clearAuthData: () => set({accessToken: null, email: null, name: null, memberId: null, role: null}),
     initializeAuth: async () => {
         try {
             const response = await axios.post(`http://${import.meta.env.VITE_APP_BACKEND_DEPLOY}/auth/refresh`, {}, {
@@ -24,7 +24,13 @@ const useAuthStore = create(devtools((set) => ({
 
             if (response.status === 200) {
                 const newToken = response.data.accessToken;
-                set({ ...response.data, accessToken: `Bearer ${newToken}` });
+                set({
+                    name: response.data.username,
+                    memberId: response.data.member_id,
+                    accessToken: `Bearer ${newToken}`,
+                    email: response.data.email,
+                    role: response.data.role
+                });
 
             } else {
                 console.warn('No refresh token found', response.status);
@@ -35,7 +41,7 @@ const useAuthStore = create(devtools((set) => ({
             if (error.response?.status === 401) {
                 window.location.replace('/login');
             }
-            set({ accessToken: null, email: null, name: null, memberId: null, role: null });
+            set({accessToken: null, email: null, name: null, memberId: null, role: null});
         }
     }
 })));
