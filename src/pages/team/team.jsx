@@ -24,6 +24,8 @@ import TeamCreationModal from "../../components/team/TeamCreationModal.jsx";
 import { getMemberId } from "../../api/auth/getset.js";
 import { useNavigate } from 'react-router-dom';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
+import TeamApplyModal from "../../components/team/TeamApplyModal.jsx"; // 추가
+
 
 // CATEGORIES 배열 추가
 const CATEGORIES = [
@@ -51,11 +53,41 @@ function Team() {
     pjcategory: '',
     memberId: ''
   });
+  const [applyModal, setApplyModal] = useState(false);
+  const [applyFormData, setApplyFormData] = useState({ 
+    tech_stack: "",
+    member_id: ''
+  });
+  const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [projects, setProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentMemberId, setCurrentMemberId] = useState(null);
+
+
+  const toggleApplyModal = () => setApplyModal(!applyModal);
+
+  const handleApplyChange = (e) => {
+    const { name, value } = e.target;
+    setApplyFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+
+
+  // 팀원 등록 버튼 클릭 시 호출
+  const openApplyModal = (teamId) => {
+    const memberId = getMemberId();
+    setApplyFormData(prev => ({
+      ...prev,
+      member_id: memberId
+    }));
+    setSelectedTeamId(teamId);
+    toggleApplyModal();
+  };
 
   const fetchProjects = async () => {
     try {
@@ -78,6 +110,11 @@ function Team() {
     if (memberId) {
       setCurrentMemberId(memberId);
       setFormData(prev => ({ ...prev, memberId }));
+      setApplyFormData(prev => ({ 
+        ...prev, 
+        member_id: memberId,
+        tech_stack: prev.tech_stack || "" 
+      }));
     }
   }, []);
 
@@ -194,14 +231,19 @@ function Team() {
     toggle();
   };
 
-  const handleTeamJoin = () => {
+  const handleTeamJoin = (teamId = 0) => {
     if (!isAuthenticated()) {
       alert('로그인이 필요한 서비스입니다.');
       navigate('/login');
       return;
     }
-    // 팀원 등록 로직 구현
+    openApplyModal(teamId);
   };
+
+  const handleGeneralApply = () => {
+    handleTeamJoin(0);
+  };
+  
 
   return (
     <>
@@ -238,7 +280,7 @@ function Team() {
                       <Button
                         className="btn-white btn-icon mb-3 mb-sm-0 ml-1"
                         color="default"
-                        onClick={handleTeamJoin}
+                        onClick={handleGeneralApply}
                       >
                         <span className="btn-inner--icon mr-1" >
                           <i className="fa fa-user-plus" />
@@ -324,6 +366,7 @@ function Team() {
           selectedCategories={selectedCategories}
           onCategorySelect={handleCategorySelect}
           currentMemberId={currentMemberId}
+          openApplyModal={openApplyModal}
         />
         <TeamCreationModal 
           isOpen={modal}
@@ -332,6 +375,14 @@ function Team() {
           handleChange={handleChange}
           handleFileChange={handleFileChange}
           handleSubmit={handleSubmit}
+        />
+
+        <TeamApplyModal
+          isOpen={applyModal}
+          toggle={toggleApplyModal}
+          formData={applyFormData}
+          handleChange={handleApplyChange}
+          projectId={selectedTeamId}
         />
       </main>
     </>
