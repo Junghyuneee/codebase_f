@@ -1,24 +1,39 @@
 // src/pages/post/PostCreate.jsx
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Container, Alert } from "react-bootstrap";
-import './PostCreate.css'; // CSS 파일 import
+import { getAccessToken, getName } from '@/api/auth/getset.js'; // 토큰과 사용자 이름을 가져오는 함수
+
 
 const PostCreate = () => {
   const [topic, setTopic] = useState('');
   const [title, setTitle] = useState('');
-  const [tags, setTags] = useState('');
   const [content, setContent] = useState('');
-  const [author, setAuthor] = useState(''); // author 상태 추가
+  const [author, setAuthor] = useState(''); // 작성자 상태
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 로그인 상태 확인 및 작성자 이름 설정
+    if (!getAccessToken()) {
+      alert('로그인이 필요합니다.');
+      navigate('/login', { state: { from: '/post/create' } }); // 로그인 페이지로 리다이렉트
+    } else {
+      const name = getName(); // 로그인한 사용자의 이름을 가져옴
+      if (name) {
+        setAuthor(name); // 작성자 이름 설정
+      } else {
+        setError('작성자 정보를 가져올 수 없습니다.');
+      }
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // 이전 에러 메시지 초기화
 
     // 입력값 확인
-    if (!topic || !title || !content || !author) {
+    if (!topic || !title || !content) {
       setError('모든 필드를 채워주세요.');
       return;
     }
@@ -30,7 +45,6 @@ const PostCreate = () => {
         body: JSON.stringify({
           topic,
           title,
-          tags: tags.split(',').map(tag => tag.trim()), // 태그를 쉼표로 구분하여 배열로 변환
           content,
           author, // author 값을 포함
         }),
@@ -73,26 +87,7 @@ const PostCreate = () => {
             className="mb-3"
           />
         </Form.Group>
-        <Form.Group controlId="author">
-          <Form.Label>작성자</Form.Label>
-          <Form.Control
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            required
-            className="mb-3"
-          />
-        </Form.Group>
-        <Form.Group controlId="tags">
-          <Form.Label>태그</Form.Label>
-          <Form.Control
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="쉼표로 구분하여 입력"
-            className="mb-3"
-          />
-        </Form.Group>
+        {/* 작성자 입력란 제거 */}
         <Form.Group controlId="content">
           <Form.Label>본문</Form.Label>
           <Form.Control
