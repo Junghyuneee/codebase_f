@@ -1,7 +1,9 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { postData, useFetch } from './storeAPI';
-import { getAccessToken } from "@/api/auth/getset.js";
+import {getMemberId , getName} from "@/api/auth/getset.js";
+
+import { VscChromeClose } from "react-icons/vsc";
 
 import {
     Badge,
@@ -17,45 +19,31 @@ import {
     Container,
     Row,
     Col,
-
-    UncontrolledCollapse,
-    DropdownMenu,
-    DropdownItem,
-    DropdownToggle,
-    UncontrolledDropdown,
-    NavbarBrand,
-    Navbar,
-    NavItem,
     NavLink,
     Nav,
 } from "reactstrap";
-import classnames from "classnames";
 import img from "../../assets/img/theme/img-1-1200x1000.jpg";
-
-//import Typography from "codebase/codebase_f/template/src/views/IndexSections/Typography"
-
 import Banner from "./Banner.jsx";
 import ReportModal from "@/components/admin/ReportModal.jsx";
-
 import { randomId } from "./random"
 const { VITE_STORE_ID, VITE_CHANNEL_KEY } = import.meta.env
 import PortOne from "@portone/browser-sdk/v2"
+import apiClient from '@/api/apiClient';
 
 
 export function ProjectCard({ project }) {
-
-
+  
 
     return (
 
         <section className="section">
             <div class="">
-
+               
                 <Card className="card-profile shadow">
                     <div className="px-4">
                         <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
                             alt="..."
-                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}${project.img}`}
+                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}
                             top
                         />
 
@@ -74,6 +62,10 @@ export function ProjectCard({ project }) {
 
                     </div>
                 </Card>
+                <a href={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}>
+                    <button>이미지</button>
+                </a>
+                
             </div>
         </section>
 
@@ -82,16 +74,7 @@ export function ProjectCard({ project }) {
 
 
 
-function existCart(id) {
-    //const data = getData(`/cart/ciexist/${id}`);
-    console.log("asdfasdfas", data);
-    if (data == "") {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
+
 
 function ProjectExplain({ project }) {
 
@@ -100,7 +83,8 @@ function ProjectExplain({ project }) {
     const [paymentStatus, setPaymentStatus] = useState({
         status: "IDLE",
     })
-
+    console.log(getName(), getMemberId(), project.maker_id);
+    const maker = getMemberId() == project.maker_id ? true : false;
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -126,15 +110,26 @@ function ProjectExplain({ project }) {
             })
             return
         }
-        const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
-            method: "POST",
+        // const completeResponse = await fetch("http://localhost:8080/api/store/payment/complete", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         paymentId: payment.paymentId,
+        //         project_id: project.id,
+        //         price: project.price
+        //     }),
+        // })
+        const completeResponse = await apiClient.post("api/store/payment/complete", {
+            paymentId: payment.paymentId,
+            project_id: project.id,
+            price: project.price
+        }, {
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                paymentId: payment.paymentId,
-            }),
-        })
+            }
+        });
         setWaitingPayment(false)
         if (completeResponse.ok) {
             const paymentComplete = await completeResponse.json()
@@ -153,24 +148,6 @@ function ProjectExplain({ project }) {
         setPaymentStatus({
             status: "IDLE",
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     function addCartItem(project) {
@@ -352,6 +329,9 @@ function ProjectExplain({ project }) {
                             <Col style={{ padding: '0' }}>
                                 <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
+                            {maker ?  
+                            <Col><Button color='danger' outline block><VscChromeClose /> 삭제</Button></Col>
+                            :
                             <Col>
                                 <ReportModal
                                     category={0}
@@ -362,6 +342,7 @@ function ProjectExplain({ project }) {
                                     }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
                                 />
                             </Col>
+                            }
                         </Row>
                     </div>
 
@@ -399,12 +380,10 @@ function Page() {
 
     // 현재 페이지의 URL을 가져옵니다.
     const currentUrl = window.location.href;
-
     // URL 객체를 생성합니다.
     const url = new URL(currentUrl).pathname;
     let id = url.replace("/store/", "");
     //console.log("id ", id);
-
     id = parseInt(id, 10);
 
     const { data, loading, error } = useFetch(`/api/store/${id}`);
