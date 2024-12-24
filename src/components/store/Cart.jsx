@@ -35,14 +35,11 @@ import {
 
 import { useFetch } from "@/components/store/storeAPI";
 import Banner from "./Banner_mini";
+import apiClient from '@/api/apiClient';
+
 function Page() {
 
-
-
-    
-    const [cartItems, setCartItems] = useState([]); // 다른 상태를 위한 setItem
-    //const [page, setPage] = useState(0);
-    //history.pushState(null, '', `?page=${page}`);
+    const [cartItems, setCartItems] = useState([]);
     const { data, loading, error } = useFetch(`/api/cart/my`);
 
     // 데이터가 로딩 중이 아니고, 에러가 없을 경우
@@ -54,9 +51,17 @@ function Page() {
         }
     }, [data]); // data가 변경될 때마다 실행
 
+    useEffect(() => {
+        
+    }, [cartItems]); //
 
 
-
+    const deleteItem = async (id) => {
+        setCartItems(cartItems.filter((item) => item.id !== id));
+        //console.log(`/api/cart/delete-item/${id}`);
+        const response = await apiClient.delete(`/api/cart/deleteitem/${id}`,);
+        //alert(response.data);
+    };
 
     const sampleCI = [
         { id: 1, cart_id: 4, name: '브리츠 노이즈 캔슬링 블루투스 헤드폰', price: 10000, project_id: 13, username: '먀먀먀' },
@@ -83,7 +88,7 @@ function Page() {
 
 
                             {/* <CartItem /> */}
-                            {CartItem(cartItems)}
+                            {CartItem(cartItems, deleteItem)}
 
                         </Col>
                         <Col lg="4">
@@ -109,9 +114,7 @@ function Page() {
 export default Page;
 
 
-function CartItem(CartItem) {
-
-
+function CartItem(CartItem, deleteItem) {
 
 
     return (<>
@@ -173,7 +176,7 @@ function CartItem(CartItem) {
                 //      <a href={`/store/${project.id}`} ><OneProjectCard name={project.name} price={project.price} /></a>
                 // </Col>
 
-                <a href={`/store/${item.project_id}`}>
+
                     <Card className='card shadow'>
 
                         <div className='p-2'>
@@ -209,7 +212,9 @@ function CartItem(CartItem) {
                                 {/* Remove Button */}
                                 <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
                                     <Button className="text-danger" size="sm">
-                                        <i className="fa fa-trash" aria-hidden="true">{item.id}삭제</i>
+                                        <i className="fa fa-trash" aria-hidden="true" onClick={() => {
+                                            deleteItem(item.id);    
+                                            }}>{item.id}삭제</i>
                                     </Button>
                                 </Col>
                             </Row>
@@ -220,7 +225,7 @@ function CartItem(CartItem) {
                         </div>
 
                     </Card>
-                </a>
+                
 
 
             ))}

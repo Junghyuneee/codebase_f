@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { postData, useFetch } from './storeAPI';
-import {getMemberId} from "@/api/auth/getset.js";
-
+import { getMemberId } from "@/api/auth/getset.js";
+import { useNavigate } from "react-router-dom";
 import { VscChromeClose } from "react-icons/vsc";
 
 import {
@@ -32,13 +32,13 @@ import apiClient from '@/api/apiClient';
 
 
 export function ProjectCard({ project }) {
-  
+
 
     return (
 
         <section className="section">
             <div class="">
-               
+
                 <Card className="card-profile shadow">
                     <div className="px-4">
                         <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
@@ -65,7 +65,7 @@ export function ProjectCard({ project }) {
                 <a href={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}>
                     <button>이미지</button>
                 </a>
-                
+
             </div>
         </section>
 
@@ -77,6 +77,8 @@ export function ProjectCard({ project }) {
 
 
 function ProjectExplain({ project }) {
+
+    const navigate = useNavigate();
 
     const [inCart, setInCart] = useState(false);
     const [isWaitingPayment, setWaitingPayment] = useState(false)
@@ -160,9 +162,16 @@ function ProjectExplain({ project }) {
         postData(`/api/cart/add`, formData);
 
     }
-    function deleteCartItem(project) {
-        postData(`/api/cart/delete/${project.id}`,);
-    }
+    // function deleteCartItem(project) {
+    //     postData(`/api/cart/delete/${project.id}`,);
+    // }
+
+    const deleteCartItem = async(project) => {
+        const response = await apiClient.delete(`/api/cart/delete/${project.id}`);
+    
+    };
+
+
     // 상태를 토글하는 함수
     const toggleCart = () => {
         if (inCart) {
@@ -177,8 +186,21 @@ function ProjectExplain({ project }) {
         setInCart(!inCart); // 현재 상태를 반대로 변경
     };
 
-    const deleteProject = ()=>{
-        
+    const deleteProject = async() => {
+        const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
+        if (isConfirmed) {
+            const response = await apiClient.delete(`/api/project/delete/${project.id}`);
+            //console.log(response.data);
+            alert(response.data);
+            
+            navigate("/store");
+        } else {
+            console.log("삭제 취소");
+            return;
+        }
+
+
+
     }
     useEffect(() => {
         console.log(inCart);
@@ -285,22 +307,22 @@ function ProjectExplain({ project }) {
                             <Col style={{ padding: '0' }}>
                                 <Button color='default' outline block><i className="ni ni-favourite-28" /> 리뷰</Button>
                             </Col>
-                            {maker ?  
-                            <Col><Button color='danger' outline block onClick={() => {
-                                deleteProject();
-                                console.log();
-                            }}><VscChromeClose /> 삭제</Button></Col>
-                            :
-                            <Col>
-                                <ReportModal
-                                    category={0}
-                                    categoryId={project.id}
-                                    categoryTitle={project.title}
-                                    style={{
-                                        width: '100%', padding: '0.625rem 1.25rem', fontSize: '0.875rem'
-                                    }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
-                                />
-                            </Col>
+                            {maker ?
+                                <Col><Button color='danger' outline block onClick={() => {
+                                    deleteProject();
+                                    console.log();
+                                }}><VscChromeClose /> 삭제</Button></Col>
+                                :
+                                <Col>
+                                    <ReportModal
+                                        category={0}
+                                        categoryId={project.id}
+                                        categoryTitle={project.title}
+                                        style={{
+                                            width: '100%', padding: '0.625rem 1.25rem', fontSize: '0.875rem'
+                                        }} // 여기 스타일 지정하면 신고 버튼에 적용 가능
+                                    />
+                                </Col>
                             }
                         </Row>
                     </div>
