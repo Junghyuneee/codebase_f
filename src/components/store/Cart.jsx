@@ -46,6 +46,7 @@ function Page() {
     useEffect(() => {
         if (data) {
             console.log(data);
+            
             setCartItems(data); // 데이터를 받아오면 setItem을 호출하여 상태를 업데이트
 
         }
@@ -187,7 +188,7 @@ function CartItem(CartItem, deleteItem) {
                                     <img
                                         alt="Thumbnail"
                                         className="img-fluid rounded"
-                                        src={Thumbnail}
+                                        src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${item.img}`}
                                         style={{ width: "120px", height: "auto" }}
                                     />
                                 </Col>
@@ -211,10 +212,11 @@ function CartItem(CartItem, deleteItem) {
 
                                 {/* Remove Button */}
                                 <Col xs="2" sm="2" lg="2" xl="2" className="text-center">
-                                    <Button className="text-danger" size="sm">
+                                    <Button className="bg-secondar text-danger" size="sm">
                                         <i className="fa fa-trash" aria-hidden="true" onClick={() => {
+                                            console.log("");
                                             deleteItem(item.id);    
-                                            }}>{item.id}삭제</i>
+                                            }}></i>
                                     </Button>
                                 </Col>
                             </Row>

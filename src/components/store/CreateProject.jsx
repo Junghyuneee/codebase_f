@@ -344,7 +344,7 @@ function Page() {
             </svg>
           </div>
         </section>
-        <Banner_mini />
+        
         <Container>{ProjectForm()}</Container>
         
       </main>
