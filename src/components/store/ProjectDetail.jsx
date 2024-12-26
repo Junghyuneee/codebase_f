@@ -223,7 +223,7 @@ function ProjectExplain({ project }) {
 
     const fakePurchase = async () => {
         await apiClient.post("api/store/payment/complete", {
-            paymentId: '99999999999999',
+            paymentId: '0000',
             project_id: project.id,
             price: project.price
         }, {
@@ -242,7 +242,7 @@ function ProjectExplain({ project }) {
                     fakePurchase();
                 }}
             >
-                %%%%%%%%구매 테스트%%%%%%%%
+                %%%%%%%% 구매 테스트 %%%%%%%%
             </Button>
 
             <Card className='card-profile shadow'>
