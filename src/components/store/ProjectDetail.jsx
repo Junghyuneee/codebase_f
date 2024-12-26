@@ -146,6 +146,8 @@ function ProjectExplain({ project }) {
         }
     }
 
+
+
     const handleClose = () =>
         setPaymentStatus({
             status: "IDLE",
@@ -166,10 +168,11 @@ function ProjectExplain({ project }) {
     //     postData(`/api/cart/delete/${project.id}`,);
     // }
 
-    const deleteCartItem = async(project) => {
+    const deleteCartItem = async (project) => {
         const response = await apiClient.delete(`/api/cart/delete/${project.id}`);
-    
+
     };
+
 
 
     // 상태를 토글하는 함수
@@ -186,13 +189,13 @@ function ProjectExplain({ project }) {
         setInCart(!inCart); // 현재 상태를 반대로 변경
     };
 
-    const deleteProject = async() => {
+    const deleteProject = async () => {
         const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
         if (isConfirmed) {
             const response = await apiClient.delete(`/api/project/delete/${project.id}`);
             //console.log(response.data);
             alert(response.data);
-            
+
             navigate("/store");
         } else {
             console.log("삭제 취소");
@@ -218,10 +221,29 @@ function ProjectExplain({ project }) {
 
 
 
-
+    const fakePurchase = async () => {
+        await apiClient.post("api/store/payment/complete", {
+            paymentId: '99999999999999',
+            project_id: project.id,
+            price: project.price
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+    }
 
     return (<>
         <div class="section">
+            <Button
+                size="lg"
+                color="success"
+                onClick={() => {
+                    fakePurchase();
+                }}
+            >
+                %%%%%%%%구매 테스트%%%%%%%%
+            </Button>
 
             <Card className='card-profile shadow'>
                 <div className=" mt-5">
@@ -387,39 +409,39 @@ function Page() {
     return (
         <>
 
-<section className="section section-lg section-shaped my-0">
-          {/* Circles background */}
-          <div className="shape shape-style-1 shape-default">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          
-          {/* SVG separator */}
-          <div className="separator separator-bottom separator-skew">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon
-                className="fill-white"
-                points="2560 0 2560 100 0 100"
-              />
-            </svg>
-          </div>
-        </section>
-        
+            <section className="section section-lg section-shaped my-0">
+                {/* Circles background */}
+                <div className="shape shape-style-1 shape-default">
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                    <span />
+                </div>
+
+                {/* SVG separator */}
+                <div className="separator separator-bottom separator-skew">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        preserveAspectRatio="none"
+                        version="1.1"
+                        viewBox="0 0 2560 100"
+                        x="0"
+                        y="0"
+                    >
+                        <polygon
+                            className="fill-white"
+                            points="2560 0 2560 100 0 100"
+                        />
+                    </svg>
+                </div>
+            </section>
+
 
             <main >
-                
+
                 <Container>
 
 
@@ -453,7 +475,7 @@ function Page() {
 
             </main>
 
-            <Banner/>
+            <Banner />
         </>
     );
     //}
