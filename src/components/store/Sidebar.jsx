@@ -36,10 +36,10 @@ function SideBar() {
                     <i className="ni ni-cart" />
                         <span className="text">장바구니</span>
                     </div>
-                    <div className="circle" onClick={() => handleClick('/')}>
+                    <div className="circle" onClick={() => handleClick('/team')}>
                        
                         <ImUsers />
-                        <span className="text">팀</span>
+                        <span className="text">팀 찾기기</span>
                     </div>
                 </div>
             </div>
