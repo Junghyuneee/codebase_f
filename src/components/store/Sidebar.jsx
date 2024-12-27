@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { ImUsers } from "react-icons/im";
 import {
     Badge,
     Button,
@@ -37,7 +37,8 @@ function SideBar() {
                         <span className="text">장바구니</span>
                     </div>
                     <div className="circle" onClick={() => handleClick('/')}>
-                        <i className="ni ni-single-copy-04" />
+                       
+                        <ImUsers />
                         <span className="text">팀</span>
                     </div>
                 </div>
