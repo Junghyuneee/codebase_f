@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
 import {useEffect, useState} from "react";
-import MemberSearchModal from "@/components/auth/MemberSearchModal.jsx";
+import MemberSearchModal from "@/components/auth/member/MemberSearchModal.jsx";
 import {isAdmin} from "@/components/admin/isAdmin.js";
 
 const MainPage = () => {
