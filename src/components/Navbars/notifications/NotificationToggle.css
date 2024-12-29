@@ -1,0 +1,8 @@
+.dropdown-toggle::after {
+  content: none;
+}
+
+.nav-dropdown-menu {
+  left: 0 !important;
+  right: auto !important;
+}

@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, useCallback, memo} from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Headroom from 'headroom.js';
 
@@ -15,6 +15,7 @@ import {
 } from 'react-bootstrap';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import { postSignOut } from "@/api/auth/auth.js";
+import NotificationToggle from "./notifications/NotificationToggle";
 
 const menuItems = [
     { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
@@ -28,6 +29,7 @@ const NavigationBar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
     const [expanded, setExpanded] = useState(false);
+
     const navRef = useRef(null);
     const navigate = useNavigate();
 
@@ -52,13 +54,15 @@ const NavigationBar = () => {
         window.addEventListener('resize', handleResize);
         document.addEventListener('mousedown', handleClickOutside);
 
+
         return () => {
             window.removeEventListener('resize', handleResize);
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
-    
+
+
     const renderAuthLinks = useCallback(() => isLogin ? (
         <>
             <Nav.Link onClick={() => {
@@ -81,7 +85,8 @@ const NavigationBar = () => {
                 setExpanded(false);
             }}>회원가입</Nav.Link>
         </>
-    ), [isLogin, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ), [isLogin]);
 
     const renderMenuItems = useCallback(() => {
         if (isMobile) {
@@ -136,7 +141,6 @@ const NavigationBar = () => {
                 >
                     <img alt="..." src={logoWhite} />
                 </Navbar.Brand>
-
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <div className="navbar-collapse-header">
@@ -154,6 +158,7 @@ const NavigationBar = () => {
                     </Nav>
 
                     <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto">
+                        {isLogin && !isMobile && <NotificationToggle />}
                         {renderAuthLinks()}
                     </Nav>
                 </Navbar.Collapse>
