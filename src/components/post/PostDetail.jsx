@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Container, Form, Alert, Card } from "react-bootstrap";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
+import EditCommentModal from "@/components/post/EditCommentModal.jsx";
 import { getAccessToken, getName } from '@/api/auth/getset.js'; // 추가: 사용자 이름 가져오기
 
 const PostDetail = () => {
@@ -19,6 +20,7 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]);
   const [editCommentIndex, setEditCommentIndex] = useState(null);
   const [currentUserName, setCurrentUserName] = useState(''); // 현재 사용자 이름 저장
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -106,7 +108,32 @@ const PostDetail = () => {
 
   const handleEditComment = (index) => {
     setEditCommentIndex(index);
-    setComment(comments[index].content);
+    setShowEditModal(true);
+  };
+
+  const handleSaveEditedComment = async (editedContent) => {
+    const commentId = comments[editCommentIndex].id;
+    try {
+      const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: editedContent }),
+      });
+
+      if (!response.ok) {
+        throw new Error('댓글 수정 실패');
+      }
+
+      const updatedComment = await response.json();
+      setComments(comments.map((comment, index) => index === editCommentIndex ? updatedComment : comment));
+      setShowEditModal(false);
+      setEditCommentIndex(null);
+    } catch (err) {
+      console.error('댓글 수정 중 오류:', err);
+      alert('댓글 수정에 실패했습니다.');
+    }
   };
 
   const handleDeleteComment = (index) => {
@@ -200,20 +227,22 @@ const PostDetail = () => {
         </Card>
       )}
 
-      <Form onSubmit={handleCommentSubmit} className="mb-4">
-        <Form.Group controlId="comment">
-          <Form.Label>댓글 작성</Form.Label>
-          <Form.Control 
-            as="textarea" 
-            rows={3} 
-            value={comment} 
-            onChange={(e) => setComment(e.target.value)} 
-            placeholder="댓글을 입력하세요" 
-            required 
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">{editCommentIndex !== null ? '댓글 수정' : '댓글 작성'}</Button>
-      </Form>
+      {currentUserName && (
+        <Form onSubmit={handleCommentSubmit} className="mb-4">
+          <Form.Group controlId="comment">
+            <Form.Label>댓글 작성</Form.Label>
+            <Form.Control 
+              as="textarea" 
+              rows={3} 
+              value={comment} 
+              onChange={(e) => setComment(e.target.value)} 
+              placeholder="댓글을 입력하세요" 
+              required 
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">{editCommentIndex !== null ? '댓글 수정' : '댓글 작성'}</Button>
+        </Form>
+      )}
 
       <h5>댓글 목록</h5>
       {comments.length > 0 ? comments.map((c, index) => (
@@ -222,8 +251,12 @@ const PostDetail = () => {
             <Card.Subtitle className="mb-1 text-muted">{c.author}</Card.Subtitle>
             <Card.Text>{c.content}</Card.Text>
             <div className="d-flex justify-content-end">
-              <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
-              <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
+              {c.author === currentUserName && (
+                <>
+                  <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
+                  <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
+                </>
+              )}
               <ReportModal
                 category={2}
                 categoryId={c.id}
@@ -233,6 +266,15 @@ const PostDetail = () => {
           </Card.Body>
         </Card>
       )) : <p>댓글이 없습니다.</p>}
+
+      {editCommentIndex !== null && (
+        <EditCommentModal
+          show={showEditModal}
+          handleClose={() => setShowEditModal(false)}
+          comment={comments[editCommentIndex]}
+          handleSave={handleSaveEditedComment}
+        />
+      )}
     </Container>
   );
 };
