@@ -35,7 +35,7 @@ const ReportDetailModal = ({ isReportDetailModalOpen, reportId, categoryTitle, c
     }, [isReportDetailModalOpen, reportId]);
 
     return (
-        <Modal isOpen={isReportDetailModalOpen}>
+        <Modal className="modal-lg" isOpen={isReportDetailModalOpen}>
             <ModalHeader>'{categoryTitle}' 게시글 신고 사항</ModalHeader>
             <ModalBody>
                 {loading && <p>로딩 중...</p>}
@@ -52,10 +52,10 @@ const ReportDetailModal = ({ isReportDetailModalOpen, reportId, categoryTitle, c
                             </tr>
                             </thead>
                             <tbody>
-                            {reportDetails.map((reportDetail) => (
+                            {reportDetails.map((reportDetail, index) => (
                                 <tr key={reportDetail.detailId}>
-                                    <td>{reportDetail.detailId}</td>
-                                    <td>{reportDetail.memberId}</td>
+                                    <td>{index + 1}</td>
+                                    <td>{reportDetail.memberEmail}</td>
                                     <td>{reportDetail.content}</td>
                                     <td>{reportDetail.reportDate}</td>
                                 </tr>
