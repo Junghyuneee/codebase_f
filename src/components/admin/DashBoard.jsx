@@ -175,7 +175,7 @@ const PopularProjectsChart = () => {
 
     return (
         <div className="container mb-3">
-            <h2>인기 게시글 차트</h2>
+            <h2>인기 프로젝트 차트</h2>
             <canvas ref={chartRef} width="400" height="250"></canvas>
         </div>
     );
