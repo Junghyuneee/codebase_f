@@ -6,7 +6,6 @@ import {useForm} from "react-hook-form";
 import NameSection from "@/components/auth/register/NameSection.jsx";
 import TelSection from "@/components/auth/register/TelSection.jsx";
 import {removeProfile, getProfile, updateProfile} from "@/api/auth/profile.js";
-import authStore from "@/zustand/authStore.js";
 import useAuthStore from "@/zustand/authStore.js";
 
 const ChangeInfo = () => {
