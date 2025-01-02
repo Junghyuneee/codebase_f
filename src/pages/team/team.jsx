@@ -56,7 +56,7 @@ function Team() {
   const [applyModal, setApplyModal] = useState(false);
   const [applyFormData, setApplyFormData] = useState({ 
     tech_stack: "",
-    member_id: ''
+    memberId: ''
   });
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -245,6 +245,38 @@ function Team() {
   };
   
 
+  const handleApplySubmit = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      member_id: currentMemberId,
+      pjt_id: selectedTeamId,
+      tech_stack: applyFormData.tech_stack,
+      status: "PENDING"
+    };
+
+    try {
+      const response = await axios.post("/api/team-applications", data);
+      if (response.status === 200 || response.status === 201) {
+        alert("팀원 등록이 완료되었습니다!");
+        toggleApplyModal();
+        setApplyFormData({
+          tech_stack: "",
+          memberId: currentMemberId
+        });
+        
+        if (selectedTeamId === 0) {
+          window.location.reload();
+        } else {
+          navigate(`/teamdetail/${selectedTeamId}`);
+        }
+      }
+    } catch (error) {
+      console.error('팀원 등록 중 오류 발생:', error);
+      alert('팀원 등록에 실패했습니다.');
+    }
+  };
+
   return (
     <>
       <Navbar/>
@@ -382,7 +414,7 @@ function Team() {
           toggle={toggleApplyModal}
           formData={applyFormData}
           handleChange={handleApplyChange}
-          projectId={selectedTeamId}
+          handleSubmit={handleApplySubmit}
         />
       </main>
     </>
