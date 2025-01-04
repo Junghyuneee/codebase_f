@@ -10,6 +10,7 @@ import axios from "axios";
 import ReportDetailModal from "@/components/admin/ReportDetailModal.jsx";
 import {Button} from "reactstrap";
 import apiClient from "@/api/apiClient.js";
+import {Dropdown} from "react-bootstrap";
 
 const ReportManagement = () => {
     const [isHoveredAll, setIsHoveredAll] = useState(false); // 카테고리 버튼 스타일 지정
@@ -17,6 +18,9 @@ const ReportManagement = () => {
     const [isHoveredPost, setIsHoveredPost] = useState(false);
     const [isHoveredComment, setIsHoveredComment] = useState(false);
     const [isHoveredReview, setIsHoveredReview] = useState(false);
+
+    // 신고 처리별 분류
+    const [processOption, setProcessOption] = useState('전체')
 
     // 신고 디테일 모달 관련
     const [activeReportId, setActiveReportId] = useState(null); // 현재 활성화된 reportId 관리
@@ -74,8 +78,12 @@ const ReportManagement = () => {
             try {
                 const response = await apiClient.get(`/reports/read/${category}`,
                     {params: {page: currentPage, size: pageSize}});
-                console.log(response.data.data)
-                setReports(response.data.data);
+                const processOptionData = response.data.data.filter((item) => {
+                    if(processOption === "전체") return true;
+                    else if(processOption === "처리함") return item.completed === true;
+                    else return item.completed === false;
+                })
+                setReports(processOptionData);
                 setCurrentPage(response.data.currentPage);
                 setTotalPages(response.data.totalPages);
             } catch (error) {
@@ -87,7 +95,7 @@ const ReportManagement = () => {
         };
 
         fetchReports(currentPage);
-    }, [category, currentPage]);
+    }, [category, currentPage, processOption]);
 
     const handlePageChange = (page) => {
         if (page > 0 && page <= totalPages) {
@@ -109,67 +117,95 @@ const ReportManagement = () => {
 
     return (
         <div className="container">
-            <div className='mb-1 mr-1'>
-                <Button to="/admin/reports?category=readAll" tag={Link}
-                        style={{
-                            backgroundColor: category === 4 ? "#5e72e4" :
-                                isHoveredAll ? "#5e72e4" : "white",
-                            color: category === 4 ? 'white' :
-                                isHoveredAll ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredAll(true)}
-                        onMouseLeave={() => setIsHoveredAll(false)}>
-                    전체
-                </Button>
-                <Button to="/admin/reports?category=readProject" tag={Link}
-                        style={{
-                            backgroundColor: category === 0 ? "#5e72e4" :
-                                isHoveredProject ? "#5e72e4" : "white",
-                            color: category === 0 ? 'white' :
-                                isHoveredProject ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredProject(true)}
-                        onMouseLeave={() => setIsHoveredProject(false)}>
-                    프로젝트
-                </Button>
-                <Button to="/admin/reports?category=readPost" tag={Link}
-                        style={{
-                            backgroundColor: category === 1 ? "#5e72e4" :
-                                isHoveredPost ? "#5e72e4" : "white",
-                            color: category === 1 ? 'white' :
-                                isHoveredPost ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredPost(true)}
-                        onMouseLeave={() => setIsHoveredPost(false)}>
-                    게시판
-                </Button>
-                <Button to="/admin/reports?category=readPostComment" tag={Link}
-                        style={{
-                            backgroundColor: category === 2 ? "#5e72e4" :
-                                isHoveredComment ? "#5e72e4" : "white",
-                            color: category === 2 ? 'white' :
-                                isHoveredComment ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredComment(true)}
-                        onMouseLeave={() => setIsHoveredComment(false)}>
-                    댓글
-                </Button>
-                <Button to="/admin/reports?category=readReview" tag={Link}
-                        style={{
-                            backgroundColor: category === 3 ? "#5e72e4" :
-                                isHoveredReview ? "#5e72e4" : "white",
-                            color: category === 3 ? 'white' :
-                                isHoveredReview ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredReview(true)}
-                        onMouseLeave={() => setIsHoveredReview(false)}>
-                    리뷰
-                </Button>
+            <div className='mb-1 d-flex justify-content-between'>
+                <span>
+                    <Button to="/admin/reports?category=readAll" tag={Link}
+                            style={{
+                                backgroundColor: category === 4 ? "#5e72e4" :
+                                    isHoveredAll ? "#5e72e4" : "white",
+                                color: category === 4 ? 'white' :
+                                    isHoveredAll ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredAll(true)}
+                            onMouseLeave={() => setIsHoveredAll(false)}>
+                        전체
+                    </Button>
+                    <Button to="/admin/reports?category=readProject" tag={Link}
+                            style={{
+                                backgroundColor: category === 0 ? "#5e72e4" :
+                                    isHoveredProject ? "#5e72e4" : "white",
+                                color: category === 0 ? 'white' :
+                                    isHoveredProject ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredProject(true)}
+                            onMouseLeave={() => setIsHoveredProject(false)}>
+                        프로젝트
+                    </Button>
+                    <Button to="/admin/reports?category=readPost" tag={Link}
+                            style={{
+                                backgroundColor: category === 1 ? "#5e72e4" :
+                                    isHoveredPost ? "#5e72e4" : "white",
+                                color: category === 1 ? 'white' :
+                                    isHoveredPost ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredPost(true)}
+                            onMouseLeave={() => setIsHoveredPost(false)}>
+                        게시판
+                    </Button>
+                    <Button to="/admin/reports?category=readPostComment" tag={Link}
+                            style={{
+                                backgroundColor: category === 2 ? "#5e72e4" :
+                                    isHoveredComment ? "#5e72e4" : "white",
+                                color: category === 2 ? 'white' :
+                                    isHoveredComment ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredComment(true)}
+                            onMouseLeave={() => setIsHoveredComment(false)}>
+                        댓글
+                    </Button>
+                    <Button to="/admin/reports?category=readReview" tag={Link}
+                            style={{
+                                backgroundColor: category === 3 ? "#5e72e4" :
+                                    isHoveredReview ? "#5e72e4" : "white",
+                                color: category === 3 ? 'white' :
+                                    isHoveredReview ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredReview(true)}
+                            onMouseLeave={() => setIsHoveredReview(false)}>
+                        리뷰
+                    </Button>
+                </span>
+                <span>
+                    <Dropdown className="mb-3">
+                        <Dropdown.Toggle variant="light"
+                                         style={{
+                                             backgroundColor: 'gray',
+                                             color: "white",
+                                             margin: '0px'
+                                         }}>
+                            <span className="mr-2">{processOption}</span>
+                            <span>&#9660;</span>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                        {['전체', '처리함', '처리안함'].map(option => (
+                                <Dropdown.Item
+                                    key={option}
+                                    onClick={() => {
+                                        setProcessOption(option);
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    {option}
+                                </Dropdown.Item>
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </span>
             </div>
             <table className="table-layout">
                 <thead>
