@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Container, Form, Alert, Card } from "react-bootstrap";
+import { Button, Container, Form, Alert, Card, Modal } from "react-bootstrap";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
-import { getAccessToken, getName } from '@/api/auth/getset.js'; // 추가: 사용자 이름 가져오기
+import { getAccessToken, getName } from '@/api/auth/getset.js'; // 사용자 이름 가져오기
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -17,8 +17,13 @@ const PostDetail = () => {
   const [viewCount, setViewCount] = useState(0);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const [editCommentIndex, setEditCommentIndex] = useState(null);
   const [currentUserName, setCurrentUserName] = useState(''); // 현재 사용자 이름 저장
+  const [userLiked, setUserLiked] = useState(false); // 사용자가 좋아요를 눌렀는지 여부
+  const [userDisliked, setUserDisliked] = useState(false); // 사용자가 싫어요를 눌렀는지 여부
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editCommentContent, setEditCommentContent] = useState('');
+  const [editCommentIndex, setEditCommentIndex] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 여부 상태 추가
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -37,6 +42,19 @@ const PostDetail = () => {
         if (commentsResponse.ok) {
           const commentsData = await commentsResponse.json();
           setComments(commentsData);
+        }
+
+        // 현재 사용자의 좋아요/싫어요 상태 가져오기
+        const token = getAccessToken();
+        if (token) {
+          setIsLoggedIn(true); // 로그인 상태 설정
+          const userId = getName(); // 로그인한 사용자의 ID를 가져옴
+          const likeStatusResponse = await fetch(`http://localhost:8080/api/post/${id}/like-status?userId=${userId}`);
+          if (likeStatusResponse.ok) {
+            const likeStatusData = await likeStatusResponse.json();
+            setUserLiked(likeStatusData.liked);
+            setUserDisliked(likeStatusData.disliked);
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -97,6 +115,7 @@ const PostDetail = () => {
         const savedComment = await response.json();
         setComments([...comments, savedComment]);
         setComment('');
+        window.location.reload(); // 페이지 새로고침
       } catch (err) {
         console.error('댓글 저장 중 오류:', err);
         alert('댓글 저장에 실패했습니다.');
@@ -106,23 +125,51 @@ const PostDetail = () => {
 
   const handleEditComment = (index) => {
     setEditCommentIndex(index);
-    setComment(comments[index].content);
+    setEditCommentContent(comments[index].content);
+    setShowEditModal(true);
   };
 
-  const handleDeleteComment = (index) => {
+  const handleSaveEditedComment = async () => {
+    const commentId = comments[editCommentIndex].id;
+    try {
+      const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: editCommentContent }),
+      });
+
+      if (!response.ok) {
+        throw new Error('댓글 수정 실패');
+      }
+
+      const updatedComment = await response.json();
+      setComments(comments.map((comment, index) => index === editCommentIndex ? updatedComment : comment));
+      setShowEditModal(false);
+      setEditCommentIndex(null);
+      setEditCommentContent('');
+      window.location.reload(); // 페이지 새로고침
+    } catch (err) {
+      console.error('댓글 수정 중 오류:', err);
+      alert('댓글 수정에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteComment = async (index) => {
     if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
       const commentId = comments[index].id;
-      fetch(`http://localhost:8080/api/comments/${commentId}`, {
-        method: 'DELETE',
-      })
-        .then(response => {
-          if (!response.ok) throw new Error('댓글 삭제 실패');
-          setComments(comments.filter((_, i) => i !== index));
-        })
-        .catch(err => {
-          console.error('댓글 삭제 중 오류:', err);
-          alert('댓글 삭제에 실패했습니다.');
+      try {
+        const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
+          method: 'DELETE',
         });
+        if (!response.ok) throw new Error('댓글 삭제 실패');
+        setComments(comments.filter((_, i) => i !== index));
+        window.location.reload(); // 페이지 새로고침
+      } catch (err) {
+        console.error('댓글 삭제 중 오류:', err);
+        alert('댓글 삭제에 실패했습니다.');
+      }
     }
   };
 
@@ -130,9 +177,27 @@ const PostDetail = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/post/like/${id}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: currentUserName }),
       });
+
       if (response.ok) {
-        setLikes(likes + 1);
+        if (userLiked) {
+          // 좋아요 취소
+          setLikes(likes - 1);
+          setUserLiked(false);
+        } else {
+          // 좋아요 추가
+          setLikes(likes + 1);
+          setUserLiked(true);
+          // 만약 사용자가 싫어요를 눌렀다면 싫어요 취소
+          if (userDisliked) {
+            setDislikes(dislikes - 1);
+            setUserDisliked(false);
+          }
+        }
       }
     } catch (error) {
       console.error('좋아요 요청 중 오류 발생: ', error);
@@ -143,9 +208,27 @@ const PostDetail = () => {
     try {
       const response = await fetch(`http://localhost:8080/api/post/dislike/${id}`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: currentUserName }),
       });
+
       if (response.ok) {
-        setDislikes(dislikes + 1);
+        if (userDisliked) {
+          // 싫어요 취소
+          setDislikes(dislikes - 1);
+          setUserDisliked(false);
+        } else {
+          // 싫어요 추가
+          setDislikes(dislikes + 1);
+          setUserDisliked(true);
+          // 만약 사용자가 좋아요를 눌렀다면 좋아요 취소
+          if (userLiked) {
+            setLikes(likes - 1);
+            setUserLiked(false);
+          }
+        }
       }
     } catch (error) {
       console.error('싫어요 요청 중 오류 발생: ', error);
@@ -182,10 +265,10 @@ const PostDetail = () => {
               <small className="text-muted">등록일: {new Date(post.createDate).toLocaleString()}</small>
             </div>
             <div className="mt-3">
-              <Button variant="link" onClick={handleLike}>
+              <Button variant="link" onClick={handleLike} disabled={!isLoggedIn}>
                 <FaThumbsUp /> {likes}
               </Button>
-              <Button variant="link" onClick={handleDislike}>
+              <Button variant="link" onClick={handleDislike} disabled={!isLoggedIn}>
                 <FaThumbsDown /> {dislikes}
               </Button>
               <span className="ml-2">조회수: {viewCount}</span>
@@ -200,20 +283,22 @@ const PostDetail = () => {
         </Card>
       )}
 
-      <Form onSubmit={handleCommentSubmit} className="mb-4">
-        <Form.Group controlId="comment">
-          <Form.Label>댓글 작성</Form.Label>
-          <Form.Control 
-            as="textarea" 
-            rows={3} 
-            value={comment} 
-            onChange={(e) => setComment(e.target.value)} 
-            placeholder="댓글을 입력하세요" 
-            required 
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">{editCommentIndex !== null ? '댓글 수정' : '댓글 작성'}</Button>
-      </Form>
+      {currentUserName && (
+        <Form onSubmit={handleCommentSubmit} className="mb-4">
+          <Form.Group controlId="comment">
+            <Form.Label>댓글 작성</Form.Label>
+            <Form.Control 
+              as="textarea" 
+              rows={3} 
+              value={comment} 
+              onChange={(e) => setComment(e.target.value)} 
+              placeholder="댓글을 입력하세요" 
+              required 
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">댓글 작성</Button>
+        </Form>
+      )}
 
       <h5>댓글 목록</h5>
       {comments.length > 0 ? comments.map((c, index) => (
@@ -222,8 +307,12 @@ const PostDetail = () => {
             <Card.Subtitle className="mb-1 text-muted">{c.author}</Card.Subtitle>
             <Card.Text>{c.content}</Card.Text>
             <div className="d-flex justify-content-end">
-              <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
-              <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
+              {c.author === currentUserName && (
+                <>
+                  <Button variant="link" onClick={() => handleEditComment(index)}>수정</Button>
+                  <Button variant="link" onClick={() => handleDeleteComment(index)}>삭제</Button>
+                </>
+              )}
               <ReportModal
                 category={2}
                 categoryId={c.id}
@@ -233,6 +322,31 @@ const PostDetail = () => {
           </Card.Body>
         </Card>
       )) : <p>댓글이 없습니다.</p>}
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header>
+          <Modal.Title>댓글 수정</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="editComment">
+              <Form.Label>댓글 내용</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3} 
+                value={editCommentContent} 
+                onChange={(e) => setEditCommentContent(e.target.value)} 
+                placeholder="댓글을 수정하세요" 
+                required 
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>취소</Button>
+          <Button variant="primary" onClick={handleSaveEditedComment}>저장</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

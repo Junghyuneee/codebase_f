@@ -18,6 +18,7 @@ import {
     Container,
     Row,
     Col,
+    Badge
 } from "reactstrap";
 
 import img from "../../assets/img/brand/argon-react.png";
@@ -29,10 +30,10 @@ function Banner_mini() {
     return (
         <>
 
-            <Navbar className="navbar-dark bg-info pt-7" expand="lg">
+            <Navbar className="navbar-dark pt-7" expand="lg">
                 <Container>
                     <NavbarBrand href="/store">
-                        CODEBASE
+                        <Badge>  CODEBASE</Badge>
                     </NavbarBrand>
                     <button className="navbar-toggler" id="navbar-primary">
                         <span className="navbar-toggler-icon" />
@@ -59,12 +60,13 @@ function Banner_mini() {
                         <Nav className="ml-lg-auto" navbar>
                             <NavItem>
                                 <NavLink href="/store">
-                                    상점 홈 <span className="sr-only">(current)</span>
+                                 상점 홈 <span className="sr-only">(current)</span>
+                               
                                 </NavLink>
                             </NavItem>
                             <NavItem>
                                 <NavLink href="/store/cart">
-                                    장바구니
+                                   장바구니
                                 </NavLink>
                             </NavItem>
                             <UncontrolledDropdown nav inNavbar>
