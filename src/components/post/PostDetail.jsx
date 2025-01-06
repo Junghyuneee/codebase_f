@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Container, Form, Alert, Card } from "react-bootstrap";
+import { Button, Container, Form, Alert, Card, Modal } from "react-bootstrap";
 import { FaThumbsUp, FaThumbsDown } from 'react-icons/fa';
 import ReportModal from "@/components/admin/ReportModal.jsx";
-import EditCommentModal from "@/components/post/EditCommentModal.jsx";
 import { getAccessToken, getName } from '@/api/auth/getset.js'; // 추가: 사용자 이름 가져오기
 
 const PostDetail = () => {
@@ -18,9 +17,10 @@ const PostDetail = () => {
   const [viewCount, setViewCount] = useState(0);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const [editCommentIndex, setEditCommentIndex] = useState(null);
   const [currentUserName, setCurrentUserName] = useState(''); // 현재 사용자 이름 저장
   const [showEditModal, setShowEditModal] = useState(false);
+  const [editCommentContent, setEditCommentContent] = useState('');
+  const [editCommentIndex, setEditCommentIndex] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -108,10 +108,11 @@ const PostDetail = () => {
 
   const handleEditComment = (index) => {
     setEditCommentIndex(index);
+    setEditCommentContent(comments[index].content);
     setShowEditModal(true);
   };
 
-  const handleSaveEditedComment = async (editedContent) => {
+  const handleSaveEditedComment = async () => {
     const commentId = comments[editCommentIndex].id;
     try {
       const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
@@ -119,7 +120,7 @@ const PostDetail = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: editedContent }),
+        body: JSON.stringify({ content: editCommentContent }),
       });
 
       if (!response.ok) {
@@ -130,6 +131,7 @@ const PostDetail = () => {
       setComments(comments.map((comment, index) => index === editCommentIndex ? updatedComment : comment));
       setShowEditModal(false);
       setEditCommentIndex(null);
+      setEditCommentContent('');
     } catch (err) {
       console.error('댓글 수정 중 오류:', err);
       alert('댓글 수정에 실패했습니다.');
@@ -240,7 +242,7 @@ const PostDetail = () => {
               required 
             />
           </Form.Group>
-          <Button variant="primary" type="submit">{editCommentIndex !== null ? '댓글 수정' : '댓글 작성'}</Button>
+          <Button variant="primary" type="submit">댓글 작성</Button>
         </Form>
       )}
 
@@ -267,14 +269,30 @@ const PostDetail = () => {
         </Card>
       )) : <p>댓글이 없습니다.</p>}
 
-      {editCommentIndex !== null && (
-        <EditCommentModal
-          show={showEditModal}
-          handleClose={() => setShowEditModal(false)}
-          comment={comments[editCommentIndex]}
-          handleSave={handleSaveEditedComment}
-        />
-      )}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header>
+          <Modal.Title>댓글 수정</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="editComment">
+              <Form.Label>댓글 내용</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3} 
+                value={editCommentContent} 
+                onChange={(e) => setEditCommentContent(e.target.value)} 
+                placeholder="댓글을 수정하세요" 
+                required 
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>취소</Button>
+          <Button variant="primary" onClick={handleSaveEditedComment}>저장</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
