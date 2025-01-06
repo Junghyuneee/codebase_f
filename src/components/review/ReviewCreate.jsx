@@ -26,7 +26,7 @@ const ReviewCreate = () => {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
 	const [author, setAuthor] = useState("");
-	const [projectteam, setProjecttem] = useState([]); // 프로젝트 목록 상태
+	const [projectteam, setProjectteam] = useState([]); // 프로젝트 목록 상태
 	const [selectedProjectteam, setSelectedProjectteam] = useState(""); // 선택한 프로젝트
 	const [selectedCategory, setSelectedCategory] = useState(""); // 선택한 카테고리
 	const navigate = useNavigate();
@@ -58,7 +58,7 @@ const ReviewCreate = () => {
 						(projectteam) => projectteam.pjtowner === name
 					);
 					console.log(filteredProjects);
-					setProjecttem(filteredProjects);
+					setProjectteam(filteredProjects);
 				} else {
 					console.error(`프로젝트 목록 불러오기 실패`);
 				}
@@ -88,8 +88,8 @@ const ReviewCreate = () => {
 					title,
 					content,
 					author,
-					pjt_id: selectedProjectteam || null,
-					category: selectedCategory || null,
+					pjt_id: selectedProjectteam || "", // 빈 문자열 사용
+					category: selectedCategory || "", // 빈 문자열 사용
 				}),
 			});
 
