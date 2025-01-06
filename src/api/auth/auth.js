@@ -72,19 +72,3 @@ export const emailCodeCheck = async (param, code) => {
     const response = await apiClient.get(`/auth/emailverify?email=${param}&code=${code}`);
     return response.data;
 }
-
-export const updateProfile = async (data) => {
-    const response = await apiClient.post("/auth/update/profile", data);
-    return response.data;
-}
-
-export const updatePassword = async (data) => {
-    const response = await apiClient.post("/auth/update/password", data);
-    return response.data;
-}
-
-export const removeProfile = async () => {
-    const response = await apiClient.delete("/auth/profile");
-    useAuthStore.getState().clearAuthData();
-    return response.data;
-}
