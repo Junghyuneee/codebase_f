@@ -21,3 +21,8 @@ export const updatePassword = async (data) => {
     const response = await apiClient.post("/profile/update/password", data);
     return response.data;
 }
+
+export const getMyPostList = async (name = "") => {
+    const response = await apiClient.get("/profile/post/" + name);
+    return response.data;
+}

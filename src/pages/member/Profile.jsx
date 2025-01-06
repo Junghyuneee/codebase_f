@@ -5,6 +5,7 @@ import {getMemberByName} from "@/api/auth/member.js";
 import {useNavigate, useParams} from "react-router-dom";
 import {getEmail, getName} from "@/api/auth/getset.js";
 import ChatMainModal from "@/components/chat/Modal/ChatMainModal.jsx";
+import PostList from "@/components/auth/profile/PostList.jsx";
 
 const Profile = () => {
 
@@ -149,6 +150,7 @@ const Profile = () => {
                                                 프로젝트 생성 남은 횟수: {member.projectCount}
                                             </div>
                                         </div>
+                                        <PostList name={id || getName()}/>
                                     </div>
                                 </Card>
                             </Container>
