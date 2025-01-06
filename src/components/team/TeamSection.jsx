@@ -23,7 +23,7 @@ import isAuthenticated from "@/utils/auth/isAuthenticated";
 import PropTypes from 'prop-types';
 
 
-function TeamSection({ projects, currentPage, totalPages, onPageChange, currentMemberId }) {
+function TeamSection({ projects, currentPage, totalPages, onPageChange, currentMemberId, openApplyModal }) {
   const [modal, setModal] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const navigate = useNavigate();
@@ -207,7 +207,15 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
         <ModalFooter>
           <Button
             color="primary"
-            onClick={() => navigate(`/teamdetail/${selectedTeam?.pjt_id}`)}
+            onClick={() => {
+              if (!isAuthenticated()) {
+                alert('로그인이 필요한 서비스입니다.');
+                navigate('/login');
+                return;
+              }
+              toggleModal(null);
+              openApplyModal(selectedTeam?.pjt_id);
+            }}
           >
             팀원 되기
           </Button>
@@ -225,7 +233,8 @@ TeamSection.propTypes = {
   currentPage: PropTypes.number,
   totalPages: PropTypes.number,
   onPageChange: PropTypes.func,
-  currentMemberId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  currentMemberId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  openApplyModal: PropTypes.func.isRequired
 };
 
 export default TeamSection;
