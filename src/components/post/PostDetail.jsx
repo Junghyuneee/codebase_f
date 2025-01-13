@@ -22,8 +22,9 @@ const PostDetail = () => {
   const [userDisliked, setUserDisliked] = useState(false); // 사용자가 싫어요를 눌렀는지 여부
   const [showEditModal, setShowEditModal] = useState(false);
   const [editCommentContent, setEditCommentContent] = useState('');
-  const [editCommentIndex, setEditCommentIndex] = useState(null);
+  const [editCommentId, setEditCommentId] = useState(null); // 수정할 댓글 ID 저장
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 여부 상태 추가
+  const [showChatModal, setShowChatModal] = useState(false); // 채팅방 모달 표시 여부
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -49,7 +50,7 @@ const PostDetail = () => {
         if (token) {
           setIsLoggedIn(true); // 로그인 상태 설정
           const userId = getName(); // 로그인한 사용자의 ID를 가져옴
-          const likeStatusResponse = await fetch(`http://localhost:8080/api/post/${id}/like-status?userId=${userId}`);
+          const likeStatusResponse = await fetch(`http://localhost:8080/api/post/${id}/like-status?userId=${encodeURIComponent(userId)}`);
           if (likeStatusResponse.ok) {
             const likeStatusData = await likeStatusResponse.json();
             setUserLiked(likeStatusData.liked);
@@ -112,10 +113,8 @@ const PostDetail = () => {
           throw new Error('댓글 저장 실패');
         }
 
-        const savedComment = await response.json();
-        setComments([...comments, savedComment]);
-        setComment('');
-        window.location.reload(); // 페이지 새로고침
+        // 댓글 작성 후 페이지 새로고침
+        window.location.reload();
       } catch (err) {
         console.error('댓글 저장 중 오류:', err);
         alert('댓글 저장에 실패했습니다.');
@@ -124,15 +123,14 @@ const PostDetail = () => {
   };
 
   const handleEditComment = (index) => {
-    setEditCommentIndex(index);
+    setEditCommentId(comments[index].id); // 수정할 댓글 ID 설정
     setEditCommentContent(comments[index].content);
     setShowEditModal(true);
   };
 
   const handleSaveEditedComment = async () => {
-    const commentId = comments[editCommentIndex].id;
     try {
-      const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
+      const response = await fetch(`http://localhost:8080/api/comments/${editCommentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,12 +142,8 @@ const PostDetail = () => {
         throw new Error('댓글 수정 실패');
       }
 
-      const updatedComment = await response.json();
-      setComments(comments.map((comment, index) => index === editCommentIndex ? updatedComment : comment));
-      setShowEditModal(false);
-      setEditCommentIndex(null);
-      setEditCommentContent('');
-      window.location.reload(); // 페이지 새로고침
+      // 댓글 수정 후 페이지 새로고침
+      window.location.reload();
     } catch (err) {
       console.error('댓글 수정 중 오류:', err);
       alert('댓글 수정에 실패했습니다.');
@@ -157,15 +151,16 @@ const PostDetail = () => {
   };
 
   const handleDeleteComment = async (index) => {
+    const commentId = comments[index].id;
     if (window.confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-      const commentId = comments[index].id;
       try {
         const response = await fetch(`http://localhost:8080/api/comments/${commentId}`, {
           method: 'DELETE',
         });
         if (!response.ok) throw new Error('댓글 삭제 실패');
-        setComments(comments.filter((_, i) => i !== index));
-        window.location.reload(); // 페이지 새로고침
+
+        // 댓글 삭제 후 페이지 새로고침
+        window.location.reload();
       } catch (err) {
         console.error('댓글 삭제 중 오류:', err);
         alert('댓글 삭제에 실패했습니다.');
@@ -175,12 +170,11 @@ const PostDetail = () => {
 
   const handleLike = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/post/like/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/post/like/${id}?userId=${encodeURIComponent(currentUserName)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: currentUserName }),
       });
 
       if (response.ok) {
@@ -206,12 +200,11 @@ const PostDetail = () => {
 
   const handleDislike = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/post/dislike/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/post/dislike/${id}?userId=${encodeURIComponent(currentUserName)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: currentUserName }),
       });
 
       if (response.ok) {
@@ -240,9 +233,14 @@ const PostDetail = () => {
       {loading && <Alert variant="info">리뷰 정보를 불러오는 중...</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
       
-      <Button variant="secondary" onClick={() => navigate('/post')} className="mb-3">
-        목록
-      </Button>
+      <div className="d-flex justify-content-between mb-3">
+        <Button variant="secondary" onClick={() => navigate('/post')}>
+          목록
+        </Button>
+        <Button variant="primary" onClick={() => setShowChatModal(true)}>
+          채팅
+        </Button>
+      </div>
 
       {post && (
         <Card className="mb-4 shadow-sm">
@@ -345,6 +343,19 @@ const PostDetail = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowEditModal(false)}>취소</Button>
           <Button variant="primary" onClick={handleSaveEditedComment}>저장</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showChatModal} onHide={() => setShowChatModal(false)}>
+        <Modal.Header>
+          <Modal.Title>채팅</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>채팅방으로 이동하시겠습니까?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowChatModal(false)}>취소</Button>
+          <Button variant="primary" onClick={() => navigate('/chat')}>이동</Button>
         </Modal.Footer>
       </Modal>
     </Container>
