@@ -88,6 +88,9 @@ function ProjectExplain({ project }) {
     //console.log( getMemberId(), project.maker_id);
     const maker = getMemberId() == project.maker_id ? true : false;
 
+    const purchasedResponse = apiClient(`/api/store/payment/exist/${project.id}`)
+    const purchased = purchasedResponse.data;
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setWaitingPayment(true)
@@ -206,6 +209,7 @@ function ProjectExplain({ project }) {
 
     }
     useEffect(() => {
+        console.log("구매함? ", purchased);
         console.log(inCart);
     }, [inCart]);
 

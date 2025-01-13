@@ -10,6 +10,7 @@ import StoreAdd from "./CreateProject";
 import StoreDetail from "./ProjectDetail.jsx";
 import Navbar from "@/components/team/Navbar";
 import NavigationBar from "@/components/Navbars/NavigationBar";
+import Purchased from "./purchased/PurchasedList";
 function Admin() {
     return (
         <div>
@@ -22,6 +23,7 @@ function Admin() {
                     <Route path="/test" exact element={<StoreTest />} />
                     <Route path="/add" exact element={<StoreAdd />} />
                     <Route path="/:id" element={<StoreDetail />} />
+                    <Route path="/purchase" element={<Purchased />} />
                 </Routes>
             </main>
         </div>
