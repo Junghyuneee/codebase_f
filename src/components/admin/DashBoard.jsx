@@ -11,8 +11,7 @@ function DashBoardContent() {
 
     return (
         <Row>
-            <Col className="p-0 m-4">
-                <h3 className="h4 text-success text-center font-weight-bold mb-4" to="/admin"></h3>
+            <Col className="p-0 ml-4 mr-4">
                 <div>
                     <Row>
                         <Col className="mb-4 col-6">
