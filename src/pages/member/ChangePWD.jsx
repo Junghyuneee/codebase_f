@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardHeader, Form, InputGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { updatePassword } from "@/api/auth/auth";
+import { updatePassword } from "@/api/auth/profile";
 import PasswordSection from "@/components/auth/register/PasswordSection";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { useState } from "react";
