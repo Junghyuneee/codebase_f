@@ -8,8 +8,9 @@ import '/src/components/admin/Admin.css';
 import {Link, useLocation, useSearchParams} from "react-router-dom";
 import axios from "axios";
 import ReportDetailModal from "@/components/admin/ReportDetailModal.jsx";
-import {Button} from "reactstrap";
+import {Button, Pagination, PaginationItem, PaginationLink} from "reactstrap";
 import apiClient from "@/api/apiClient.js";
+import {Dropdown} from "react-bootstrap";
 
 const ReportManagement = () => {
     const [isHoveredAll, setIsHoveredAll] = useState(false); // 카테고리 버튼 스타일 지정
@@ -17,6 +18,9 @@ const ReportManagement = () => {
     const [isHoveredPost, setIsHoveredPost] = useState(false);
     const [isHoveredComment, setIsHoveredComment] = useState(false);
     const [isHoveredReview, setIsHoveredReview] = useState(false);
+
+    // 신고 처리별 분류
+    const [processOption, setProcessOption] = useState('전체')
 
     // 신고 디테일 모달 관련
     const [activeReportId, setActiveReportId] = useState(null); // 현재 활성화된 reportId 관리
@@ -74,8 +78,12 @@ const ReportManagement = () => {
             try {
                 const response = await apiClient.get(`/reports/read/${category}`,
                     {params: {page: currentPage, size: pageSize}});
-                console.log(response.data.data)
-                setReports(response.data.data);
+                const processOptionData = response.data.data.filter((item) => {
+                    if(processOption === "전체") return true;
+                    else if(processOption === "처리함") return item.completed === true;
+                    else return item.completed === false;
+                })
+                setReports(processOptionData);
                 setCurrentPage(response.data.currentPage);
                 setTotalPages(response.data.totalPages);
             } catch (error) {
@@ -87,7 +95,7 @@ const ReportManagement = () => {
         };
 
         fetchReports(currentPage);
-    }, [category, currentPage]);
+    }, [category, currentPage, processOption]);
 
     const handlePageChange = (page) => {
         if (page > 0 && page <= totalPages) {
@@ -109,67 +117,95 @@ const ReportManagement = () => {
 
     return (
         <div className="container">
-            <div className='mb-1 mr-1'>
-                <Button to="/admin/reports?category=readAll" tag={Link}
-                        style={{
-                            backgroundColor: category === 4 ? "#5e72e4" :
-                                isHoveredAll ? "#5e72e4" : "white",
-                            color: category === 4 ? 'white' :
-                                isHoveredAll ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredAll(true)}
-                        onMouseLeave={() => setIsHoveredAll(false)}>
-                    전체
-                </Button>
-                <Button to="/admin/reports?category=readProject" tag={Link}
-                        style={{
-                            backgroundColor: category === 0 ? "#5e72e4" :
-                                isHoveredProject ? "#5e72e4" : "white",
-                            color: category === 0 ? 'white' :
-                                isHoveredProject ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredProject(true)}
-                        onMouseLeave={() => setIsHoveredProject(false)}>
-                    프로젝트
-                </Button>
-                <Button to="/admin/reports?category=readPost" tag={Link}
-                        style={{
-                            backgroundColor: category === 1 ? "#5e72e4" :
-                                isHoveredPost ? "#5e72e4" : "white",
-                            color: category === 1 ? 'white' :
-                                isHoveredPost ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredPost(true)}
-                        onMouseLeave={() => setIsHoveredPost(false)}>
-                    게시판
-                </Button>
-                <Button to="/admin/reports?category=readPostComment" tag={Link}
-                        style={{
-                            backgroundColor: category === 2 ? "#5e72e4" :
-                                isHoveredComment ? "#5e72e4" : "white",
-                            color: category === 2 ? 'white' :
-                                isHoveredComment ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredComment(true)}
-                        onMouseLeave={() => setIsHoveredComment(false)}>
-                    댓글
-                </Button>
-                <Button to="/admin/reports?category=readReview" tag={Link}
-                        style={{
-                            backgroundColor: category === 3 ? "#5e72e4" :
-                                isHoveredReview ? "#5e72e4" : "white",
-                            color: category === 3 ? 'white' :
-                                isHoveredReview ? 'white' : 'black',
-                            transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={() => setIsHoveredReview(true)}
-                        onMouseLeave={() => setIsHoveredReview(false)}>
-                    리뷰
-                </Button>
+            <div className='mb-1 d-flex justify-content-between'>
+                <span>
+                    <Button to="/admin/reports?category=readAll" tag={Link}
+                            style={{
+                                backgroundColor: category === 4 ? "#5e72e4" :
+                                    isHoveredAll ? "#5e72e4" : "white",
+                                color: category === 4 ? 'white' :
+                                    isHoveredAll ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredAll(true)}
+                            onMouseLeave={() => setIsHoveredAll(false)}>
+                        전체
+                    </Button>
+                    <Button to="/admin/reports?category=readProject" tag={Link}
+                            style={{
+                                backgroundColor: category === 0 ? "#5e72e4" :
+                                    isHoveredProject ? "#5e72e4" : "white",
+                                color: category === 0 ? 'white' :
+                                    isHoveredProject ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredProject(true)}
+                            onMouseLeave={() => setIsHoveredProject(false)}>
+                        프로젝트
+                    </Button>
+                    <Button to="/admin/reports?category=readPost" tag={Link}
+                            style={{
+                                backgroundColor: category === 1 ? "#5e72e4" :
+                                    isHoveredPost ? "#5e72e4" : "white",
+                                color: category === 1 ? 'white' :
+                                    isHoveredPost ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredPost(true)}
+                            onMouseLeave={() => setIsHoveredPost(false)}>
+                        게시판
+                    </Button>
+                    <Button to="/admin/reports?category=readPostComment" tag={Link}
+                            style={{
+                                backgroundColor: category === 2 ? "#5e72e4" :
+                                    isHoveredComment ? "#5e72e4" : "white",
+                                color: category === 2 ? 'white' :
+                                    isHoveredComment ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredComment(true)}
+                            onMouseLeave={() => setIsHoveredComment(false)}>
+                        댓글
+                    </Button>
+                    <Button to="/admin/reports?category=readReview" tag={Link}
+                            style={{
+                                backgroundColor: category === 3 ? "#5e72e4" :
+                                    isHoveredReview ? "#5e72e4" : "white",
+                                color: category === 3 ? 'white' :
+                                    isHoveredReview ? 'white' : 'black',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={() => setIsHoveredReview(true)}
+                            onMouseLeave={() => setIsHoveredReview(false)}>
+                        리뷰
+                    </Button>
+                </span>
+                <span>
+                    <Dropdown className="mb-3">
+                        <Dropdown.Toggle variant="light"
+                                         style={{
+                                             backgroundColor: 'gray',
+                                             color: "white",
+                                             margin: '0px'
+                                         }}>
+                            <span className="mr-2">{processOption}</span>
+                            <span>&#9660;</span>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                        {['전체', '처리함', '처리안함'].map(option => (
+                            <Dropdown.Item
+                                key={option}
+                                onClick={() => {
+                                    setProcessOption(option);
+                                    setCurrentPage(1);
+                                }}
+                            >
+                                {option}
+                            </Dropdown.Item>
+                        ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </span>
             </div>
             <table className="table-layout">
                 <thead>
@@ -230,19 +266,65 @@ const ReportManagement = () => {
                 ))}
                 </tbody>
             </table>
-            <div>
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    이전
-                </button>
-                <span>
-                    {totalPages !== 0
-                        ? `${currentPage} / ${totalPages}`
-                        : 1}
-                </span>
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                    다음
-                </button>
-            </div>
+            <nav aria-label="Page navigation example">
+                <Pagination className="pagination justify-content-center">
+                    <PaginationItem disabled={currentPage === 1}>
+                        {/* 이전 페이지지 */}
+                        <PaginationLink
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            previous
+                        />
+                    </PaginationItem>
+                    {(() => {
+                        const totalNumbersToShow = 10; // 최대 표시할 페이지 수
+                        const half = Math.floor(totalNumbersToShow / 2); // 앞뒤로 나눌 개수
+                        let start = Math.max(currentPage - half, 1); // 시작 페이지
+                        let end = Math.min(currentPage + half, totalPages); // 끝 페이지
+
+                        // Adjust start and end if there aren't enough pages at the beginning or end
+                        if (currentPage <= half) {
+                            start = 1;
+                            end = Math.min(totalNumbersToShow, totalPages);
+                        } else if (currentPage + half > totalPages) {
+                            start = Math.max(totalPages - totalNumbersToShow + 1, 1);
+                            end = totalPages;
+                        }
+
+                        const pageNumbers = [];
+                        if (start > 1) pageNumbers.push(1); // 항상 첫 번째 페이지 표시
+                        if (start > 2) pageNumbers.push("..."); // 앞부분 생략 표시
+
+                        for (let i = start; i <= end; i++) {
+                            pageNumbers.push(i);
+                        }
+
+                        if (end < totalPages - 1) pageNumbers.push("..."); // 뒷부분 생략 표시
+                        if (end < totalPages) pageNumbers.push(totalPages); // 항상 마지막 페이지 표시
+
+                        return pageNumbers.map((number, index) => (
+                            <PaginationItem
+                                key={index} // "..." 같은 중복 요소를 허용하기 위해 index 사용
+                                active={number === currentPage}
+                                disabled={number === "..."} // "..."는 클릭되지 않도록 처리
+                            >
+                                {number === "..." ? (
+                                    <PaginationLink disabled>{number}</PaginationLink>
+                                ) : (
+                                    <PaginationLink onClick={() => handlePageChange(number)}>
+                                        {number}
+                                    </PaginationLink>
+                                )}
+                            </PaginationItem>
+                        ));
+                    })()}
+                    <PaginationItem disabled={currentPage === totalPages}>
+                        <PaginationLink
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            next
+                        />
+                    </PaginationItem>
+                </Pagination>
+            </nav>
         </div>
     );
 };

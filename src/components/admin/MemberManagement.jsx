@@ -2,14 +2,27 @@
 김은지
 2024 11 18
 */
-import React, {useEffect, useState} from 'react';
-import axios from "axios"
+import {useEffect, useState} from 'react';
 
 import './Admin.css';
 import apiClient from "@/api/apiClient.js";
+import {Button, Pagination, PaginationItem, PaginationLink} from "reactstrap";
+import MemberSearchModal from "@/components/auth/member/MemberSearchModal.jsx";
+import {useNavigate} from "react-router-dom";
 
 const MemberManagement = () => {
     const [members, setMembers] = useState([]);
+
+    // 멤버 찾기
+    const navigate = useNavigate();
+    const [member, setMember] = useState(null);
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if(member){
+            navigate(`/profile/${member.name}`)
+        }
+    }, [member, navigate]);
 
     // 페이징
     const [currentPage, setCurrentPage] = useState(1);
@@ -66,6 +79,7 @@ const MemberManagement = () => {
 
     return (
         <div className="container">
+            <Button onClick={()=>setShow(true)}>Search Member</Button>
             <table className="table-layout">
                 <thead>
                 <tr>
@@ -90,25 +104,73 @@ const MemberManagement = () => {
                         <td className="border-left">
                             <button
                                 onClick={() => changeRole(member.id)}
-                            >변경</button>
+                            >변경
+                            </button>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
-            <div>
-                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    이전
-                </button>
-                <span>
-                    {totalPages !== 0
-                        ? `${currentPage} / ${totalPages}`
-                        : 1}
-                </span>
-                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                    다음
-                </button>
-            </div>
+            <nav aria-label="Page navigation example">
+                <Pagination className="pagination justify-content-center">
+                    <PaginationItem disabled={currentPage === 1}>
+                        {/* 이전 페이지지 */}
+                        <PaginationLink
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            previous
+                        />
+                    </PaginationItem>
+                    {(() => {
+                        const totalNumbersToShow = 10; // 최대 표시할 페이지 수
+                        const half = Math.floor(totalNumbersToShow / 2); // 앞뒤로 나눌 개수
+                        let start = Math.max(currentPage - half, 1); // 시작 페이지
+                        let end = Math.min(currentPage + half, totalPages); // 끝 페이지
+
+                        // Adjust start and end if there aren't enough pages at the beginning or end
+                        if (currentPage <= half) {
+                            start = 1;
+                            end = Math.min(totalNumbersToShow, totalPages);
+                        } else if (currentPage + half > totalPages) {
+                            start = Math.max(totalPages - totalNumbersToShow + 1, 1);
+                            end = totalPages;
+                        }
+
+                        const pageNumbers = [];
+                        if (start > 1) pageNumbers.push(1); // 항상 첫 번째 페이지 표시
+                        if (start > 2) pageNumbers.push("..."); // 앞부분 생략 표시
+
+                        for (let i = start; i <= end; i++) {
+                            pageNumbers.push(i);
+                        }
+
+                        if (end < totalPages - 1) pageNumbers.push("..."); // 뒷부분 생략 표시
+                        if (end < totalPages) pageNumbers.push(totalPages); // 항상 마지막 페이지 표시
+
+                        return pageNumbers.map((number, index) => (
+                            <PaginationItem
+                                key={index} // "..." 같은 중복 요소를 허용하기 위해 index 사용
+                                active={number === currentPage}
+                                disabled={number === "..."} // "..."는 클릭되지 않도록 처리
+                            >
+                                {number === "..." ? (
+                                    <PaginationLink disabled>{number}</PaginationLink>
+                                ) : (
+                                    <PaginationLink onClick={() => handlePageChange(number)}>
+                                        {number}
+                                    </PaginationLink>
+                                )}
+                            </PaginationItem>
+                        ));
+                    })()}
+                    <PaginationItem disabled={currentPage === totalPages}>
+                        <PaginationLink
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            next
+                        />
+                    </PaginationItem>
+                </Pagination>
+            </nav>
+            <MemberSearchModal show={show} setShow={setShow} setMember={setMember}/>
         </div>
     );
 };
