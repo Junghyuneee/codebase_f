@@ -23,6 +23,9 @@ import {
 	DropdownItem,
 	DropdownMenu,
 	DropdownToggle,
+	Nav,
+	NavItem,
+	NavLink,
 } from "reactstrap";
 
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
@@ -37,6 +40,7 @@ const ReviewList = () => {
 	const [reviewPerPage] = useState(10); //한 페이지당 표시할 리뷰 개수
 	const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 상태
 	const [selectedSort, setSelectedSort] = useState("최신순"); // 기본 정렬 기준 : 최신순
+	const [selectedTab, setSelectedTab] = useState("전체"); // 기본 선택 탭 (전체)
 	const [projectteams, setProjectteams] = useState([]); // 프로젝트팀 목록
 	const navigate = useNavigate();
 
@@ -97,6 +101,28 @@ const ReviewList = () => {
 				return data.sort(
 					(a, b) => new Date(b.createdDate) - new Date(a.createDate)
 				);
+		}
+	};
+
+	// 탭 변경 함수
+	const handleTabChange = (tab) => {
+		setSelectedTab(tab);
+		filterReviewsByTab(tab);
+	};
+
+	// 탭에 따라 리뷰를 필터링하는 함수
+	const filterReviewsByTab = (tab) => {
+		if (tab === "프로젝트") {
+			// "프로젝트" 탭 선택 시 프로젝트 관련 게시글만 필터링
+			const projectReviews = review.filter((r) => r.category === "프로젝트");
+			setFilteredReview(projectReviews);
+		} else if (tab === "팀원") {
+			// "팀원" 탭 선택 시 팀원 관련 게시글만 필터링
+			const teamReviews = review.filter((r) => r.category === "팀원");
+			setFilteredReview(teamReviews);
+		} else {
+			// "전체" 탭 선택 시 모든 게시글 표시
+			setFilteredReview(review);
 		}
 	};
 
@@ -185,12 +211,6 @@ const ReviewList = () => {
 		setFilteredReview(sortedReviews); // 정렬된 리뷰 목록을 필터링된 리뷰로 설정
 	};
 
-	// 프로젝트명 찾기
-	const getProjectName = (pjtId) => {
-		const project = projectteams.find((p) => p.id === pjtId);
-		return project ? project.name : "Unknown"; // 프로젝트명이 없으면 'Unknown' 반환
-	};
-
 	return (
 		<>
 			<NavigationBar />
@@ -244,8 +264,35 @@ const ReviewList = () => {
 							>
 								<span className="btn-inner--text">등록하기</span>
 							</Button>
-							{/* </Link> */}
 						</div>
+
+						{/* Tab Navigation */}
+						<Nav tabs>
+							<NavItem>
+								<NavLink
+									className={selectedTab === "전체" ? "active" : ""}
+									onClick={() => handleTabChange("전체")}
+								>
+									전체
+								</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									className={selectedTab === "프로젝트" ? "active" : ""}
+									onClick={() => handleTabChange("프로젝트")}
+								>
+									프로젝트
+								</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									className={selectedTab === "팀원" ? "active" : ""}
+									onClick={() => handleTabChange("팀원")}
+								>
+									팀원
+								</NavLink>
+							</NavItem>
+						</Nav>
 						<div className="">
 							<table
 								className="col-lg-12"
