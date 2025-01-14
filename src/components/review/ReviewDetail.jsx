@@ -114,7 +114,7 @@ const ReviewDetail = () => {
 			} else {
 				await fetch(`http://localhost:8080/api/review/like/${id}`, {
 					method: "POST",
-				});
+				});			
 				setLikes(likes + 1);
 			}
 			setLiked(!liked);

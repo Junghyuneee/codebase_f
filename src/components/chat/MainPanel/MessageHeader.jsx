@@ -5,8 +5,8 @@ import {
 } from "react-bootstrap"
 import {useContext, useEffect, useState} from "react";
 import {ChatRoomContext, ChatRoomDispatchContext} from "@/pages/chat/ChatPage.jsx";
-import MemberSearchModal from "@/components/auth/MemberSearchModal.jsx";
-import {joinChatroom} from "@/api/chat/chatroom.js";
+import {inviteMembers} from "@/api/chat/chatroom.js";
+import MemberSearchMultiSelectModal from "@/components/auth/member/MemberSearchMultiSelectModal.jsx";
 
 function MessageHeader() {
 
@@ -26,8 +26,8 @@ function MessageHeader() {
 
     useEffect(() => {
         const addMember = async () => {
-            if (member !== null && window.confirm(`${member.name}님을 초대하시겠습니까?`)) {
-                const response = await joinChatroom(currentChatRoom.id, member.email);
+            if (member !== null && window.confirm(`초대하시겠습니까?`)) {
+                const response = await inviteMembers(currentChatRoom.id, member);
                 console.log(response);
             }
         }
@@ -56,7 +56,7 @@ function MessageHeader() {
                     </Button>
                 </Row>
             </Container>
-            <MemberSearchModal show={show} setShow={setShow} setMember={setMember}/>
+            <MemberSearchMultiSelectModal show={show} setShow={setShow} setMember={setMember}/>
         </div>
     );
 }

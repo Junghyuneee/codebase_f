@@ -211,6 +211,12 @@ const ReviewList = () => {
 		setFilteredReview(sortedReviews); // 정렬된 리뷰 목록을 필터링된 리뷰로 설정
 	};
 
+	// 프로젝트명 찾기
+	const getProjectName = (pjtId) => {
+		const project = projectteams.find((p) => p.id === pjtId);
+		return project ? project.name : "Unknown"; // 프로젝트명이 없으면 'Unknown' 반환
+	};
+
 	return (
 		<>
 			<NavigationBar />

@@ -17,6 +17,13 @@ export const joinChatroom = async (id, email) => {
     return response.data;
 }
 
+export const inviteMembers = async (id, members) => {
+    const response = await apiClient.post(`/chats/invite/${id}`,{
+        members: members,
+    })
+    return response.data;
+}
+
 export const leaveChatroom = async (id) => {
     const response = await apiClient.delete(`/chats/${id}`);
     return response.data;
