@@ -23,6 +23,8 @@ const ReviewDetail = () => {
 	const [error, setError] = useState(null); // 오류 상태
 	const [likes, setLikes] = useState(0); // 좋아요 카운트
 	const [dislikes, setDislikes] = useState(0); // 싫어요 카운트
+	const [liked, setLiked] = useState(false); // 좋아요 여부
+	const [disliked, setDisliked] = useState(false); // 싫어요 여부
 	const [author, setAuthor] = useState(false); // 현재 로그인한 사용자가 리뷰 작성자인지 여부
 	const [currentName, setCurrentName] = useState(""); // 로그인한 사용자 이름
 	//const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
@@ -98,37 +100,94 @@ const ReviewDetail = () => {
 
 	// 좋아요 버튼 클릭 핸들러
 	const handleLike = async () => {
+		if (likes >= 20 && !liked) {
+			alert("최대 20번의 상호작용만 가능합니다.");
+			return;
+		}
+
 		try {
-			const response = await fetch(
-				`http://localhost:8080/api/review/like/${id}`,
-				{
+			if (liked) {
+				await fetch(`http://localhost:8080/api/review/unlike/${id}`, {
 					method: "POST",
-				}
-			);
-			if (response.ok) {
+				});
+				setLikes(likes - 1);
+			} else {
+				await fetch(`http://localhost:8080/api/review/like/${id}`, {
+					method: "POST",
+				});			
 				setLikes(likes + 1);
 			}
+			setLiked(!liked);
 		} catch (error) {
-			console.error("좋아요 요청 중 오류 발생: ", error);
+			console.error("좋아요 처리 중 오류:", error);
 		}
 	};
 
 	// 싫어요 버튼 클릭 핸들러
 	const handleDislike = async () => {
+		if (dislikes >= 20 && !disliked) {
+			alert("최대 20번의 상호작용만 가능합니다.");
+			return;
+		}
+
 		try {
-			const response = await fetch(
-				`http://localhost:8080/api/review/dislike/${id}`,
-				{
+			if (disliked) {
+				await fetch(`http://localhost:8080/api/review/undislike/${id}`, {
 					method: "POST",
-				}
-			);
-			if (response.ok) {
+				});
+				setDislikes(dislikes - 1);
+			} else {
+				await fetch(`http://localhost:8080/api/review/dislike/${id}`, {
+					method: "POST",
+				});
 				setDislikes(dislikes + 1);
 			}
+			setDisliked(!disliked);
 		} catch (error) {
-			console.error("싫어요 요청 중 오류 발생: ", error);
+			console.error("싫어요 처리 중 오류:", error);
 		}
 	};
+	// 좋아요 버튼 클릭 핸들러
+	// const handleLike = async () => {
+	// 	try {
+	// 		if (likes < 20) {
+	// 			const response = await fetch(
+	// 				`http://localhost:8080/api/review/like/${id}`,
+	// 				{
+	// 					method: "POST",
+	// 				}
+	// 			);
+	// 			if (response.ok) {
+	// 				setLikes(likes + 1);
+	// 			}
+	// 		} else {
+	// 			alert("좋아는 최대 20번까지만 가능합니다.");
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("좋아요 요청 중 오류 발생: ", error);
+	// 	}
+	// };
+
+	// 싫어요 버튼 클릭 핸들러
+	// const handleDislike = async () => {
+	// 	try {
+	// 		if (dislikes < 20) {
+	// 			const response = await fetch(
+	// 				`http://localhost:8080/api/review/dislike/${id}`,
+	// 				{
+	// 					method: "POST",
+	// 				}
+	// 			);
+	// 			if (response.ok) {
+	// 				setDislikes(dislikes + 1);
+	// 			}
+	// 		} else {
+	// 			alert("싫어요는 최대 20번까지만 가능합니다.");
+	// 		}
+	// 	} catch (error) {
+	// 		console.error("싫어요 요청 중 오류 발생: ", error);
+	// 	}
+	// };
 
 	return (
 		<>
@@ -222,32 +281,36 @@ const ReviewDetail = () => {
 											</Row>
 
 											{/* 프로젝트 불러오기*/}
-											<Row className="mt-4 align-items-center">
-												<Col xs="auto" className="text-center">
-													<img
-														src={
-															review.pjtImg
-																? `${import.meta.env.VITE_APP_AWS_BUCKET}/${
-																		review.pjtImg
-																  }`
-																: defaultImage
-														}
-														alt={review.pjtName || "프로젝트 이미지"}
-														className="img-fluid"
-														style={{ maxHeight: "100px", width: "auto" }}
-													/>
-												</Col>
-												<Col className="text-left">
-													<strong
-														style={{
-															color: "#f5365c",
-														}}
-													>
-														{review.category}
-													</strong>
-													<h4>{review.pjtName}</h4>
-												</Col>
-											</Row>
+											{review.pjtName && review.pjtImg && (
+												<Row className="mt-4 align-items-center">
+													<>
+														<Col xs="auto" className="text-center">
+															<img
+																src={
+																	review.pjtImg
+																		? `${import.meta.env.VITE_APP_AWS_BUCKET}/${
+																				review.pjtImg
+																		  }`
+																		: defaultImage
+																}
+																alt={review.pjtName || "프로젝트 이미지"}
+																className="img-fluid"
+																style={{ maxHeight: "100px", width: "auto" }}
+															/>
+														</Col>
+														<Col className="text-left">
+															<strong
+																style={{
+																	color: "#f5365c",
+																}}
+															>
+																{review.category}
+															</strong>
+															<h4>{review.pjtName}</h4>
+														</Col>
+													</>
+												</Row>
+											)}
 
 											<Row className="py-5">
 												<Col className="text-lg-left">
@@ -258,10 +321,18 @@ const ReviewDetail = () => {
 											{/*좋아요와 싫어요 버튼 및 카운트 표시*/}
 											<Row className="mt-4">
 												<Col>
-													<Button color="success" onClick={handleLike}>
+													<Button
+														color={liked ? "success" : "secondary"}
+														onClick={handleLike}
+														disabled={liked && disliked}
+													>
 														👍 좋아요 {likes}
 													</Button>
-													<Button color="danger" onClick={handleDislike}>
+													<Button
+														color={disliked ? "danger" : "secondary"}
+														onClick={handleDislike}
+														disabled={liked && disliked}
+													>
 														👎 싫어요 {dislikes}
 													</Button>
 												</Col>
