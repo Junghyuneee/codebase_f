@@ -28,7 +28,9 @@ const ReviewCreate = () => {
 	const [author, setAuthor] = useState("");
 	const [projectteam, setProjectteam] = useState([]); // 프로젝트 목록 상태
 	const [selectedProjectteam, setSelectedProjectteam] = useState(""); // 선택한 프로젝트
+	const [cartItems, setCartItems] = useState([]); // 장바구니 프로젝트 목록 상태
 	const [selectedCategory, setSelectedCategory] = useState(""); // 선택한 카테고리
+	const [selectedCartProject, setSelectedCartProject] = useState(""); // 장바구니에서 선택된 프로젝트
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -66,6 +68,23 @@ const ReviewCreate = () => {
 				console.error("프로젝트 목록 불러오기 오류:", error);
 			}
 		};
+
+		// 장바구니에 담겨진 프로젝트 가져오기
+		const fetchCartItems = async () => {
+			try {
+				const response = await fetch(`http://localhost:8080/api/cart/my`);
+				if (response.ok) {
+					const data = await response.json();
+					setCartItems(data);
+				} else {
+					console.error("장바구니 프로젝트 불러오기 실패");
+				}
+			} catch (error) {
+				console.error("장바구니 프로젝트 불러오기 오류:", error);
+			}
+		};
+
+		fetchCartItems();
 		fetchProjectTeam();
 	}, [navigate]);
 
@@ -88,7 +107,10 @@ const ReviewCreate = () => {
 					title,
 					content,
 					author,
-					pjt_id: selectedProjectteam || "", // 빈 문자열 사용
+					pjt_id:
+						selectedCategory === "프로젝트"
+							? selectedCartProject
+							: selectedProjectteam,
 					category: selectedCategory || "", // 빈 문자열 사용
 				}),
 			});
@@ -99,6 +121,7 @@ const ReviewCreate = () => {
 				setTitle("");
 				setContent("");
 				setSelectedProjectteam("");
+				setSelectedCartProject("");
 				setSelectedCategory("");
 				navigate(`/review`); // 목록 페이지로 이동
 			} else {
@@ -171,23 +194,56 @@ const ReviewCreate = () => {
 												<option value="프로젝트">프로젝트</option>
 											</Input>
 										</FormGroup>
-										<FormGroup>
-											<Input
-												type="select"
-												value={selectedProjectteam}
-												onChange={(e) => setSelectedProjectteam(e.target.value)}
-											>
-												<option value="">프로젝트 선택</option>
-												{projectteam.map((projectteam) => (
-													<option
-														key={projectteam.pjt_id}
-														value={projectteam.pjt_id}
-													>
-														{projectteam.pjtname}
-													</option>
-												))}
-											</Input>
-										</FormGroup>
+										{/* '팀원' 선택 시, 팀원 선택 */}
+										{selectedCategory === "팀원" && (
+											<FormGroup>
+												<Input
+													type="select"
+													value={selectedProjectteam}
+													onChange={(e) =>
+														setSelectedProjectteam(e.target.value)
+													}
+												>
+													<option value="">팀원 선택</option>
+													{projectteam.map((projectteam) => (
+														<option
+															key={projectteam.pjt_id}
+															value={projectteam.pjt_id}
+														>
+															{projectteam.pjtname}
+														</option>
+													))}
+												</Input>
+											</FormGroup>
+										)}
+										{/* '프로젝트' 선택 시, 프로젝트 선택 */}
+										{selectedCategory === "프로젝트" && (
+											<FormGroup>
+												<Input
+													type="select"
+													value={selectedCartProject}
+													onChange={(e) =>
+														setSelectedCartProject(e.target.value)
+													}
+												>
+													<option value="">프로젝트 선택</option>
+													{cartItems.length > 0 ? (
+														cartItems.map((cartItem) => (
+															<option
+																key={cartItem.project_id}
+																value={cartItem.project_id}
+															>
+																{cartItem.title} - {cartItem.price} 원
+															</option>
+														))
+													) : (
+														<option value="">
+															장바구니에 프로젝트가 없습니다.
+														</option>
+													)}
+												</Input>
+											</FormGroup>
+										)}
 										<div>
 											<Button
 												block
