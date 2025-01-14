@@ -226,6 +226,7 @@ function ProjectExplain({ project }) {
 
 
     const fakePurchase = async () => {
+        
         await apiClient.post("api/store/payment/complete", {
             paymentId: '0000',
             project_id: project.id,
@@ -235,6 +236,9 @@ function ProjectExplain({ project }) {
                 "Content-Type": "application/json",
             }
         });
+
+
+        navigate("/store/purchase");
     }
 
     return (<>

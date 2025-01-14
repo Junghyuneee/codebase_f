@@ -3,7 +3,17 @@ import React, { useEffect, useState, useRef, Outlet } from "react";
 import { useFetch } from "@/components/store/storeAPI";
 import { getMemberId } from "@/api/auth/getset.js";
 import apiClient from "@/api/apiClient";
-
+import { Link } from "react-router-dom";
+import {
+  Button,
+  Card,
+  CardImg,
+  ButtonGroup,
+  Container,
+  Row,
+  Col,
+  Badge
+} from "reactstrap";
 function Page() {
   //const [data, setData] = useState([]);
 
@@ -14,23 +24,6 @@ function Page() {
     `/api/store/projectorder/myproject`
   );
 
-  //   // 데이터를 가져오는 함수 정의
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await apiClient.get(`/api/store/projectorder/myproject`);
-  //       setData(response.data); // 데이터를 상태에 저장
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       alert("데이터를 가져오는데 실패했습니다.");
-  //     }
-  //   };
-
-  // 컴포넌트가 마운트될 때 데이터 가져오기
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []); // 빈 배열로 두면 최초 1회 실행
-
-  // data가 변경될 때마다 콘솔에 출력
   useEffect(() => {
     if (data) {
       console.log(data);
@@ -74,8 +67,105 @@ function Page() {
       ) : (
         <p>Loading...</p>
       )}
+
+      <ProjectCards
+      projects = {data}
+      />
     </>
   );
 }
 
 export default Page;
+
+
+
+function OneProjectCard({ thumbnail, name}) {
+  return (
+    <>
+      <Card className="bg-white shadow border-0 card-lift--hover">
+        <blockquote className="card-blockquote p-4">
+          <CardImg style={{ borderRadius: "10px", width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} alt="..." src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${thumbnail}`} top />
+          <h5
+            className=" font-weight-bold text-black"
+            style={{
+              display: "-webkit-box", // Flexbox 사용
+              WebkitBoxOrient: "vertical", // 세로 방향으로 정렬
+              WebkitLineClamp: 2, // 두 줄까지만 표시
+              overflow: "hidden", // 넘치는 텍스트 숨기기
+              textOverflow: "ellipsis", // 넘치는 텍스트를 ...으로 표시
+              width: "100%",
+              height: "50px", // 부모 폭에 맞게 설정
+              marginTop: "10px", // 기본 마진 제거
+            }}
+          >
+            {name}
+          </h5>
+          <br />
+          <br />
+        </blockquote>
+
+      </Card>
+    </>
+  );
+}
+
+function ProjectCards(data) {
+
+
+  const [page, setPage] = useState(0);
+
+  
+  function next() {
+    if (page + 1 < Math.ceil(projects.length / 4)) {
+      setPage(page + 1);
+
+    }
+
+  }
+  function prev() {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+
+  }
+  console.log(" asdf ", data.projects);
+
+  return (
+    <>
+     
+      <section
+        className="section  pt-4"
+
+      >
+        <div style={{ marginLeft: "10%", marginRight: "10%" }}>
+          <Row className="row-grid align-items-center">
+
+            {Array.isArray(data.projects) &&
+              data.projects.map((project) => (
+                <>
+                <Col
+                  key={project.id}
+                  xs="12"
+                  sm="12"
+                  md="6"
+                  lg="4"
+                  xl="3"
+                  className="p-2"
+                >
+                  <Link to={`/store/purchase/${project.id}`}>
+                    <OneProjectCard
+                      thumbnail={project.img}
+                      name={project.title} />
+                  </Link>
+                </Col></>
+              ))}
+
+          </Row>
+        </div>
+
+        {/* <Button onClick={() => prev()}>이전</Button>
+        <Button onClick={() => next()}>이후</Button> */}
+      </section>
+    </>
+  );
+}
