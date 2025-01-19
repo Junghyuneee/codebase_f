@@ -21,7 +21,7 @@ function Page() {
   //   `/api/store/projectorder/myproject/${getMemberId()}`
   // );
   const { data, loading, error } = useFetch(
-    `/api/store/projectorder/myproject`
+    `/api/u/store/projectorder/myproject`
   );
 
   useEffect(() => {
@@ -61,9 +61,9 @@ function Page() {
         </div>
       </section>
 
-      <h1>My Projects</h1>
+      <h1> 구매한 프로젝트</h1>
       {data ? (
-        <div>{JSON.stringify(data)}</div> // 데이터를 화면에 표시 (예시)
+        <div>{/*JSON.stringify(data)*/}</div> // 데이터를 화면에 표시 (예시)
       ) : (
         <p>Loading...</p>
       )}
