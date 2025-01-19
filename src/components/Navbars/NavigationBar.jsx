@@ -19,7 +19,7 @@ import NotificationToggle from "./notifications/NotificationToggle";
 
 const menuItems = [
     { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
-    { path: "/projects", icon: "ni ni-shop", text: "프로젝트" },
+    { path: "/store", icon: "ni ni-shop", text: "프로젝트" },
     { path: "/review", icon: "ni ni-email-83", text: "리뷰" },
     { path: "/post", icon: "ni ni-collection", text: "자유게시판" },
     { path: "/chat", icon: "ni ni-chat-round", text: "채팅" }
