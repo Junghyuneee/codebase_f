@@ -35,6 +35,7 @@ function ProjectForm() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [file, setFile] = useState(null);
+  const [file2, setFile2] = useState(null);
   const [price, setPrice] = useState('');
   const [free, setFree] = useState(false);
   const navigate = useNavigate();
@@ -52,11 +53,11 @@ function ProjectForm() {
   useEffect(() => {
     if (free) {
       document.getElementById("price").disabled = true;
-      setPrice(0);//0
+      setPrice(1000);//0
 
     } else {
       document.getElementById("price").disabled = false;
-      setPrice(0);
+      setPrice(1000);
     }
 
 
@@ -67,17 +68,26 @@ function ProjectForm() {
     setFile(selectedFile); // 상태 업데이트
   };
 
+  const handleFileChange2 = (e) => {
+    const selectedFile = e.target.files[0]; // 선택된 파일 가져오기
+    setFile2(selectedFile); // 상태 업데이트
+  };
+
 
   function valid() {
     if (!title.trim() || !content.trim()) {
       alert('제목과 내용을 모두 입력해주세요.');
       return false;
     }
-
+    if (price < 1000){
+      alert('최소금액은 1000원 입니다.');
+      return false;
+    }
     return true;
   }
 
   const [preview, setPreview] = useState("");
+  const [preview2, setPreview2] = useState("");
 
   useEffect(() => {
     console.log("file change", file);
@@ -107,20 +117,57 @@ function ProjectForm() {
 
   }, [file]);
 
+  useEffect(() => {
+    console.log("file2 change", file2);
+
+    if (!file2) {
+      setPreview2(""); // 파일이 없으면 미리보기 초기화
+      return;
+    }
+
+    if (!file2.type.startsWith("image/")) {
+      console.error("Selected file is not an image");
+      setPreview2("");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      setPreview2(event.target.result); // 파일 내용을 상태로 저장
+    };
+
+    reader.readAsDataURL(file2);
+
+    // 리소스 정리
+    return () => reader.abort();
+
+
+  }, [file2]);
 
   function filevalid() {
+    
     if (file) {
       console.log('업로드할 파일:', file);
       // 파일을 서버에 업로드하는 로직 추가
       //zip 파일 확인 코드 추가예정
       /* accept 속성 주석친거 안으로 넣기 ㅠㅅ ㅠ*/
+      //return true;
+    } else {
+      console.log('파일이 선택되지 않았습니다.');
+      alert("썸네일 파일을 게시해주세요");
+      return false;
+    }
+    if (file) {
+      console.log('업로드할 파일:', file2);
       return true;
     } else {
       console.log('파일이 선택되지 않았습니다.');
-      alert("프로젝트 파일을 게시해주세요");
+      alert("상세이미지 파일을 게시해주세요");
       return false;
     }
 
+ 
   }
 
 
@@ -135,22 +182,33 @@ function ProjectForm() {
       return;
     }
 
+
     let realPrice = 0;
     if (price != '') {
       realPrice = parseInt(price);
     }
     const myprice = document.getElementById("price").value;
 
+    // const formData = new FormData();
+    // formData.append('title', title);
+    // formData.append('content', content);
+    // formData.append('price', realPrice);
+    // formData.append('file', file);
+    // formData.append('file2', file2);
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('price', realPrice);
+    formData.append('project', new Blob([JSON.stringify({
+      title: title,
+      content: content,
+      price: realPrice
+  })], { type: 'application/json' }));
     formData.append('file', file);
+    formData.append('file2', file2);
+    
     console.log(formData);
 
 
     if (window.confirm(`정말 ${title} 프로젝트를 게시하시겠습니까?`)) {
-      const result = await postData('/api/store/add', formData);
+      const result = await postData('/api/u/store/add', formData);
 
       alert("게시되었습니다.");
       navigate(`/store/${result}`);
@@ -208,7 +266,7 @@ function ProjectForm() {
                     >
                       <Input type="checkbox" id="free" onChange={(e) => setFree(e.target.checked)} />
                       <Label check>
-                        무료배포
+                        1000원
                       </Label>
                     </FormGroup>
                   </InputGroup>
@@ -276,11 +334,34 @@ function ProjectForm() {
                     )}
                   </Col>
                   <Col className="">
-                    {/* <Input
+                    <Input
                     type="file"
-                    onChange={handleFileChange}
+                    onChange={handleFileChange2}
 
-                  /> */}
+                    />
+
+                      {preview2 && (
+                      <div
+                        style={{
+                          maxWidth: "300px",  // 컨테이너의 최대 너비 설정
+                          maxHeight: "300px", // 컨테이너의 최대 높이 설정
+                          overflow: "auto",   // 스크롤바 활성화
+                          border: "1px solid #ccc", // 컨테이너에 테두리 추가
+                          padding: "5px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        <img
+                          src={preview2}
+                          alt="Preview"
+                          style={{
+                            display: "block",
+                            maxWidth: "100%", // 이미지를 컨테이너 너비에 맞춤
+                            maxHeight: "100%", // 이미지를 컨테이너 높이에 맞춤
+                          }}
+                        />
+                      </div>
+                    )}
                     {/*accept=".zip"*/}
                   </Col>
                 </Row>
