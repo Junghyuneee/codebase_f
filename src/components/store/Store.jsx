@@ -6,7 +6,9 @@
 import React, { useEffect, useState, useRef, Outlet } from "react";
 import { Link } from "react-router-dom";
 import Banner from "@/components/store/Banner";
-import img from "@/assets/img/theme/img-1-1200x1000.jpg";
+//import img from "@/assets/img/theme/img-1-1200x1000.jpg";
+import img from "./c.png";
+
 import { useFetch } from "@/components/store/storeAPI";
 import {
   Button,
@@ -104,9 +106,11 @@ function ProjectCards() {
       });
 
 
-      const startIndex = page * 4;
-      const endIndex = startIndex + 4;
+      // const startIndex = page * 12;
+      // const endIndex = startIndex + 12;
 
+      const startIndex = 0;
+      const endIndex = initprojects.length;
       setProjects(sortedProjects.splice(startIndex, endIndex));
     }
 
@@ -126,11 +130,6 @@ function ProjectCards() {
     }
 
   }
-
-  const plusHit = (id) => {
-    //console.log("프로젝트 카드 클릭", id);
-    // 여기에 원하는 함수나 추가 동작을 작성
-  };
 
 
   return (
@@ -195,8 +194,8 @@ function ProjectCards() {
           </Row>
         </div>
 
-        <Button onClick={() => prev()}>이전</Button>
-        <Button onClick={() => next()}>이후</Button>
+        {/* <Button onClick={() => prev()}>이전</Button>
+        <Button onClick={() => next()}>이후</Button> */}
       </section>
     </>
   );
@@ -231,7 +230,7 @@ function MyBanner() {
                            src={img}
                            style={{ width: "200px" }}
                          />
-                         <h1 className="text-white">ㅋㄷㅂㅇㅅ ㅅㅈ</h1>
+                         <h1 className="text-white">코드베이스 상점</h1>
                          <div className="btn-wrapper mt-5">
                            <Button
                              className="btn-white btn-icon mb-3 mb-sm-0"
@@ -259,10 +258,25 @@ function MyBanner() {
                                등록하기
                              </span>
                            </Button>
+                           <Button
+                             className="btn-icon mb-3 mb-sm-0"
+                             color="github"
+                             href="/store/purchase"
+                             size="lg"
+                             //target="_blank"
+                           >
+                             <span className="btn-inner--icon mr-1">
+                               <i className="fa fa-github" />
+                             </span>
+                             <span className="btn-inner--text">
+                               <span className="text-warning mr-1">구매한 </span>
+                               프로젝트
+                             </span>
+                           </Button>
                          </div>
                          <div className="mt-5">
                            <small className="text-white font-weight-bold mb-0 mr-2">
-                             ******ㅁ*ㄴㅇㄹ*ㅁㅇㄹ*
+                             유용한 프로그램을 구매 및 판매해보세요!
                            </small>
                            <img
                              alt="..."

@@ -87,6 +87,13 @@ function Banner_mini() {
                                         내 프로젝트 등록하기
                                     </Button>
 
+                                    <Button
+                                        className="btn-white mt-4"
+                                        color="default"
+                                        href="/store/purchase"
+                                    >
+                                        내 프로젝트 등록하기
+                                    </Button>
 
                                 </Col>
                                 <Col lg="6">
