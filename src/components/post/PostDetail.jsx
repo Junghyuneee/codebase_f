@@ -116,7 +116,6 @@ const PostDetail = () => {
         const newComment = await response.json();
         setComments([...comments, newComment]);
         setComment('');
-        window.location.reload(); // 댓글 작성 후 페이지 새로고침
       } catch (err) {
         console.error('댓글 저장 중 오류:', err);
         alert('댓글 저장에 실패했습니다.');
@@ -149,7 +148,6 @@ const PostDetail = () => {
       setShowEditModal(false);
       setEditCommentContent('');
       setEditCommentId(null);
-      window.location.reload(); // 댓글 수정 후 페이지 새로고침
     } catch (err) {
       console.error('댓글 수정 중 오류:', err);
       alert('댓글 수정에 실패했습니다.');
