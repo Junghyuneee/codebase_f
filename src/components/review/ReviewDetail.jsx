@@ -57,6 +57,8 @@ const ReviewDetail = () => {
 				setReview(data);
 				setLikes(data.likes || 0); // 초기 좋아요 수 설정
 				setDislikes(data.dislikes || 0); // 초기 싫어요 수 설정
+				setLiked(data.liked);
+				setDisliked(data.disliked);
 				setLoading(false);
 
 				if (data.author === currentName) {
@@ -106,18 +108,26 @@ const ReviewDetail = () => {
 		}
 
 		try {
-			if (liked) {
-				await fetch(`http://localhost:8080/api/review/unlike/${id}`, {
-					method: "POST",
-				});
-				setLikes(likes - 1);
+			const endpoint = liked
+				? `http://localhost:8080/api/review/unlike/${id}`
+				: `http://localhost:8080/api/review/like/${id}`;
+
+			const response = await fetch(endpoint, {
+				method: "POST",
+			});
+
+			if (response.ok) {
+				setLikes((prevLikes) => (liked ? prevLikes - 1 : prevLikes + 1));
+				setLiked(!liked);
+
+				// 싫어요 상태를 초기화 (좋아요와 싫어요는 동시에 활성화되지 않음)
+				if (disliked) {
+					setDislikes((prevDislikes) => prevDislikes - 1);
+					setDisliked(false);
+				}
 			} else {
-				await fetch(`http://localhost:8080/api/review/like/${id}`, {
-					method: "POST",
-				});			
-				setLikes(likes + 1);
+				throw new Error("좋아요 요청 처리 실패");
 			}
-			setLiked(!liked);
 		} catch (error) {
 			console.error("좋아요 처리 중 오류:", error);
 		}
@@ -131,18 +141,28 @@ const ReviewDetail = () => {
 		}
 
 		try {
-			if (disliked) {
-				await fetch(`http://localhost:8080/api/review/undislike/${id}`, {
-					method: "POST",
-				});
-				setDislikes(dislikes - 1);
+			const endpoint = disliked
+				? `http://localhost:8080/api/review/undislike/${id}`
+				: `http://localhost:8080/api/review/dislike/${id}`;
+
+			const response = await fetch(endpoint, {
+				method: "POST",
+			});
+
+			if (response.ok) {
+				setDislikes((prevDislikes) =>
+					disliked ? prevDislikes - 1 : prevDislikes + 1
+				);
+				setDisliked(!disliked);
+
+				// 좋아요 상태를 초기화 (좋아요와 싫어요는 동시에 활성화되지 않음)
+				if (liked) {
+					setLikes((prevLikes) => prevLikes - 1);
+					setLiked(false);
+				}
 			} else {
-				await fetch(`http://localhost:8080/api/review/dislike/${id}`, {
-					method: "POST",
-				});
-				setDislikes(dislikes + 1);
+				throw new Error("싫어요 요청 처리 실패");
 			}
-			setDisliked(!disliked);
 		} catch (error) {
 			console.error("싫어요 처리 중 오류:", error);
 		}
