@@ -1,12 +1,9 @@
 import VisitorIp from '../../components/admin/VisitorIp.jsx';
-import {Button} from 'react-bootstrap';
+import {Button, Container, Badge, CardImg, Col, Card, Row, Nav, NavItem, NavLink} from 'react-bootstrap';
 import {useNavigate} from 'react-router-dom';
-import {Container} from "react-bootstrap";
 import NavigationBar from "@/components/Navbars/NavigationBar.jsx";
-import React, {useEffect, useState} from "react";
-import MemberSearchModal from "@/components/auth/member/MemberSearchModal.jsx";
-import {isAdmin} from "@/components/admin/isAdmin.js";
-import {Badge, CardImg, Col, Card, Row, UncontrolledTooltip, Nav, NavItem, NavLink} from "reactstrap";
+import {useEffect, useState} from "react";
+import apiClient from "@/api/apiClient.js";
 
 const MainPage = () => {
 	const navigate = useNavigate();
@@ -22,38 +19,48 @@ const MainPage = () => {
 	// 멤버 찾기 모달 버튼
 	//<MemberSearchModal show={show} setShow={setShow} setMember={setMember}/>
 
-	const [startIndex, setStartIndex] = useState(0); // 현재 카드 시작 인덱스
-	const cards = [
-		{ id: 1, title: "플젝1" },
-		{ id: 2, title: "플젝2" },
-		{ id: 3, title: "플젝3" },
-		{ id: 4, title: "플젝4" },
-		{ id: 5, title: "플젝5" },
-	];
+	// 프로젝트 카드 띄우기
+	const [startIndex, setStartIndex] = useState(0); // 카드 시작 인덱스
+	const [projectCards, setProjectCards] = useState([]);
 	const visibleCards = 3; // 한 번에 보이는 카드 개수
 
-	// 왼쪽 버튼 클릭 핸들러
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await apiClient.get('/main/projectCard');
+				setProjectCards(response.data);
+				console.log('After setState:', response.data); // 최신 데이터 출력
+			} catch (error) {
+				console.error('메인 프로젝트 카드 에러', error);
+			}
+		};
+		fetchData()
+	}, []);
+
+	// 프로젝트 카드 왼쪽/오른쪽 버튼 클릭 핸들러
 	const handleLeftClick = () => {
-		setStartIndex((prevIndex) => (prevIndex - 1 + cards.length) % cards.length);
+		setStartIndex((prevIndex) => (prevIndex - 1 + projectCards.length) % projectCards.length);
 	};
 
-	// 오른쪽 버튼 클릭 핸들러
 	const handleRightClick = () => {
-		setStartIndex((prevIndex) => (prevIndex + 1) % cards.length);
+		setStartIndex((prevIndex) => (prevIndex + 1) % projectCards.length);
 	};
 
-	// 현재 표시할 카드 계산
-	const displayedCards = Array.from({ length: visibleCards }, (_, i) => {
-		const index = (startIndex + i) % cards.length; // 순환적인 인덱스 계산
-		return cards[index];
-	});
+	const displayedProject = projectCards.length > 0
+		? Array.from({ length: Math.min(visibleCards, projectCards.length) }, (_, i) => {
+		const index = (startIndex + i) % projectCards.length; // 순환적인 인덱스 계산
+		return projectCards[index];
+	}) : [];
+
+	// 프로젝트 개수가 3개보다 작으면 양쪽 버튼 비활성화
+	const isDisabled = projectCards.length < visibleCards;
 
 	return (
 		<>
 			<NavigationBar/>
 			<main>
 				<VisitorIp/>
-				<section className="section section-lg section-shaped my-0">
+				<section className="section section-shaped my-0 pt-8 pb-3">
 					{/* Circles background */}
 					<div className="shape shape-style-1 shape-default">
 						<span/>
@@ -85,20 +92,21 @@ const MainPage = () => {
 								</div>
 							</Col>
 						</Row>
-
 					</Container>
 				</section>
-				<section className="section section-lg section-shaped my-0">
+				<section className="section section-shaped my-0">
 					<Container>
 						<Row className="row-grid align-items-center justify-content-center">
-							<Button className="btn-primary btn-icon-only rounded-circle ml-1" onClick={handleLeftClick}>
+							<Button className="btn-primary btn-icon-only rounded-circle ml-1"
+									onClick={handleLeftClick} disabled={isDisabled}>
 							<span className="btn-inner--icon">
 								<i className="ni ni-bold-left"/>
 							</span>
 							</Button>
-							{displayedCards.map((card) => (
+							{displayedProject.map((project) => (
 								// eslint-disable-next-line react/jsx-key
 								<Col
+									key={project.id}
 									xs="12"
 									sm="12"
 									md="6"
@@ -108,13 +116,8 @@ const MainPage = () => {
 								>
 									<Card className="bg-white shadow border-0 card-lift--hover">
 										<blockquote className="card-blockquote p-4">
-											<CardImg style={{
-												borderRadius: "10px",
-												width: '100%',
-												aspectRatio: '1/1',
-												objectFit: 'cover'
-											}} alt="..."/>
-											<h5
+											<CardImg style={{ borderRadius: "10px", width: '100%', aspectRatio: '1/1', objectFit: 'cover' }} alt="..." src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`} top />
+											<h6
 												className=" font-weight-bold text-black"
 												style={{
 													display: "-webkit-box", // Flexbox 사용
@@ -127,16 +130,15 @@ const MainPage = () => {
 													marginTop: "10px", // 기본 마진 제거
 												}}
 											>
-												{card.title}
-											</h5>
-											<br/>
-											<br/>
+												{project.title}
+											</h6>
+											<br />
+											<br />
 										</blockquote>
 
 										<Badge
-											color="secondary"
 											pill
-											className="mr-1"
+											className="mr-1 bg-light"
 											style={{
 												fontSize: "14px",
 												position: "absolute", // 절대 위치 설정
@@ -144,13 +146,13 @@ const MainPage = () => {
 												left: "30px", // w좌측에서 10px
 											}}
 										>
-											원
+											{project.price}원
 										</Badge>
 									</Card>
 								</Col>
 							))}
 							<Button className="btn-primary btn-icon-only rounded-circle ml-1"
-									onClick={handleRightClick}>
+									onClick={handleRightClick} disabled={isDisabled}>
 							<span className="btn-inner--icon">
 								<i className="ni ni-bold-right"/>
 							</span>
@@ -158,110 +160,77 @@ const MainPage = () => {
 						</Row>
 					</Container>
 				</section>
-				<section>
+				<section className="section section-shaped my-0">
 					<Container>
-					<div className="text-center">
-						<h4 className="display-4 mb-5 mt-5">
-							팀 찾기
+					<div className="text-center mb-5">
+						<h4 className="display-4">
+							프로젝트 팀 찾기
 						</h4>
 						<Row className="justify-content-center">
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/argon-design-system?ref=adsr-landing-page"
-									id="tooltip255035741"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
-										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/bootstrap.jpg"
+										src="https://img.icons8.com/?size=100&id=asWSSTBrDlTW&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip255035741">
-									Bootstrap 4 - Most popular front-end component library
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/vue-argon-design-system?ref=adsr-landing-page"
-									id="tooltip265846671"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
 										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/vue.jpg"
+										src="https://img.icons8.com/?size=100&id=13679&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip265846671">
-									Vue.js - The progressive javascript framework
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/argon-design-system-angular?ref=adsr-landing-page"
-									id="tooltip233150499"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
 										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/angular.jpg"
+										src="https://img.icons8.com/?size=100&id=13441&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip233150499">
-									Angular - One framework. Mobile & Desktop
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/argon-design-system-react?ref=adsr-landing-page"
-									id="tooltip308866163"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
 										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/react.jpg"
+										src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip308866163">
-									React - A JavaScript library for building user
-									interfaces
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/argon-design-system-react?ref=adsr-landing-page"
-									id="tooltip76119384"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
 										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/sketch.jpg"
+										src="https://img.icons8.com/?size=100&id=54087&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip76119384">
-									Sketch - Digital design toolkit
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 							<Col lg="2" xs="4">
-								<a
-									href="https://www.creative-tim.com/product/argon-design-system-react?ref=adsr-landing-page"
-									id="tooltip646643508"
-									target="_blank"
+								<Button style={{backgroundColor: "white", borderColor: "white", boxShadow: "none"}}
+										onClick={() => navigate('/team')}
 								>
 									<img
 										alt="..."
 										className="img-fluid"
-										src="https://s3.amazonaws.com/creativetim_bucket/tim_static_images/presentation-page/ps.jpg"
+										src="https://img.icons8.com/?size=100&id=71257&format=png&color=000000"
 									/>
-								</a>
-								<UncontrolledTooltip delay={0} target="tooltip646643508">
-									Adobe Photoshop - Software for digital images
-									manipulation
-								</UncontrolledTooltip>
+								</Button>
 							</Col>
 						</Row>
 					</div>
@@ -291,9 +260,6 @@ const MainPage = () => {
                     <i className="fa fa-twitter"/>
                   </span>
 							</Button>
-							<UncontrolledTooltip delay={0} target="tooltip475038074">
-								Follow us
-							</UncontrolledTooltip>
 							<Button
 								className="btn-icon-only rounded-circle ml-1"
 								color="facebook"
@@ -305,9 +271,6 @@ const MainPage = () => {
                     <i className="fa fa-facebook-square"/>
                   </span>
 							</Button>
-							<UncontrolledTooltip delay={0} target="tooltip837440414">
-								Like us
-							</UncontrolledTooltip>
 							<Button
 								className="btn-icon-only rounded-circle ml-1"
 								color="dribbble"
@@ -319,9 +282,6 @@ const MainPage = () => {
                     <i className="fa fa-dribbble"/>
                   </span>
 							</Button>
-							<UncontrolledTooltip delay={0} target="tooltip829810202">
-								Follow us
-							</UncontrolledTooltip>
 							<Button
 								className="btn-icon-only rounded-circle ml-1"
 								color="github"
@@ -333,9 +293,6 @@ const MainPage = () => {
                     <i className="fa fa-github"/>
                   </span>
 							</Button>
-							<UncontrolledTooltip delay={0} target="tooltip495507257">
-								Star on Github
-							</UncontrolledTooltip>
 						</Col>
 					</Row>
 					<hr/>
