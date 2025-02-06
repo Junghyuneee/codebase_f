@@ -11,6 +11,7 @@ import StoreDetail from "./ProjectDetail.jsx";
 import Navbar from "@/components/team/Navbar";
 import NavigationBar from "@/components/Navbars/NavigationBar";
 import Purchased from "./purchased/PurchasedList";
+import PurchasedProject from "./purchased/PurchasedProject";
 function Admin() {
     return (
         <div>
@@ -24,6 +25,8 @@ function Admin() {
                     <Route path="/add" exact element={<StoreAdd />} />
                     <Route path="/:id" element={<StoreDetail />} />
                     <Route path="/purchase" element={<Purchased />} />
+
+                    <Route path="purchase/:id" element={<PurchasedProject/>} />
                 </Routes>
             </main>
         </div>
