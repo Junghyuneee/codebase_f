@@ -239,7 +239,7 @@ function MyBanner() {
                              size="lg"
                            >
                              <span className="btn-inner--icon mr-1">
-                               <i className="ni ni-cloud-download-95" />
+                               <i className="ni ni-cart" />
                              </span>
                              <span className="btn-inner--text">장바구니</span>
                            </Button>
@@ -251,7 +251,7 @@ function MyBanner() {
                              //target="_blank"
                            >
                              <span className="btn-inner--icon mr-1">
-                               <i className="fa fa-github" />
+                               <i className="ni ni-single-copy-04" />
                              </span>
                              <span className="btn-inner--text">
                                <span className="text-warning mr-1">프로젝트</span>
@@ -266,7 +266,7 @@ function MyBanner() {
                              //target="_blank"
                            >
                              <span className="btn-inner--icon mr-1">
-                               <i className="fa fa-github" />
+                               <i className="ni ni-books" />
                              </span>
                              <span className="btn-inner--text">
                                <span className="text-warning mr-1">구매한 </span>
@@ -278,13 +278,13 @@ function MyBanner() {
                            <small className="text-white font-weight-bold mb-0 mr-2">
                              유용한 프로그램을 구매 및 판매해보세요!
                            </small>
-                           <img
+                           {/* <img
                              alt="..."
                              src={img}
                              className="ml-1"
                              style={{ height: "28px" }}
                             
-                           />
+                           /> */}
                          </div>
                        </Col>
                      </Row>
