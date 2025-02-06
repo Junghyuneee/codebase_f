@@ -41,7 +41,7 @@ export function ProjectCard({ project }) {
 
                 <Card className="card-profile shadow">
                     <div className="px-4">
-                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
+                        <CardImg className="py-5" style={{ borderRadius: '10px', width: '100%', objectFit: 'cover' }}
                             alt="..."
                             src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.img}`}
                             top
@@ -88,7 +88,7 @@ function ProjectExplain({ project }) {
     //console.log( getMemberId(), project.maker_id);
     const maker = getMemberId() == project.maker_id ? true : false;
 
-    const purchasedResponse = apiClient(`/api/store/payment/exist/${project.id}`)
+    const purchasedResponse = apiClient(`/api/u/store/payment/exist/${project.id}`)
     const purchased = purchasedResponse.data;
 
     const handleSubmit = async (e) => {
@@ -126,7 +126,7 @@ function ProjectExplain({ project }) {
         //         price: project.price
         //     }),
         // })
-        const completeResponse = await apiClient.post("api/store/payment/complete", {
+        const completeResponse = await apiClient.post("api/u/store/payment/complete", {
             paymentId: payment.paymentId,
             project_id: project.id,
             price: project.price
@@ -147,6 +147,9 @@ function ProjectExplain({ project }) {
                 message: await completeResponse.text(),
             })
         }
+        navigate("/store/purchase");
+
+        
     }
 
 
@@ -195,7 +198,7 @@ function ProjectExplain({ project }) {
     const deleteProject = async () => {
         const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
         if (isConfirmed) {
-            const response = await apiClient.delete(`/api/project/delete/${project.id}`);
+            const response = await apiClient.delete(`/api/u/project/delete/${project.id}`);
             //console.log(response.data);
             alert(response.data);
 
@@ -227,7 +230,7 @@ function ProjectExplain({ project }) {
 
     const fakePurchase = async () => {
         
-        await apiClient.post("api/store/payment/complete", {
+        await apiClient.post("api/u/store/payment/complete", {
             paymentId: '0000',
             project_id: project.id,
             price: project.price
@@ -250,7 +253,7 @@ function ProjectExplain({ project }) {
                     fakePurchase();
                 }}
             >
-                %%%%%%%% 구매 테스트 %%%%%%%%
+                test
             </Button>
 
             <Card className='card-profile shadow'>
@@ -271,7 +274,7 @@ function ProjectExplain({ project }) {
                     <Container>
                         <div>
                             <i className="ni education_hat mr-2" />
-                            {project.content}상세설명의 내용이 담김 줄바꿈 2줄 설정하기
+                            {project.content}
                         </div>
                     </Container>
                 </div>
@@ -375,6 +378,12 @@ function ProjectDetail({ project }) {
                     <h1 className='font-weight-bold'>상세설명</h1>
                     <hr />
                     <h3>{project.content}</h3>
+
+                    <img className="py-5" style={{ borderRadius: '10px', width: '100%'}}
+                            alt="..."
+                            src={`${import.meta.env.VITE_APP_AWS_BUCKET}/${project.link}`}
+                            top
+                        />
                 </div>
             </Container>
         </>
