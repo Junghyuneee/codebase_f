@@ -16,13 +16,15 @@ import {
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
 import { postSignOut } from "@/api/auth/auth.js";
 import NotificationToggle from "./notifications/NotificationToggle";
+import {NavItem, NavLink} from "reactstrap";
+import {isAdmin} from "@/components/admin/isAdmin.js";
 
 const menuItems = [
-    { path: "/team", icon: "ni ni-single-02", text: "팀 소개" },
-    { path: "/store", icon: "ni ni-shop", text: "프로젝트" },
-    { path: "/review", icon: "ni ni-email-83", text: "리뷰" },
-    { path: "/post", icon: "ni ni-collection", text: "자유게시판" },
-    { path: "/chat", icon: "ni ni-chat-round", text: "채팅" }
+    { path: "/store", icon: "ni ni-shop", text: "Project" },
+    { path: "/team", icon: "ni ni-single-02", text: "Team" },
+    { path: "/review", icon: "ni ni-single-copy-04", text: "Review" },
+    { path: "/post", icon: "ni ni-collection", text: "Post" },
+    { path: "/chat", icon: "ni ni-chat-round", text: "Chat" }
 ];
 
 const NavigationBar = () => {
@@ -105,20 +107,26 @@ const NavigationBar = () => {
         }
 
         return (
-            <NavDropdown
-                title="Examples"
-                id="basic-nav-dropdown"
-                show={showDropdown}
-                onMouseEnter={() => setShowDropdown(true)}
-                onMouseLeave={() => setShowDropdown(false)}
-            >
+            <Nav navbar>
                 {menuItems.map((item, index) => (
-                    <NavDropdown.Item key={index} as={Link} to={item.path}>
-                        <i className={`${item.icon} mr-2`} />
-                        {item.text}
-                    </NavDropdown.Item>
+                    <NavItem key={index}>
+                        <NavLink
+                            to={item.path} tag={Link}
+                            className="text-center">
+                            <i className={`${item.icon} mr-2`} />
+                            {item.text}
+                        </NavLink>
+                    </NavItem>
                 ))}
-            </NavDropdown>
+                {isAdmin() && <NavItem>
+                    <NavLink
+                        to={'/admin'} tag={Link}
+                        className="text-center">
+                        <i className={"ni ni-archive-2"} />
+                        Admin
+                    </NavLink>
+                </NavItem>}
+            </Nav>
         );
     }, [isMobile, showDropdown]);
 
