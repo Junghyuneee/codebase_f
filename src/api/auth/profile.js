@@ -26,3 +26,13 @@ export const getMyPostList = async (name = "") => {
     const response = await apiClient.get("/profile/post/" + name);
     return response.data;
 }
+
+export const getMyProjectList = async (name = "") => {
+    const response = await apiClient.get("/profile/project/" + name);
+    return response.data;
+}
+
+export const getMyReviewList = async (name = "") => {
+    const response = await apiClient.get("/profile/review/" + name);
+    return response.data;
+}
