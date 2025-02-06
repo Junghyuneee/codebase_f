@@ -2,11 +2,13 @@ import { FaCircle, FaCommentDots, FaPlus } from 'react-icons/fa';
 import { Modal, Button, Form } from "react-bootstrap";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ChatRoomContext, ChatRoomDispatchContext } from "@/pages/chat/ChatPage.jsx";
+import { getChatroomMembers } from "@/api/chat/chatroom.js";
 
 const ChatRooms = () => {
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState("");
     const [activeChatRoomId, setActiveChatRoomId] = useState("");
+    const [memberList, setMemberList] = useState([]);
     const createChatroomRef = useRef(null);
 
     const { chatRoomList } = useContext(ChatRoomContext);
@@ -25,6 +27,15 @@ const ChatRooms = () => {
             createChatroomRef.current.focus();
         }
     }, [show]);
+
+    useEffect(() => {
+        if (activeChatRoomId) {
+            (async () => {
+                const data = await getChatroomMembers(activeChatRoomId);
+                setMemberList(data);
+            })();
+        }
+    }, [activeChatRoomId]);
 
     const handleShow = () => {
         setShow(true);
@@ -70,6 +81,7 @@ const ChatRooms = () => {
                                 onSelect(room);
                             }}
                             style={{ cursor: 'pointer', backgroundColor: room.id === activeChatRoomId ? "#FFFFFF45" : "transparent" }}
+                            title={(memberList.length > 0) && memberList.join(', ')}
                         >
                             <div className="d-flex align-items-center" style={{ gap: '.5rem' }}>
                                 <h5 className="text-white m-0">{room.title} </h5>

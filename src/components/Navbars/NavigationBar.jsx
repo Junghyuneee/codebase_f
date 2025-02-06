@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {useState, useEffect, useRef, useCallback, memo} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import Headroom from 'headroom.js';
 
 import logoWhite from '../../assets/img/brand/argon-react-white.png';
@@ -14,17 +14,17 @@ import {
     NavDropdown
 } from 'react-bootstrap';
 import isAuthenticated from "@/utils/auth/isAuthenticated.js";
-import { postSignOut } from "@/api/auth/auth.js";
+import {postSignOut} from "@/api/auth/auth.js";
 import NotificationToggle from "./notifications/NotificationToggle";
 import {NavItem, NavLink} from "reactstrap";
 import {isAdmin} from "@/components/admin/isAdmin.js";
 
 const menuItems = [
-    { path: "/store", icon: "ni ni-shop", text: "Project" },
-    { path: "/team", icon: "ni ni-single-02", text: "Team" },
-    { path: "/review", icon: "ni ni-single-copy-04", text: "Review" },
-    { path: "/post", icon: "ni ni-collection", text: "Post" },
-    { path: "/chat", icon: "ni ni-chat-round", text: "Chat" }
+    {path: "/store", icon: "ni ni-shop", text: "Project"},
+    {path: "/team", icon: "ni ni-single-02", text: "Team"},
+    {path: "/review", icon: "ni ni-single-copy-04", text: "Review"},
+    {path: "/post", icon: "ni ni-collection", text: "Post"},
+    {path: "/chat", icon: "ni ni-chat-round", text: "Chat"}
 ];
 
 const NavigationBar = () => {
@@ -65,17 +65,18 @@ const NavigationBar = () => {
     }, []);
 
 
-
     const renderAuthLinks = useCallback(() => isLogin ? (
         <>
             <Nav.Link onClick={() => {
                 navigate("/profile");
                 setExpanded(false);
-            }}>마이페이지</Nav.Link>
+            }}
+                      style={{whiteSpace: "nowrap"}}>마이페이지</Nav.Link>
             <Nav.Link onClick={() => {
                 postSignOut();
                 setExpanded(false);
-            }}>로그아웃</Nav.Link>
+            }}
+                      style={{whiteSpace: "nowrap"}}>로그아웃</Nav.Link>
         </>
     ) : (
         <>
@@ -100,7 +101,7 @@ const NavigationBar = () => {
                     to={item.path}
                     onClick={() => setExpanded(false)}
                 >
-                    <i className={`${item.icon} mr-2`} />
+                    <i className={`${item.icon} mr-2`}/>
                     {item.text}
                 </Nav.Link>
             ));
@@ -113,7 +114,7 @@ const NavigationBar = () => {
                         <NavLink
                             to={item.path} tag={Link}
                             className="text-center">
-                            <i className={`${item.icon} mr-2`} />
+                            <i className={`${item.icon} mr-2`}/>
                             {item.text}
                         </NavLink>
                     </NavItem>
@@ -122,7 +123,7 @@ const NavigationBar = () => {
                     <NavLink
                         to={'/admin'} tag={Link}
                         className="text-center">
-                        <i className={"ni ni-archive-2"} />
+                        <i className={"ni ni-archive-2"}/>
                         Admin
                     </NavLink>
                 </NavItem>}
@@ -141,22 +142,22 @@ const NavigationBar = () => {
         >
             <Container>
                 <Navbar.Brand
-                    style={{ cursor: "pointer" }}
+                    style={{cursor: "pointer"}}
                     className="mr-lg-5"
                     onClick={() => {
                         navigate("/");
                         setExpanded(false);
                     }}
                 >
-                    <img alt="..." src={logoWhite} />
+                    <img alt="..." src={logoWhite}/>
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <div className="navbar-collapse-header">
                         <Row>
                             <Col className="collapse-brand" xs="6">
                                 <Link to="/" onClick={() => setExpanded(false)}>
-                                    <img alt="..." src={logo} />
+                                    <img alt="..." src={logo}/>
                                 </Link>
                             </Col>
                         </Row>
@@ -167,7 +168,7 @@ const NavigationBar = () => {
                     </Nav>
 
                     <Nav className="navbar-nav-hover align-items-lg-center ml-lg-auto">
-                        {isLogin && !isMobile && <NotificationToggle />}
+                        {isLogin && !isMobile && <NotificationToggle/>}
                         {renderAuthLinks()}
                     </Nav>
                 </Navbar.Collapse>

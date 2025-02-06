@@ -37,3 +37,8 @@ export const makeDm = async (id) => {
     const response = await apiClient.get(`/chats/find/${id}`);
     return response.data;
 }
+
+export const getChatroomMembers = async (id) => {
+    const response = await apiClient.get(`/chats/memberList/${id}`);
+    return response.data;
+}
