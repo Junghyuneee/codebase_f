@@ -147,6 +147,9 @@ function ProjectExplain({ project }) {
                 message: await completeResponse.text(),
             })
         }
+        navigate("/store/purchase");
+
+        
     }
 
 
@@ -250,7 +253,7 @@ function ProjectExplain({ project }) {
                     fakePurchase();
                 }}
             >
-                %%%%%%%% 구매 테스트 %%%%%%%%
+                test
             </Button>
 
             <Card className='card-profile shadow'>
