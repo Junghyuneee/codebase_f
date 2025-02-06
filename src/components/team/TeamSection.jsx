@@ -205,6 +205,9 @@ function TeamSection({ projects, currentPage, totalPages, onPageChange, currentM
           </Row>
         </ModalBody>
         <ModalFooter>
+          <Button color="warning" onClick={() => navigate(`/teamdetail/${selectedTeam?.pjt_id}`)}>
+            팀 상세 보기
+          </Button>
           <Button
             color="primary"
             onClick={() => {

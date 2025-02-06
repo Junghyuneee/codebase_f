@@ -89,3 +89,26 @@
     font-size: 14px;
   }
   
+  .card-body {
+    padding: 1rem;  /* 기본 패딩값 줄임 */
+  }
+  
+  .team-members .card {
+    margin-bottom: 0.75rem;  /* 카드 간격 줄임 */
+  }
+  
+  .team-members .card-body h5 {
+    margin-bottom: 0.5rem;  /* 제목 아래 여백 줄임 */
+    font-size: 1rem;  /* 제목 크기 줄임 */
+  }
+  
+  .team-members .badge {
+    font-size: 0.8rem;  /* 뱃지 텍스트 크기 줄임 */
+    padding: 0.3rem 0.5rem;  /* 뱃지 패딩 줄임 */
+  }
+  
+  .team-members .text-muted {
+    font-size: 0.85rem;  /* 상태 텍스트 크기 줄임 */
+    margin-top: 0.5rem;  /* 상태 텍스트 위 여백 추가 */
+  }
+  
